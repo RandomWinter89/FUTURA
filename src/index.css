@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Mobile <--> Desktop  */
+
+/* Variables */
+:root {
+    --color-p-10: hsl(31, 80%, 10%);
+    --color-p-30: hsl(31, 80%, 30%);
+    --spacing-1080: 1080px;
+
+    --h1-size: clamp(1.25rem, 0.65rem + 3vw, 4.25rem);
+    --h1-height: clamp(1.5rem, 0.9rem + 3vw, 4.5rem);
+    --h1-weight: 600;
+
+    --h2-size: clamp(1rem, 0.675rem + 1.625vw, 2.625rem);
+    --h2-height: clamp(1.5rem, 1.2rem + 1.5vw, 3rem);
+    --h2-weight: 600;
+    
+    --p-size: clamp(0.75rem, 0.7rem + 0.25vw, 1rem);
+    --p-height: clamp(1rem, 0.9rem + 0.5vw, 1.5rem);
+    --p-weight: 400;
+}
+
+/* Utilities */
+@layer utilities {
+    .font-h1 {
+        font-size: var(--h1-size);
+        font-weight: var(--h1-weight);
+        line-height: var(--h1-height);
+        /* @apply my-2; */
+    }
+}
+
+/* Global Styles */
+@layer base {
+    html{
+        scroll-behavior: smooth;
+    }
+    h1 {
+        font-size: var(--h1-size);
+        font-weight: var(--h1-weight);
+        line-height: var(--h1-height);
+
+        /* @apply my-2; */
+    }
+    h2 {
+        font-size: var(--h2-size);
+        font-weight: var(--h2-weight);
+        line-height: var(--h2-height);
+
+        /* @apply my-2; */
+    }
+    p, button {
+        font-size: var(--p-size);
+        font-weight: var(--p-weight);
+        line-height: var(--p-height);
+
+        /* @apply my-2; */
+    }
+    a {
+        @apply text-pink-100 no-underline;
+    }
+    a:hover {
+        @apply text-pink-300;
+    }
+    img {
+        @apply w-full;
+    }
+    section {
+        @apply w-11/12 max-w-[1080px] mx-auto;
+    }
+}
