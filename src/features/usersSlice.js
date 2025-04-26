@@ -131,7 +131,7 @@ const usersSlice = createSlice({
         // Create User =============>
         builder
             .addCase(createUser.fulfilled, (state, action) => {
-                state.personal = action.payload;
+                state.personal = action.payload.data;
                 state.personal_loading = false;
             })
             .addCase(createUser.pending, (state) => {
@@ -141,8 +141,8 @@ const usersSlice = createSlice({
         // Update User =============>
         builder
             .addCase(updateUser.fulfilled, (state, action) => {
-                console.log("Update User: ", action.payload);
-                // state.personal = action.payload;
+                console.log("Update User: ", action.payload.updatedData);
+                // state.personal = action.payload.updatedData;
                 state.personal_loading = false;
             })
             .addCase(updateUser.pending, (state) => {

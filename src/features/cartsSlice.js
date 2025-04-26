@@ -85,7 +85,7 @@ const cartsSlice = createSlice({
     initialState: {
         cart_id: null,
         carts: [],
-        loading: true,
+        loading: false,
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -106,7 +106,7 @@ const cartsSlice = createSlice({
         // Add Cart Item
         builder
             .addCase(addCart_item.fulfilled, (state, action) => {
-                state.carts.push(action.payload.data);
+                state.carts = [...state.carts, action.payload.data];
                 state.loading = false;
             })
             .addCase(addCart_item.pending, (state) => {
