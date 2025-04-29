@@ -1,17 +1,75 @@
 
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Outlet, Link, Route, Routes, useNavigate } from "react-router-dom";
+import { AuthProvider } from "./Context/AuthProvider";
 import { Provider } from "react-redux";
 import store from "./store";
 
-import Homepage from "./pages/Homepage";
+// import Homepage from "./pages/Homepage";
 
-//Version 1
+import Homepage from "./pages/Homepage";
+import SignupPage from "./pages/Authentication/Signup";
+import LoginPage from "./pages/Authentication/Login";
+import RegisterForm from "./pages/Authentication/RegisterForm";
+
+import { getAuth } from "firebase/auth";
+
+import { useSelector } from "react-redux";
+import { AuthContext } from "./Context/AuthProvider";
+import { useEffect, useContext } from "react";
+
+const Navbar = () => {
+  const { currentUser } = useContext(AuthContext) || null;
+  const { personal } = useSelector((state) => state.users);
+
+  const auth = getAuth();
+  const handleLogout = () => auth.signOut();
+
+  // const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   if (currentUser && personal.length)
+
+
+  //   if (!currentUser || personal.length == 0)
+  //     navigate("Login");
+  // }, [navigate, currentUser, personal])
+
+  return (
+    < >
+      <div className="py-4 px-2 bg-black text-white flex gap-4">
+        <Link to="/Login">Login</Link>
+        <Link to="/Signup">Signup</Link>
+
+        <button onClick={handleLogout}>Exit</button>
+      </div>
+      <Outlet />
+    </>
+  )
+}
+
 function App() {
 
   return (
-    <Provider store={store}>
-      <Homepage />
-    </Provider>
+    <AuthProvider>
+      {/* Redux Storage */}
+      <Provider store={store}>
+        {/* Router */}
+        <BrowserRouter>
+          <Navbar />
+
+          <Routes>
+            {/* <Route path="*" element={<Homepage/>} /> */}
+            <Route path="*" element={<SignupPage />} />
+            <Route path="/Login" element={<LoginPage/>} />
+            <Route path="/Signup" element={<SignupPage/>} />
+            <Route path="/Signup2" element={<RegisterForm />} />
+            <Route path="/Homepage" element={<Homepage />} />
+
+            {/* Homepage */}
+          </Routes>
+        </BrowserRouter>
+      </Provider>
+    </AuthProvider>
   ) 
 }
 

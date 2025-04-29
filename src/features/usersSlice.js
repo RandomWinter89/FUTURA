@@ -14,12 +14,11 @@ export const fetchAllUser = createAsyncThunk(
     }
 );
 
-
-// Fetch personal following
-export const fetch_PersonalFollower = createAsyncThunk(
-    'users/fetchPersonalFollower',
-    async (id) => {
-        const response = await axios.get(`${VITE_FUTURA_API}/users/${id}/followers`);
+// Fetch own data
+export const fetchProfile = createAsyncThunk(
+    'users/fetchProfile',
+    async (uid) => {
+        const response = await axios.get(`${VITE_FUTURA_API}/users/${uid}`);
         return response.data;
     }
 );
@@ -28,14 +27,11 @@ export const fetch_PersonalFollower = createAsyncThunk(
 // Create user database
 export const createUser = createAsyncThunk(
     'users/createUser',
-    async ({uid, username, email, phone, gender, birth}) => {
+    async ({uid, email}) => {
         const body = {
             uid: uid,
-            username: username,
+            username: email,
             email: email,
-            phone: phone,
-            gender: gender,
-            birth: birth
         };
 
         const response = await axios.post(`${VITE_FUTURA_API}/users/signup`, body);
@@ -47,7 +43,7 @@ export const createUser = createAsyncThunk(
 // Update user database
 export const updateUser = createAsyncThunk(
     'users/updateUser', 
-    async ({id, username, phone, gender, birth}) => {
+    async ({uid, username, phone, gender, birth}) => {
         const body = {
             username: username,
             phone: phone,
@@ -55,7 +51,7 @@ export const updateUser = createAsyncThunk(
             birth: birth
         };
 
-        const response = await axios.put(`${VITE_FUTURA_API}/users/${id}`, body);
+        const response = await axios.put(`${VITE_FUTURA_API}/users/${uid}`, body);
         return response.data;
     }
 );
@@ -104,7 +100,7 @@ const usersSlice = createSlice({
         // personalFollower: [],
         // personalFollowing: [],
         users_loading: true,
-        personal_loading: true,
+        personal_loading: true
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -120,13 +116,17 @@ const usersSlice = createSlice({
         
         // Fetch personal user =============>
         builder
-            .addCase(fetch_PersonalFollower.fulfilled, (state, action) => {
+            .addCase(fetchProfile.fulfilled, (state, action) => {
+                console.log("He: ", action.payload);
                 state.personal = action.payload;
                 state.personal_loading = false;
             })
-            .addCase(fetch_PersonalFollower.pending, (state) => {
+            .addCase(fetchProfile.pending, (state) => {
                 state.personal_loading = true;
             })
+            // .addCase(fetchProfile.rejected, (state, action) => {
+            //     state.report = 
+            // })
 
         // Create User =============>
         builder
