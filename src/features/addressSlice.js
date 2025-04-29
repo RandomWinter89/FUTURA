@@ -6,7 +6,7 @@ const VITE_FUTURA_API = import.meta.env.VITE_FUTURA_API;
 
 export const createAddress = createAsyncThunk(
     'users/createAddress',
-    async ({id, address_line1, address_line2, city, region, postal_code}) => {
+    async ({uid, address_line1, address_line2, city, region, postal_code}) => {
         const body = {
             address_line1: address_line1, 
             address_line2: address_line2, 
@@ -15,7 +15,7 @@ export const createAddress = createAsyncThunk(
             postal_code: postal_code
         }
 
-        const response = await axios.post(`${VITE_FUTURA_API}/users/${id}/address`, body);
+        const response = await axios.post(`${VITE_FUTURA_API}/users/${uid}/address`, body);
         return response.data;
     }
 );
@@ -23,8 +23,8 @@ export const createAddress = createAsyncThunk(
 
 export const fetchAddress = createAsyncThunk(
     'users/fetchAddress',
-    async (id) => {
-        const response = await axios.get(`${VITE_FUTURA_API}/users/${id}/address`);
+    async (uid) => {
+        const response = await axios.get(`${VITE_FUTURA_API}/users/${uid}/address`);
         return response.data;
     }
 );
@@ -32,7 +32,7 @@ export const fetchAddress = createAsyncThunk(
 
 export const updateAddress = createAsyncThunk(
     'users/updateAddress',
-    async ({id, address_id, address_line1, address_line2, city, region, postal_code}) => {
+    async ({uid, address_id, address_line1, address_line2, city, region, postal_code}) => {
         const body = {
             address_line1: address_line1, 
             address_line2: address_line2, 
@@ -41,7 +41,7 @@ export const updateAddress = createAsyncThunk(
             postal_code: postal_code
         }
 
-        const response = await axios.put(`${VITE_FUTURA_API}/users/${id}/address/${address_id}`, body);
+        const response = await axios.put(`${VITE_FUTURA_API}/users/${uid}/address/${address_id}`, body);
         return response.data;
     }
 );
@@ -49,8 +49,8 @@ export const updateAddress = createAsyncThunk(
 
 export const removeAddress = createAsyncThunk(
     'users/removeAddress',
-    async ({id, address_id}) => {
-        const response = await axios.delete(`${VITE_FUTURA_API}/users/${id}/address/${address_id}`);
+    async ({uid, address_id}) => {
+        const response = await axios.delete(`${VITE_FUTURA_API}/users/${uid}/address/${address_id}`);
         return response.data;
     }
 );
@@ -65,7 +65,7 @@ const addressSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(createAddress.fulfilled, (state, action) => {
-                state.address = [...state.address, ...action.payload.data];
+                state.address = [...state.address, action.payload.data];
                 state.address_loading = false;
             })
             .addCase(createAddress.pending, (state) => {

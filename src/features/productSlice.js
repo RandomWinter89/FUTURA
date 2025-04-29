@@ -9,6 +9,7 @@ export const fetchProducts = createAsyncThunk(
     'users/fetchProducts',
     async () => {
         const response = await axios.get(`${VITE_FUTURA_API}/products`);
+        console.log("Requesting");
         return response.data;
     }
 );
@@ -63,11 +64,13 @@ const productsSlice = createSlice({
         products_loading: false,
         productItem_loading: false,
     },
-    reducers: {},
+    reducers: {
+    },
     extraReducers: (builder) => {
         // Fetch all users
         builder
             .addCase(fetchProducts.fulfilled, (state, action) => {
+                console.log(action.payload);
                 state.products.endless = [...action.payload, ...state.products.endless];
                 state.products_loading = false;
             })

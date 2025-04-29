@@ -5,17 +5,17 @@ const VITE_FUTURA_API = import.meta.env.VITE_FUTURA_API;
 
 // Fetch all users
 
-export const createPayment = createAsyncThunk(
-    'users/createPayment',
-    async (id) => {
-        const response = await axios.post(`${VITE_FUTURA_API}/users/${id}/payment`);
+export const fetchPayment = createAsyncThunk(
+    'users/fetchPayment',
+    async (uid) => {
+        const response = await axios.get(`${VITE_FUTURA_API}/users/${uid}/payment`);
         return response.data;
     }
 );
 
-export const fetchPayment = createAsyncThunk(
-    'users/fetchPayment',
-    async ({id, payment_type, provider, account_number, expiry_date, is_default}) => {
+export const createPayment = createAsyncThunk(
+    'users/createPayment',
+    async ({uid, payment_type, provider, account_number, expiry_date, is_default}) => {
         const body = {
             payment_type: payment_type, 
             provider: provider, 
@@ -24,14 +24,14 @@ export const fetchPayment = createAsyncThunk(
             is_default: is_default
         }
 
-        const response = await axios.get(`${VITE_FUTURA_API}/users/${id}/payment`, body);
+        const response = await axios.post(`${VITE_FUTURA_API}/users/${uid}/payment`, body);
         return response.data;
     }
 );
 
 export const updatePayment = createAsyncThunk(
     'users/updatePayment',
-    async ({id, paymentId, payment_type, provider, account_number, expiry_date, is_default}) => {
+    async ({uid, paymentId, payment_type, provider, account_number, expiry_date, is_default}) => {
         const body = {
             payment_type: payment_type, 
             provider: provider, 
@@ -40,15 +40,15 @@ export const updatePayment = createAsyncThunk(
             is_default: is_default
         }
 
-        const response = await axios.put(`${VITE_FUTURA_API}/users/${id}/payment/${paymentId}`, body);
+        const response = await axios.put(`${VITE_FUTURA_API}/users/${uid}/payment/${paymentId}`, body);
         return response.data;
     }
 );
 
 export const deletePayment = createAsyncThunk(
     'users/deletePayment',
-    async ({id, paymentId}) => {
-        const response = await axios.delete(`${VITE_FUTURA_API}/users/${id}/payment/${paymentId}`);
+    async ({uid, paymentId}) => {
+        const response = await axios.delete(`${VITE_FUTURA_API}/users/${uid}/payment/${paymentId}`);
         return response.data;
     }
 );

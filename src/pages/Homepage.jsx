@@ -1,21 +1,23 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+
+import { fetchProducts, fetchProductItem } from "../features/productSlice";
 
 const Homepage = () => {
-    const { personal, personal_loading } = useSelector((state) => state.users);
+    const { products, productItem }  = useSelector((state) => state.products);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        console.log("Hello");
+
+        if (products.highlight.length == 0)
+            dispatch(fetchProducts());
+    }, [dispatch, products.highlight])
 
     return (
         <section className="mx-9">
             <h1>Homepage</h1>
-            {personal_loading ? (
-                <p>Loading...</p>
-            ) : (
-                <section>
-                    <p>username: {personal.username}</p>
-                    <p>email: {personal.email}</p>
-                    <p>gender: {personal.gender}</p>
-                    <p>phone: {personal.phone}</p>
-                </section>
-            )}
+            
         </section>
     )
 }
