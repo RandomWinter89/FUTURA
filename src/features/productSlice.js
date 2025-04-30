@@ -52,10 +52,7 @@ export const fetch_ProductVariation = createAsyncThunk(
 const productsSlice = createSlice({
     name: "productsSlice",
     initialState: {
-        products: {
-            highlight: [],
-            endless: [],
-        },
+        products: [],
 
         productItem: [],
         ItemVariation: [],
@@ -70,22 +67,22 @@ const productsSlice = createSlice({
         // Fetch all users
         builder
             .addCase(fetchProducts.fulfilled, (state, action) => {
-                console.log(action.payload);
-                state.products.endless = [...action.payload, ...state.products.endless];
+                state.products = action.payload;
+                console.log("state.products: ", state.products);
                 state.products_loading = false;
             })
             .addCase(fetchProducts.pending, (state) => {
                 state.products_loading = true;
             });
 
-        builder
-            .addCase(fetchProductsByCategory.fulfilled, (state, action) => {
-                state.products.highlight = [...action.payload, ...state.products.highlight];
-                state.productItem_loading = false;
-            })
-            .addCase(fetchProductsByCategory.pending, (state) => {
-                state.productItem_loading = true;
-            });
+        // builder
+        //     .addCase(fetchProductsByCategory.fulfilled, (state, action) => {
+        //         state.products.highlight = [...action.payload, ...state.products.highlight];
+        //         state.productItem_loading = false;
+        //     })
+        //     .addCase(fetchProductsByCategory.pending, (state) => {
+        //         state.productItem_loading = true;
+        //     });
 
         builder
             .addCase(fetchCategory.fulfilled, (state, action) => {

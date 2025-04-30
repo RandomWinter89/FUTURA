@@ -6,16 +6,16 @@ const VITE_FUTURA_API = import.meta.env.VITE_FUTURA_API;
 // Create WishlistID
 export const createWishlist = createAsyncThunk(
     'users/CreateWishlist',
-    async (id) => {
-        const response = await axios.post(`${VITE_FUTURA_API}/users/${id}/wishlist`);
+    async (uid) => {
+        const response = await axios.post(`${VITE_FUTURA_API}/users/${uid}/wishlist`);
         return response.data;
     }
 );
 
 export const fetchWishlistId = createAsyncThunk(
     'users/fetchWishlistId',
-    async (id) => {
-        const response = await axios.get(`${VITE_FUTURA_API}/users/${id}/wishlist`);
+    async (uid) => {
+        const response = await axios.get(`${VITE_FUTURA_API}/users/${uid}/wishlist`);
         return response.data;
     }
 );
@@ -42,10 +42,10 @@ export const addWishlist_item = createAsyncThunk(
 
 export const removeWishlist_item = createAsyncThunk(
     'users/removeWishlist_item',
-    async ({id, product_id, product_item_id}) => {
+    async ({uid, product_item_id, wishlist_id}) => {
 
-        const response = await axios.delete(`${VITE_FUTURA_API}/users/${id}/wishlist/${product_id}`, { 
-            data: product_item_id
+        const response = await axios.delete(`${VITE_FUTURA_API}/users/${uid}/wishlist/${product_item_id}`, { 
+            data: wishlist_id
         });
         return response.data;
     }
