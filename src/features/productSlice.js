@@ -9,7 +9,6 @@ export const fetchProducts = createAsyncThunk(
     'users/fetchProducts',
     async () => {
         const response = await axios.get(`${VITE_FUTURA_API}/products`);
-        console.log("Requesting");
         return response.data;
     }
 );
@@ -33,6 +32,7 @@ export const fetchCategory = createAsyncThunk(
 export const fetchProductItem = createAsyncThunk(
     'users/fetchProductItem',
     async (id) => {
+        console.log("ID: ", id);
         const response = await axios.get(`${VITE_FUTURA_API}/products/${id}`);
         return response.data;
     }
@@ -40,8 +40,10 @@ export const fetchProductItem = createAsyncThunk(
 
 export const fetch_ProductVariation = createAsyncThunk(
     'users/fetch_ProductVariation',
-    async (id) => {
-        const response = await axios.get(`${VITE_FUTURA_API}/products/${id}/variation`);
+    async () => {
+        console.log("Requesting");
+        const response = await axios.get(`${VITE_FUTURA_API}/products/variations`);
+        console.log("Data: ", response);
         return response.data;
     }
 );
@@ -55,7 +57,7 @@ const productsSlice = createSlice({
         products: [],
 
         productItem: [],
-        ItemVariation: [],
+        itemVariation: [],
 
         categories: [],
         products_loading: false,
@@ -68,7 +70,6 @@ const productsSlice = createSlice({
         builder
             .addCase(fetchProducts.fulfilled, (state, action) => {
                 state.products = action.payload;
-                console.log("state.products: ", state.products);
                 state.products_loading = false;
             })
             .addCase(fetchProducts.pending, (state) => {
@@ -100,7 +101,8 @@ const productsSlice = createSlice({
 
         builder
             .addCase(fetch_ProductVariation.fulfilled, (state, action) => {
-                state.ItemVariation = action.payload;
+                console.log("Fetch Product Variation: ", action.payload);
+                state.itemVariation = action.payload;
                 state.productItem_loading = false;
             })
             .addCase(fetch_ProductVariation.pending, (state) => {

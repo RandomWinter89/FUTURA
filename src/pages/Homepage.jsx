@@ -4,10 +4,12 @@ import { useEffect, useState } from "react";
 import { fetchProducts, fetchProductItem, fetchCategory } from "../features/productSlice";
 
 import { fetchWishlistId, addWishlist_item, fetchWishlist_item} from "../features/wishlistSlice";
+import { useNavigate } from "react-router-dom";
 
 const Homepage = () => {
     const { products, productItem, categories } = useSelector((state) => state.products);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const { wishlist_id,  wishlists } = useSelector((state) => state.wishlists);
 
@@ -69,6 +71,8 @@ const Homepage = () => {
         dispatch(addWishlist_item({uid, wishlist_id, product_id}));
     }
 
+    const onNavigate_ProductPage = (id) => {navigate(`/Product/${id}`)};
+
     return (
         <section className="mx-9 flex flex-col gap-4">
             <h1>Homepage</h1>
@@ -97,9 +101,20 @@ const Homepage = () => {
                 {products
                     .filter((data) => data.category_id == 8)
                     .map((data) => (
-                        <div className="size-52 p-6 bg-slate-200 border-2 border-black">
+                        <div className="size-52 p-6 bg-slate-200 border-2 border-black flex flex-col gap-2">
                             <p className="uppercase">{data.name}</p>
-                            <button onClick={() => onAdd_Item(data.id)}>Add Wishlist</button>
+                            <button 
+                                onClick={() => onNavigate_ProductPage(data.id)}
+                                className="py-1 px-4 border-2 border-black"
+                            >
+                                Visit
+                            </button>
+                            <button 
+                                onClick={() => onAdd_Item(data.id)}
+                                className="py-1 px-4 border-2 border-black"
+                            >
+                                Add Wishlist
+                            </button>
                         </div>
                     ))
                 }

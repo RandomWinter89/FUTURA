@@ -16,14 +16,17 @@ import RegisterForm from "./pages/Authentication/RegisterForm";
 
 import PromotionPage from "./pages/Register/Promotion";
 
-import { getAuth } from "firebase/auth";
 
+// Import database
+
+import { getAuth } from "firebase/auth";
 import { useSelector } from "react-redux";
 import { AuthContext } from "./Context/AuthProvider";
 import { useEffect, useContext } from "react";
 
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./store";
+import ProductPage from "./pages/NonRegister/Products";
 
 const Navbar = () => {
   const { currentUser } = useContext(AuthContext) || null;
@@ -79,6 +82,8 @@ function App() {
               <Route path="/Homepage" element={<Homepage />} />
               <Route path="/Promotion" element={<PromotionPage />} />
               <Route path="/Profile" element={<Profile />} />
+
+              <Route path="/Product/:id" element={<ProductPage />} />
 
               {/* Homepage */}
             </Routes>
