@@ -14,6 +14,8 @@ import SignupPage from "./pages/Authentication/Signup";
 import LoginPage from "./pages/Authentication/Login";
 import RegisterForm from "./pages/Authentication/RegisterForm";
 
+import PromotionPage from "./pages/Register/Promotion";
+
 import { getAuth } from "firebase/auth";
 
 import { useSelector } from "react-redux";
@@ -46,6 +48,7 @@ const Navbar = () => {
         <Link to="/Login">Login</Link>
         <Link to="/Signup">Signup</Link>
         <Link to="/Homepage">Homepage</Link>
+        <Link to="/Promotion">Promotion</Link>
         {currentUser && <Link to="/Profile">Profile</Link>}
 
         {currentUser && <button onClick={handleLogout}>Exit</button>}
@@ -74,6 +77,7 @@ function App() {
               <Route path="/Signup2" element={<RegisterForm />} />
 
               <Route path="/Homepage" element={<Homepage />} />
+              <Route path="/Promotion" element={<PromotionPage />} />
               <Route path="/Profile" element={<Profile />} />
 
               {/* Homepage */}

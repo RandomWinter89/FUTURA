@@ -8,6 +8,7 @@ const VITE_FUTURA_API = import.meta.env.VITE_FUTURA_API;
 export const fetchPromotion_Category = createAsyncThunk(
     'promotion/fetchPromotion_Category',
     async () => {
+        console.log("Checking: here");
         const response = await axios.get(`${VITE_FUTURA_API}/promotion/category`);
         return response.data;
     }
@@ -36,6 +37,7 @@ const promotionsSlice = createSlice({
             .addCase(fetchPromotion_Category.fulfilled, (state, action) => {
                 state.promotionCategory = action.payload;
                 state.promotionCategory_loading = false;
+                console.log("Promotion Category: ", state.promotionCategory)
             })
             .addCase(fetchPromotion_Category.pending, (state) => {
                 state.promotionCategory_loading = true;
@@ -45,6 +47,7 @@ const promotionsSlice = createSlice({
             .addCase(fetchPromotion.fulfilled, (state, action) => {
                 state.promotion = action.payload;
                 state.promotion_loading = false;
+                console.log("Promotion: ", state.promotion)
             })
             .addCase(fetchPromotion.pending, (state) => {
                 state.promotion_loading = true;

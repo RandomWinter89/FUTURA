@@ -30,12 +30,16 @@ export const fetchWishlist_item = createAsyncThunk(
 
 export const addWishlist_item = createAsyncThunk(
     'users/addWishlist_item',
-    async ({wishlist_id, product_item_id}) => {
+    async ({uid, wishlist_id, product_id}) => {
+        // const body = {
+        //     product_id: product_id,
+        // }
         const body = {
-            product_item_id: product_item_id,
+            wishlist_id: wishlist_id,
         }
 
-        const response = await axios.post(`${VITE_FUTURA_API}/wishlist/${wishlist_id}/addProduct`, body);
+        // const response = await axios.post(`${VITE_FUTURA_API}/wishlist/${wishlist_id}/addProduct`, body);
+        const response = await axios.post(`${VITE_FUTURA_API}/users/${uid}/wishlist/${product_id}`, body)
         return response.data;
     }
 )
@@ -83,7 +87,7 @@ const wishlistsSlice = createSlice({
         
         builder
             .addCase(addWishlist_item.fulfilled, (state, action) => {
-                state.wishlists = [...state.wishlists, ...action.payload];
+                state.wishlists = [...state.wishlists, action.payload];
                 state.loading = false;
             })
             .addCase(addWishlist_item.pending, (state) => {
