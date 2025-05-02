@@ -23,7 +23,6 @@ export const fetchWishlistId = createAsyncThunk(
 export const fetchWishlist_item = createAsyncThunk(
     'users/fetchWishlist_item',
     async (wishlist_id) => {
-        console.log("Request fetchWishlist_item id");
         const response = await axios.get(`${VITE_FUTURA_API}/wishlist/${wishlist_id}/items`);
         return response.data;
     }
@@ -32,14 +31,10 @@ export const fetchWishlist_item = createAsyncThunk(
 export const addWishlist_item = createAsyncThunk(
     'users/addWishlist_item',
     async ({uid, wishlist_id, product_id}) => {
-        // const body = {
-        //     product_id: product_id,
-        // }
         const body = {
             wishlist_id: wishlist_id,
         }
 
-        // const response = await axios.post(`${VITE_FUTURA_API}/wishlist/${wishlist_id}/addProduct`, body);
         const response = await axios.post(`${VITE_FUTURA_API}/users/${uid}/wishlist/${product_id}`, body)
         return response.data;
     }
@@ -113,5 +108,7 @@ const wishlistsSlice = createSlice({
 
     },
 });
+
+export const { resetWishlist }  = wishlistsSlice.actions;
 
 export default wishlistsSlice.reducer;

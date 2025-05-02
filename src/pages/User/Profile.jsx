@@ -45,7 +45,6 @@ const Wallet = () => {
             {(!payment_loading && payment.length != 0) && (
                 payment.map((data, index) => (
                     <section className="mb-4" key={data.uid}>
-                        {console.log(payment)}
                         <div className="bg-black text-white">
                             <h3>Index: {index + 1}</h3>
                             <p>payment_type: {data.payment_type}</p>
