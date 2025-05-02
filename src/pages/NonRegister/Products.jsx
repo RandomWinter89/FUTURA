@@ -51,6 +51,11 @@ const ProductPage  = () => {
                     </div>
                 )}  
             </section>
+
+            <section>
+                <button>Add Cart</button>
+                <button>Add Wishlist</button>
+            </section>
         </>
     )
 }

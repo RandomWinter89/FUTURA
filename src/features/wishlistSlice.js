@@ -23,6 +23,7 @@ export const fetchWishlistId = createAsyncThunk(
 export const fetchWishlist_item = createAsyncThunk(
     'users/fetchWishlist_item',
     async (wishlist_id) => {
+        console.log("Request fetchWishlist_item id");
         const response = await axios.get(`${VITE_FUTURA_API}/wishlist/${wishlist_id}/items`);
         return response.data;
     }
@@ -46,10 +47,10 @@ export const addWishlist_item = createAsyncThunk(
 
 export const removeWishlist_item = createAsyncThunk(
     'users/removeWishlist_item',
-    async ({uid, product_item_id, wishlist_id}) => {
+    async ({uid, product_id, wishlist_id}) => {
 
-        const response = await axios.delete(`${VITE_FUTURA_API}/users/${uid}/wishlist/${product_item_id}`, { 
-            data: wishlist_id
+        const response = await axios.delete(`${VITE_FUTURA_API}/users/${uid}/wishlist/${product_id}`, { 
+            data: {wishlist_id}
         });
         return response.data;
     }
@@ -63,7 +64,13 @@ const wishlistsSlice = createSlice({
         wishlists: [],
         loading: false,
     },
-    reducers: {},
+    reducers: {
+        resetWishlist: (state) => {
+            state.wishlist_id = null;
+            state.wishlists = [];
+            state.loading = false;
+        },
+    },
     extraReducers: (builder) => {
         // Fetch all users
         builder
@@ -79,6 +86,7 @@ const wishlistsSlice = createSlice({
         builder
             .addCase(fetchWishlist_item.fulfilled, (state, action) => {
                 state.wishlists = action.payload;
+                console.log("Finish Extract");
                 state.loading = false;
             })
             .addCase(fetchWishlist_item.pending, (state) => {
@@ -96,7 +104,7 @@ const wishlistsSlice = createSlice({
 
         builder
             .addCase(removeWishlist_item.fulfilled, (state, action) => {
-                state.wishlists = state.wishlists.filter((item) => item.id !== action.payload.product_item_id);
+                state.wishlists = state.wishlists.filter((item) => item.id !== action.payload.id);
                 state.loading = false;
             })
             .addCase(removeWishlist_item.pending, (state) => {

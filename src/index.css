@@ -35,6 +35,10 @@
 
 /* Global Styles */
 @layer base {
+    body {
+        scrollbar-gutter: stable both-edges;
+        overflow-y: scroll;
+    }
     html{
         scroll-behavior: smooth;
     }
@@ -59,12 +63,12 @@
 
         /* @apply my-2; */
     }
-    a {
+    /* a {
         @apply text-pink-100 no-underline;
     }
     a:hover {
         @apply text-pink-300;
-    }
+    } */
     img {
         @apply w-full;
     }

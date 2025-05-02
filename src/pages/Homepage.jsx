@@ -2,16 +2,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 
 import { fetchProducts, fetchProductItem, fetchCategory } from "../features/productSlice";
-
-import { fetchWishlistId, addWishlist_item, fetchWishlist_item} from "../features/wishlistSlice";
 import { useNavigate } from "react-router-dom";
 
 const Homepage = () => {
     const { products, productItem, categories } = useSelector((state) => state.products);
+    const [display, setDisplay] = useState(0);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
-    const { wishlist_id,  wishlists } = useSelector((state) => state.wishlists);
+    
 
     useEffect(() => {
         if (products.length == 0)
@@ -26,21 +24,8 @@ const Homepage = () => {
             dispatch(fetchProductItem(products[0].id));
     }, [dispatch, products])
 
-
-    //
-    useEffect(() => {
-        if (wishlist_id == null){
-            const uid = "meBqDqbhXYVNgygH8w8oPHGmrWk1";
-            dispatch(fetchWishlistId(uid));
-        }
-    }, [dispatch])
-
-    useEffect(() => {
-        if (wishlist_id != null && wishlists.length === 0)
-            dispatch(fetchWishlist_item(wishlist_id));
-    }, [wishlist_id])
-
-    const [display, setDisplay] = useState(0);
+    //Display Category
+    
     const [show, setShow] = useState("h-auto");
 
     //Category Selection
@@ -59,16 +44,6 @@ const Homepage = () => {
     //Show Category
     const onToggle = () => {
         setShow(show == "h-0" ? "h-auto" : "h-0")
-    }
-
-    const onAdd_Item = (product_id) => {
-        const uid = "meBqDqbhXYVNgygH8w8oPHGmrWk1";
-        console.log("wishlist_id: ", wishlists);
-
-        if (wishlists.length != 0)
-            console.log("Condition: ", wishlists.includes(product_id));
-
-        dispatch(addWishlist_item({uid, wishlist_id, product_id}));
     }
 
     const onNavigate_ProductPage = (id) => {navigate(`/Product/${id}`)};
@@ -120,16 +95,6 @@ const Homepage = () => {
                 }
                 </div>
             </div>
-
-            <div>
-                <h2>Show Wishlist</h2>
-                {wishlists.map((data, index) => 
-                    <div key={index}>
-                        <p>Wishlist: {data.id}</p>
-                    </div>
-                )}
-            </div>
-            
         </section>
     )
 }
