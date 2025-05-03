@@ -7,22 +7,22 @@ const VITE_FUTURA_API = import.meta.env.VITE_FUTURA_API;
 
 export const createReview = createAsyncThunk(
     'users/createReview',
-    async ({id, product_id, comment, rating_value}) => {
+    async ({uid, product_id, comment, rating_value}) => {
         const body = {
             product_id: product_id,
             comment: comment,
             rating_value: rating_value
         }
 
-        const response = await axios.post(`${VITE_FUTURA_API}/users/${id}/review`, body);
+        const response = await axios.post(`${VITE_FUTURA_API}/users/${uid}/review`, body);
         return response.data;
     }
 );
 
 export const fetch_ownReviews = createAsyncThunk(
     'users/fetch_ownReviews',
-    async (id) => {
-        const response = await axios.get(`${VITE_FUTURA_API}/users/${id}/review`);
+    async (uid) => {
+        const response = await axios.get(`${VITE_FUTURA_API}/users/${uid}/review`);
         return response.data;
     }
 );
@@ -71,8 +71,8 @@ const reviewsSlice = createSlice({
         // Fetch all users
         builder
             .addCase(createReview.fulfilled, (state, action) => {
-                state.ownReviews = [...state.ownReviews, ...action.payload.data];
-                state.productReviews = [...state.productReviews, ...action.payload.data];
+                state.ownReviews = [...state.ownReviews, action.payload.data];
+                state.productReviews = [...state.productReviews, action.payload.data];
             })
         
         builder

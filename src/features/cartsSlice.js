@@ -26,9 +26,10 @@ export const fetchCartId = createAsyncThunk(
 // Add Cart Item
 export const addCart_item = createAsyncThunk(
     'users/addCart_item',
-    async ({cart_id, product_item_id, quantity}) => {
+    async ({cart_id, product_id, product_variation_id, quantity}) => {
         const body = {
-            product_item_id: product_item_id,
+            product_id: product_id,
+            product_variation_id: product_variation_id,
             quantity: quantity
         }
 
@@ -98,7 +99,8 @@ const cartsSlice = createSlice({
         // Get CartID
         builder
             .addCase(fetchCartId.fulfilled, (state, action) => {
-                state.cart_id = action.payload.data;
+                console.log("Fetch Cart: ", action.payload.data);
+                state.cart_id = action.payload.data.id;
             })
 
         // ===========================
