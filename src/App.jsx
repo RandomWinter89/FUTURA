@@ -1,5 +1,4 @@
-
-import { BrowserRouter, Outlet, Link, Route, Routes, useNavigate } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { AuthContext } from "./Context/AuthProvider";
 import { Provider } from "react-redux";
 // import store from "./store";
@@ -17,6 +16,7 @@ import ProductPage from "./pages/NonRegister/Products";
 import CategoryPage from "./pages/NonRegister/Category";
 
 import WishlistPage from "./pages/Register/Wishlist";
+import CartPage from "./pages/NonRegister/Cart";
 
 // Import Component ================>
 import Navbar from "./components/Navbar/Navbar";
@@ -47,8 +47,8 @@ function App() {
               <Route path="/Signup" element={<SignupPage/>} />
               {currentUser && <Route path="/RegisterForm" element={<RegisterForm />} />}
               {currentUser && <Route path="/Wishlist" element={<WishlistPage/>} />}
-              {/* <Route path="/Cart" element={} />
-              {currentUser && <Route path="/Checkout" element={} />/>}
+              <Route path="/Cart" element={<CartPage />} />
+              {/* {currentUser && <Route path="/Checkout" element={} />/>}
               {currentUser && <Route path="/Orders" element={} />/>} */}
 
               <Route path="/Homepage" element={<Homepage />} />

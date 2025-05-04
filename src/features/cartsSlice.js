@@ -50,9 +50,10 @@ export const fetchCart_item = createAsyncThunk(
 // Update Cart Quantity
 export const updateItem_quantity = createAsyncThunk(
     'users/updateItem_quantity',
-    async ({cart_id, product_item_id, quantity}) => {
+    async ({cart_id, product_id, product_variation_id, quantity}) => {
         const body = {
-            product_item_id: product_item_id,
+            product_id: product_id,
+            product_variation_id: product_variation_id,
             quantity: quantity
         }
 
@@ -64,9 +65,9 @@ export const updateItem_quantity = createAsyncThunk(
 // Remove Cart Item
 export const removeCartItem = createAsyncThunk(
     'users/removeCartItem',
-    async ({cart_id ,product_item_ids}) => {
-        const response = await axios.delete(`${VITE_FUTURA_API}/cart/${cart_id}/removeProduct`, {
-            data: { product_item_ids }
+    async ({cart_id, product_id, product_variation_id}) => {
+        const response = await axios.delete(`${VITE_FUTURA_API}/cart/${cart_id}/removeProduct`, { 
+            data: {product_id, product_variation_id}
         });
         return response.data;
     }
@@ -108,6 +109,7 @@ const cartsSlice = createSlice({
         // Add Cart Item
         builder
             .addCase(addCart_item.fulfilled, (state, action) => {
+                
                 state.carts = [...state.carts, action.payload.data];
                 state.loading = false;
             })
@@ -118,6 +120,7 @@ const cartsSlice = createSlice({
         // Fetch Cart Item
         builder
             .addCase(fetchCart_item.fulfilled, (state, action) => {
+                console.log("Hello: ", action.payload.data);
                 state.carts = action.payload.data;
                 state.loading = false;
             })
@@ -142,15 +145,11 @@ const cartsSlice = createSlice({
                 state.loading = true;
             });
 
-        // Delete Cart Items
+        // Delete Cart Items - Require fixing
         builder
             .addCase(removeCartItem.fulfilled, (state, action) => {
                 const data = action.payload.data;
-                state.carts = state.carts.filter((item) => {
-                    return !data.product_item_ids.includes(item.product_item_id);
-                });
-
-                state.loading = false;
+                state.carts = state.carts.filter((item) => item.id !== data.id);
             })
             .addCase(removeCartItem.pending, (state) => {
                 state.loading = true;

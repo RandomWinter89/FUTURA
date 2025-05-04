@@ -84,7 +84,9 @@ const ProductPage  = () => {
         }));
     }
 
-    const onAddWishlist = () => {
+    const onAddWishlist = (e) => {
+        e.preventDefault();
+
         if (wishlist_id != null) {
             dispatch(addWishlist_item({
                 uid: currentUser.uid, 
@@ -99,7 +101,7 @@ const ProductPage  = () => {
     const [rating, setRating] = useState(0.0);
     const onAddComment = (e) => {
         e.preventDefault();
-        console.log("Review:", review);
+
         dispatch(createReview({
             uid: currentUser.uid, 
             product_id: parseInt(id), 
