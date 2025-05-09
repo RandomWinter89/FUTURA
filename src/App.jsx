@@ -1,76 +1,79 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { AuthContext } from "./Context/AuthProvider";
 import { Provider } from "react-redux";
-// import store from "./store";
+import { useContext } from "react";
 
-//Page ================>
+//Page Import ================>
 import Homepage from "./pages/Homepage";
-import Profile from "./pages/User/Profile";
+import { 
+  CartPage, CategoryPage, OrderPage, 
+  OrderReceiptPage, ProductPage, 
+  ProfilePage, PromotionPage, WishlistPage
+} from "./pages/shop";
 
-import LoginPage from "./pages/Authentication/Login";
-import SignupPage from "./pages/Authentication/Signup";
-import RegisterForm from "./pages/Authentication/RegisterForm";
+import {
+  CheckoutPage, 
+  SuccessPage, FailedPage 
+} from "./pages/payment";
 
-import PromotionPage from "./pages/Register/Promotion";
-import ProductPage from "./pages/NonRegister/Products";
-import CategoryPage from "./pages/NonRegister/Category";
-
-import WishlistPage from "./pages/Register/Wishlist";
-import CartPage from "./pages/NonRegister/Cart";
-
-
-import CheckoutPage from "./pages/Register/Checkout";
-import OrdersPage from "./pages/Register/Orders";
-
-import { SuccessPage, CancelPage } from "./pages/PaymentResult";
+import { Admin_DashboardPage, Admin_OrderPage, Admin_ProductPage } from "./pages/admin";
+import { LoginPage, SignupPage } from "./pages/auth";
 
 // Import Component ================>
-import Navbar from "./components/Navbar/Navbar";
-
-// Import database ================>
-import { useContext } from "react";
+import { Header } from "./components/navigation";
 
 //Rehydration ================>
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./store";
-import OrderReceipt from "./pages/Register/OrderReceipt";
-
-
 
 function App() {
   const { currentUser } = useContext(AuthContext) || null;
 
   return (
-    <>
-      {/* Redux Storage */}
+    < >
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          {/* Router */}
+
           <BrowserRouter>
-            <Navbar />
-
+            <Header />
             <Routes>
-              <Route path="*" element={<Homepage />} />
-              <Route path="/Login" element={<LoginPage/>} />
-              <Route path="/Signup" element={<SignupPage/>} />
-              {currentUser && <Route path="/RegisterForm" element={<RegisterForm />} />}
-              {currentUser && <Route path="/Wishlist" element={<WishlistPage/>} />}
-              <Route path="/Cart" element={<CartPage />} />
-              {currentUser && <Route path="/Checkout" element={<CheckoutPage/>} />}
-              {currentUser && <Route path="/Orders" element={<OrdersPage />} />}
-              {currentUser && <Route path="/OrderReceipt/:id" element={<OrderReceipt />} />}
-
-              {/* Experiment */}
-              <Route path="/success/:paymentID/:addressID" element={<SuccessPage />} />
-              <Route path="/cancel" element={<CancelPage />} />
-
-              <Route path="/Homepage" element={<Homepage />} />
-              <Route path="/Promotion" element={<PromotionPage />} />
-              <Route path="/Category" element={<CategoryPage /> } />
-              {currentUser && <Route path="/Profile" element={<Profile />} />}
+              <Route path="*"            element={<Homepage />} />
+              <Route path="/Homepage"    element={<Homepage />} />
+              <Route path="/Category"    element={<CategoryPage />} />
+              <Route path="/Promotion"   element={<PromotionPage />} />
               <Route path="/Product/:id" element={<ProductPage />} />
+
+              <Route path="/Cart"        element={<CartPage />} />
+              {!currentUser && (
+                < >
+                  <Route path="/Login"   element={<LoginPage />} />
+                  <Route path="/Signup"  element={<SignupPage />} />
+                </>
+              )}
+              
+              {currentUser && (
+                < >
+                  <Route path="/Wishlist"   element={<WishlistPage />} />
+                  <Route path="/Profile"    element={<ProfilePage />} />
+                  <Route path="/Order"      element={<OrderPage />} />
+                  <Route path="/Order/:id"  element={<OrderReceiptPage />} />
+
+                  <Route path="/Checkout"   element={<CheckoutPage />} />
+                  <Route path="/Checkout/Success/:addressID"  element={<SuccessPage />} />
+                  <Route path="/Checkout/Failed"  element={<FailedPage />} />
+                </>
+              )}
+
+              {currentUser && (
+                < >
+                  <Route path='/Admin'            element={<Admin_DashboardPage /> } />
+                  <Route path='/Admin/Products'   element={<Admin_ProductPage />} />
+                  <Route path='/Admin/Orders'     element={<Admin_OrderPage />} />
+                </>
+              )}
             </Routes>
           </BrowserRouter>
+
         </PersistGate>
       </Provider>
     </>

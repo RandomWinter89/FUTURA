@@ -2,25 +2,11 @@ import { Outlet, Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../Context/AuthProvider";
 import { getAuth } from "firebase/auth";
 
+import { NavLink } from "../common";
+
 import { useEffect, useContext } from "react";
 
-const NavLink = ({path, name}) => {
-
-    return (
-        <Link 
-            to={`${path}`}
-            className="
-                text-2xl 
-                max-lg:text-xl max-sm:text-sm 
-                hover:bg-black hover:w-full hover:p-2 hover:rounded-md hover:text-white transition-all
-            "
-        >
-            {name}
-        </Link>
-    )
-}
-
-const Navbar = () => {
+const Header = () => {
     const { currentUser } = useContext(AuthContext) || null;
     const navigate = useNavigate();
     const auth = getAuth();
@@ -82,4 +68,4 @@ const Navbar = () => {
     )
 }
 
-export default Navbar;
+export default Header;

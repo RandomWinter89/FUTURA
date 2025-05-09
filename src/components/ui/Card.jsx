@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-const Card = ({product, imageUrl, onAddWishlist}) => {
+const Card = ({product, imageUrl = "NONE", onAddWishlist}) => {
     const navigate = useNavigate();
 
     const onNavigateProduct = () => navigate(`/Product/${product.id}`);
@@ -19,8 +19,11 @@ const Card = ({product, imageUrl, onAddWishlist}) => {
                 cursor-pointer hover:scale-105 hover:transition-transform
             "
         >
-            <img  className="bg-orange-300 w-full aspect-[3/4]"/>
-            {/* src={imageUrl} */}
+            {imageUrl != "NONE"
+                ? <img src={`${imageUrl}`} className="object-cover w-full aspect-[3/4]"/>
+                : <span className="bg-orange-300 w-full aspect-[3/4]" />
+            }
+
 
             <div className="flex-1 flex flex-col gap-2 p-2 bg-white">
                 <div className="flex justify-between items-center">

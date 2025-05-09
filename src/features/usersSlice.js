@@ -23,7 +23,6 @@ export const fetchProfile = createAsyncThunk(
     }
 );
 
-
 // Create user database
 export const createUser = createAsyncThunk(
     'users/createUser',

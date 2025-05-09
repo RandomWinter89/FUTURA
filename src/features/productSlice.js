@@ -20,7 +20,6 @@ export const fetchImageProduct = createAsyncThunk(
     'products/fetchImageProduct',
     async () => {
         try {
-            console.log('Execute fetch image');
             const productsRef = collection(db, "products");
             const querySnapshot = await getDocs(productsRef);
 
@@ -35,6 +34,43 @@ export const fetchImageProduct = createAsyncThunk(
         }
     }
 )
+
+// Create Product
+export const uploadProduct = createAsyncThunk(
+    'admin/uploadProduct',
+    async () => {
+        const response = await axios.post(`${VITE_FUTURA_API}/products`);
+        return response.data;
+    }
+)
+
+export const uploadProductImage = createAsyncThunk(
+    'admin/uploadProductImage',
+    async ({sku, file}) => {
+        try {
+            let imageUrl = "";
+
+            if (file != null) {
+                const imageRef = ref(storage, `products/${file.name}`);
+                const response = await uploadBytes(imageRef, file);
+                imageUrl = await getDownloadURL(response.ref);
+            }
+
+            const prodRef = doc(db, `products/${sku}`);
+            await setDoc(prodRef, {imageUrl})
+
+            const product = {
+                id: sku,
+                imageUrl
+            }
+
+            return product;
+        } catch (error) {
+            console.error("Upload Image in product has received an error: ", error);
+            throw error;
+        }
+    }
+);
 
 // Fetch Category =================================== >
 
@@ -51,8 +87,7 @@ export const fetchCategory = createAsyncThunk(
 export const fetchProductItem = createAsyncThunk(
     'users/fetchProductItem',
     async (id) => {
-        console.log("ID: ", id);
-        const response = await axios.get(`${VITE_FUTURA_API}/products/${id}`);
+        const response = await axios.get(`${VITE_FUTURA_API}/products/variation/${id}`);
         return response.data;
     }
 );
@@ -60,7 +95,6 @@ export const fetchProductItem = createAsyncThunk(
 export const fetch_ProductVariation = createAsyncThunk(
     'users/fetch_ProductVariation',
     async () => {
-        console.log("Requesting");
         const response = await axios.get(`${VITE_FUTURA_API}/products/variations`);
         return response.data;
     }
@@ -94,7 +128,13 @@ const productsSlice = createSlice({
 
         builder
             .addCase(fetchImageProduct.fulfilled, (state, action) => {
-                console.log("Return Image: ", action.payload);
+                state.products = state.products.map(item => {
+                    const found = action.payload.find(d => d.id == item.sku )
+                    return {
+                        ...item,
+                        imageUrl: found ? found.thumbnail_url : "NONE"
+                    };
+                });
             })
 
         builder
@@ -102,15 +142,14 @@ const productsSlice = createSlice({
                 state.categories = action.payload;
             });
         
-        
-
         builder
             .addCase(fetchProductItem.fulfilled, (state, action) => {
+                console.log("Item: ", action.payload);
                 state.productItem = action.payload;
-                state.products_loading = false;
+                state.productItem_loading = false;
             })
             .addCase(fetchProductItem.pending, (state) => {
-                state.products_loading = true;
+                state.productItem_loading = true;
             });
 
         builder

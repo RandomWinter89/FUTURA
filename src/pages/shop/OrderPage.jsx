@@ -27,7 +27,7 @@ const CalendarEmbed = () => {
 }
 
 
-const OrdersPage = () => {
+const OrderPage = () => {
     const { order, order_loading } = useSelector((state) => state.orders);
     const { currentUser } = useContext(AuthContext) || null;
     const dispatch = useDispatch();
@@ -78,4 +78,4 @@ const OrdersPage = () => {
     )
 }
 
-export default OrdersPage;
+export default OrderPage;

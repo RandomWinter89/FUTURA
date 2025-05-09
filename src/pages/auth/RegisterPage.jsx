@@ -6,7 +6,7 @@ import { useState, useContext, useEffect} from "react";
 
 import { useNavigate } from "react-router-dom";
 
-const RegisterForm = () => {
+const RegisterPage = () => {
     const [username, setUsername] = useState("");
     const [phone, setPhone] = useState("");
     const [gender, setGender] = useState("Male");
@@ -102,4 +102,4 @@ const RegisterForm = () => {
     )
 }
 
-export default RegisterForm;
+export default RegisterPage;

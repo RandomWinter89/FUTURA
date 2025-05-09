@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
-import Card from "../../components/Card";
+import { Card } from "../../components/ui";
 
 
 const CategoryPage = () => {

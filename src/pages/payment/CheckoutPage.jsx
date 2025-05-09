@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { fetchCart_item, fetchCartId } from "../../features/cartsSlice";
 import { AuthContext } from "../../Context/AuthProvider";
 import { fetchAddress } from "../../features/addressSlice";
-import { fetchPayment } from "../../features/paymentSlice";
 
 const VITE_FUTURA_API = import.meta.env.VITE_FUTURA_API;
 
@@ -41,7 +40,7 @@ const CartItem = ({
     )
 }
 
-const SummaryPayment = ({total, address, setAddressID, payment, setPaymentID}) => {
+const SummaryPayment = ({total, address, setAddressID}) => {
     return (
         < >
             <div className="py-4 px-2 flex flex-col border border-black">
@@ -58,13 +57,6 @@ const SummaryPayment = ({total, address, setAddressID, payment, setPaymentID}) =
                         <option key={index} value={data.id}>{data.address_line1} / {data.city} / {data.region} / {data.postal_code}</option>
                     )}
                 </select>
-
-                <select onChange={(e) => setPaymentID({value: e.target.value})} className="border border-black p-2">
-                    <option value={null}>No Payment</option>
-                    {payment.map((data, index) => 
-                        <option key={index} value={data.id}>{data.payment_type / data.account_number}</option>
-                    )}
-                </select>
             </div>
         </>
     )
@@ -72,11 +64,9 @@ const SummaryPayment = ({total, address, setAddressID, payment, setPaymentID}) =
 
 const CheckoutPage = () => {
     const { cart_id, carts } = useSelector((state) => state.carts);
-    const { payment } = useSelector((state) => state.payments);
     const { address } = useSelector((state) => state.address);
     const { currentUser } = useContext(AuthContext) || null;
 
-    const [paymentID, setPaymentID] = useState(0);
     const [addressID, setAddressID] = useState(0);
     const [items, setItems] = useState([]);
     const [total, setTotal] = useState(0);
@@ -92,9 +82,6 @@ const CheckoutPage = () => {
 
         if (address.length == 0)
             dispatch(fetchAddress(currentUser.uid));
-
-        if (payment.length == 0)
-            dispatch(fetchPayment(currentUser.uid));
     }, [dispatch])
 
     useEffect(() => {
@@ -120,11 +107,11 @@ const CheckoutPage = () => {
     }, [carts])
 
     const onSubmitPayment = async () => {
-        if (items.length == 0 || paymentID == 0 || addressID == 0)
+        if (items.length == 0 || addressID == 0)
             return;
         
         try {
-          const response = await axios.post(`${VITE_FUTURA_API}/api/create-payment-intent/${paymentID}/${addressID}`, {items});
+          const response = await axios.post(`${VITE_FUTURA_API}/api/create-payment-intent//${addressID}`, {items});
           window.location.href = response.data.url;
         } catch (err) {
           console.error("Error creating checkout session:", err);
@@ -157,8 +144,6 @@ const CheckoutPage = () => {
                         total = {total}
                         address = {address}
                         setAddressID = {({value}) => setAddressID(value)}
-                        payment = {payment}
-                        setPaymentID = {({value}) => setPaymentID(value)}
                     />
 
                     <button onClick={onSubmitPayment} className="border border-black py-2">

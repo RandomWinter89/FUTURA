@@ -6,8 +6,7 @@ import { fetchProducts, fetchImageProduct } from "../features/productSlice";
 
 import { fetchWishlistId, fetchWishlist_item, addWishlist_item } from "../features/wishlistSlice";
 
-import Card from "../components/Card";
-
+import { Card } from "../components/ui";
 
 const Homepage = () => {
     const { products, products_loading } = useSelector((state) => state.products);
@@ -44,6 +43,10 @@ const Homepage = () => {
             }));
         }
     }
+
+    useEffect(() => {
+        console.log("HOMEPAGE REPORT:: Loading State (", products_loading, ")");
+    }, []);
     
     return (
         <main className="flex flex-col gap-20 mb-10">
@@ -65,7 +68,7 @@ const Homepage = () => {
                             <Card 
                                 key={data.id} 
                                 product={data} 
-                                imageUrl={null} 
+                                imageUrl={data.imageUrl} 
                                 onAddWishlist={() => onWishlistProduct(data.id)}
                             />
                         ))

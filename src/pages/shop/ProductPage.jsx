@@ -10,7 +10,7 @@ import { fetchCartId, addCart_item } from "../../features/cartsSlice";
 import { AuthContext } from "../../Context/AuthProvider";
 import { fetchWishlistId, addWishlist_item } from "../../features/wishlistSlice";
 
-import Card from "../../components/Card";
+import { Card } from "../../components/ui";
 
 const ProductPage  = () => {
     const { products, productItem, itemVariation } = useSelector((state) => state.products);

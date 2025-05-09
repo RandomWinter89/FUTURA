@@ -3,6 +3,7 @@ import axios from 'axios';
 
 const VITE_FUTURA_API = import.meta.env.VITE_FUTURA_API;
 
+// User -> Create Order
 export const createOrder = createAsyncThunk(
     'users/createOrder',
     async ({uid, payment_method_id, shipping_address_id, shipping_method, order_total, order_status}) => {
@@ -19,6 +20,7 @@ export const createOrder = createAsyncThunk(
     }
 );
 
+// User -> Get Order
 export const fetchOrder = createAsyncThunk(
     'users/fetchOrder',
     async (uid) => {
@@ -27,6 +29,29 @@ export const fetchOrder = createAsyncThunk(
     }
 );
 
+// Admin -> Get Entire Order
+export const fetchAllOrder = createAsyncThunk(
+    'admin/fetchAllOrder',
+    async () => {
+        const response = await axios.get(`${VITE_FUTURA_API}/order`);
+        return response.data;
+    }
+)
+
+// Admin -> Update Order Status
+export const updateOrderStatus = createAsyncThunk(
+    'admin/updateOrderStatus',
+    async ({order_id, status}) => {
+        const body = {
+            status: status
+        }
+
+        const response = await axios.put(`${VITE_FUTURA_API}/order/${order_id}`, body);
+        return response.data;
+    }
+)
+
+// Order -> Create item inside
 export const create_OrderItem = createAsyncThunk(
     'users/create_OrderItem',
     async ({order_id, product_id, quantity, price, product_variation_id}) => {
@@ -42,6 +67,7 @@ export const create_OrderItem = createAsyncThunk(
     }
 );
 
+// Order -> Get item
 export const get_OrderItem = createAsyncThunk(
     'users/get_OrderItem',
     async (order_id) => {
@@ -82,6 +108,11 @@ const ordersSlice = createSlice({
             .addCase(create_OrderItem.pending, (state) => {
                 state.orderItem_loading = true;
             });
+
+        builder
+            .addCase(fetchAllOrder.fulfilled, (state, action) => {
+                state.order = action.payload.data;
+            })
 
         builder
             .addCase(get_OrderItem.fulfilled, (state, action) => {

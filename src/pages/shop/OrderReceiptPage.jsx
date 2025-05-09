@@ -29,7 +29,7 @@ const Item = () => {
     )
 }
 
-const OrderReceipt = () => {
+const OrderReceiptPage = () => {
     const { id } = useParams();
     
 
@@ -84,4 +84,4 @@ const OrderReceipt = () => {
     )
 }
 
-export default OrderReceipt;
+export default OrderReceiptPage;
