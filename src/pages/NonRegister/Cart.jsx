@@ -149,12 +149,16 @@ const CartPage = () => {
 
                 {/* Order Summary */}
                 <section className="flex flex-col gap-2">
-                    <div className="py-4 px-2 border border-black">
+                    <div className="py-4 px-2 flex flex-col border border-black">
                         <h2>Order Summary</h2>
                         <hr className="border-black mb-4"/>
+
                         <p>Subtotal: MYR {total}</p>
                         {selectedDiscount.trim().length != 0 && <p>Discount: {100 - (parseFloat(selectedDiscount) * 100)}%</p>}
                         <p>Order total: MYR {total * discount}</p>
+
+                        <hr className="border-black my-4"/>
+                        <button onClick={() => navigate("/Checkout")} className="border border-black py-4">Proceed Checkout</button>
                     </div>
 
                     <label>Promotion Discount</label>

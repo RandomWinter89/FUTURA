@@ -18,6 +18,12 @@ import CategoryPage from "./pages/NonRegister/Category";
 import WishlistPage from "./pages/Register/Wishlist";
 import CartPage from "./pages/NonRegister/Cart";
 
+
+import CheckoutPage from "./pages/Register/Checkout";
+import OrdersPage from "./pages/Register/Orders";
+
+import { SuccessPage, CancelPage } from "./pages/PaymentResult";
+
 // Import Component ================>
 import Navbar from "./components/Navbar/Navbar";
 
@@ -27,6 +33,8 @@ import { useContext } from "react";
 //Rehydration ================>
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./store";
+import OrderReceipt from "./pages/Register/OrderReceipt";
+
 
 
 function App() {
@@ -48,8 +56,13 @@ function App() {
               {currentUser && <Route path="/RegisterForm" element={<RegisterForm />} />}
               {currentUser && <Route path="/Wishlist" element={<WishlistPage/>} />}
               <Route path="/Cart" element={<CartPage />} />
-              {/* {currentUser && <Route path="/Checkout" element={} />/>}
-              {currentUser && <Route path="/Orders" element={} />/>} */}
+              {currentUser && <Route path="/Checkout" element={<CheckoutPage/>} />}
+              {currentUser && <Route path="/Orders" element={<OrdersPage />} />}
+              {currentUser && <Route path="/OrderReceipt/:id" element={<OrderReceipt />} />}
+
+              {/* Experiment */}
+              <Route path="/success/:paymentID/:addressID" element={<SuccessPage />} />
+              <Route path="/cancel" element={<CancelPage />} />
 
               <Route path="/Homepage" element={<Homepage />} />
               <Route path="/Promotion" element={<PromotionPage />} />

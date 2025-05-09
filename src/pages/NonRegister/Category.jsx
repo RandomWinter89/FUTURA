@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
+import Card from "../../components/Card";
+
 
 const CategoryPage = () => {
     const { products, categories } = useSelector((state) => state.products);
@@ -50,20 +52,18 @@ const CategoryPage = () => {
         );
     };
 
-    const onHandle_Favorite = ({e, id}) => {
-        e.stopPropagation();
-
+    const onWishlistProduct = ({id}) => {
         console.log(id);
 
         if (currentUser) {
-            onAdd_Item(id);
+            onAction_Wishlist(id);
         } else {
             navigate("/Login");
         }
     }
 
     //Add wishlist id
-    const onAdd_Item = (product_id) => {        
+    const onAction_Wishlist = (product_id) => {        
         const uid = currentUser.uid;
         if (wishlist_id === null)
             return;
@@ -75,71 +75,55 @@ const CategoryPage = () => {
             return dispatch(addWishlist_item({uid, wishlist_id, product_id}));
     }
 
-    const onHandle_DisplayCategory = (data) => {
-        const child = categories.find((cat) => cat.id === data.category_id);
-        const parent = categories.find((cat) => cat.id === child?.parent_category_id);
-
-        if (parent) {
-            return `${parent.category_name} / ${child.category_name}`;
-        } else if (child) {
-            return `${child.category_name}`;
-        } else {
-            return "Unknown Category";
-        }
-    }
-
-    const onNavigate_ProductPage = (id) => {navigate(`/Product/${id}`)};
-
     return (
         <main className="flex flex-col gap-4 my-4">
-            <section>
+            <section className="flex flex-col gap-2">
                 <h1>Category</h1>
                 <p>Here's where you find your stuff</p>
             </section>
             
-            <section className="flex gap-2 justify-between">
+            <section className="flex gap-10 justify-between">
                 {/* Category */}
-                <ul className="w-fit text-left">
+                <ul className="w-fit flex flex-col gap-2">
                     {categories
-                        .filter(cat => cat.parent_category_id === null) // Only top-level categories
+                        .filter((cat) => cat.parent_category_id === null)
                         .map((parent) => (
-                        <li key={parent.id}>
-                            <button onClick={() => onToggle_ActiveCategories(parent.id)}>{parent.category_name}</button>
-                            <ul className={`bg-slate-100 overflow-hidden ${activeCategories.includes(parent.id) ? "h-auto" : "h-0"}`}>
-                                {categories
-                                    .filter(child => child.parent_category_id === parent.id)
-                                    .map((child) => (
-                                        <li key={child.id} className="pl-4">
-                                            <input type="checkbox" checked={selectedCategories.includes(child.id)} onChange={() => onToggle_SelectedCategories(child.id)}/>
-                                            <label>{child.category_name}</label>
-                                        </li>
-                                    ))
-                                }
-                            </ul>
-                        </li>
-                    ))}
+                            <li key={parent.id} className="border border-black rounded-lg">
+                                <button 
+                                    onClick={() => onToggle_ActiveCategories(parent.id)}
+                                    className="w-full p-2 flex justify-between text-left "
+                                >
+                                    {parent.category_name}
+                                    <p>{activeCategories.includes(parent.id) ? "-" : "+"}</p>
+                                </button>
+                                
+                                <ul className={` border-black rounded-b-lg overflow-hidden  ${activeCategories.includes(parent.id) ? "py-2 h-fit border-t" : "h-0"}`}>
+                                    {categories
+                                        .filter(child => child.parent_category_id === parent.id)
+                                        .map((child) => (
+                                            <li key={child.id} className="px-4 flex gap-1">
+                                                <input type="checkbox" checked={selectedCategories.includes(child.id)} onChange={() => onToggle_SelectedCategories(child.id)}/>
+                                                <label>{child.category_name}</label>
+                                            </li>
+                                        ))
+                                    }
+                                </ul>
+                            </li>
+                        ))
+                    }
                 </ul>
 
                 {/* Product */}
-                <div className="flex-1 flex gap-6 flex-wrap">
+                <div className="flex-1 grid gap-2 grid-cols-4 max-lg:grid-cols-3 max-sm:grid-cols-1">
                     {products
                         .filter((data) => selectedCategories.includes(data.category_id))
-                        .map((data, index) => (
-                            <div key={index} onClick={() => onNavigate_ProductPage(data.id)} className="size-60 p-6 bg-slate-200 border-2 border-black flex flex-col gap-2">
-                                <p className="uppercase">{data.name}</p>
-                                <img className="h-full w-full bg-green-200 border-2 border-black rounded-lg"/>
-                                
-
-                                <div className="flex justify-between"> 
-                                    <div>
-                                        <p>{onHandle_DisplayCategory(data)}</p>
-                                        <p>MYR {data.base_price}</p>
-                                    </div>
-                                    <button onClick={(e) => onHandle_Favorite({e, id: data.id})} className="w-fit p-2 border-2 border-black rounded-lg">
-                                        Liked
-                                    </button>
-                                </div>
-                            </div>
+                        .map((data) => (
+                            <Card 
+                                key={data.id} 
+                                product={data} 
+                                imageUrl={null} 
+                                onAddWishlist={() => onWishlistProduct({id: data.id})}
+                            />
                         ))
                     }
                 </div>

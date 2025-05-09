@@ -11,10 +11,13 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.7.0",
+    "@stripe/react-stripe-js": "^3.7.0",
+    "@stripe/stripe-js": "^7.3.0",
     "axios": "^1.8.4",
     "class-variance-authority": "^0.7.1",
     "dotenv": "^16.5.0",
     "firebase": "^11.6.0",
+    "gapi-script": "^1.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-redux": "^9.2.0",

@@ -1,10 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+import { collection, doc, setDoc, getDocs } from "firebase/firestore";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
+import { db, storage } from "../firebase";
+
 const VITE_FUTURA_API = import.meta.env.VITE_FUTURA_API;
 
-// Fetch all users
-
+// Fetch Products =================================== >
 export const fetchProducts = createAsyncThunk(
     'users/fetchProducts',
     async () => {
@@ -13,13 +16,27 @@ export const fetchProducts = createAsyncThunk(
     }
 );
 
-export const fetchProductsByCategory = createAsyncThunk(
-    'users/fetchProductsByCategory',
-    async (category_id) => {
-        const response = await axios.get(`${VITE_FUTURA_API}/products?category=${category_id}`);
-        return response.data;
+export const fetchImageProduct = createAsyncThunk(
+    'products/fetchImageProduct',
+    async () => {
+        try {
+            console.log('Execute fetch image');
+            const productsRef = collection(db, "products");
+            const querySnapshot = await getDocs(productsRef);
+
+            const docs = querySnapshot.docs.map((doc) => 
+                ({id:doc.id, ...doc.data()})
+            );
+
+            return docs;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
     }
-);
+)
+
+// Fetch Category =================================== >
 
 export const fetchCategory = createAsyncThunk(
     'users/fetchCategory',
@@ -28,6 +45,8 @@ export const fetchCategory = createAsyncThunk(
         return response.data;
     }
 );
+
+// Fetch Product's Data (Type and Variation) =================================== >
 
 export const fetchProductItem = createAsyncThunk(
     'users/fetchProductItem',
@@ -43,14 +62,10 @@ export const fetch_ProductVariation = createAsyncThunk(
     async () => {
         console.log("Requesting");
         const response = await axios.get(`${VITE_FUTURA_API}/products/variations`);
-        console.log("Data: ", response);
         return response.data;
     }
 );
 
-// export const fetch_PersonalFollowing 
-
-// Need to figure out homepage method and category method
 const productsSlice = createSlice({
     name: "productsSlice",
     initialState: {
@@ -69,6 +84,7 @@ const productsSlice = createSlice({
         // Fetch all users
         builder
             .addCase(fetchProducts.fulfilled, (state, action) => {
+                console.log("Products: ", action.payload);
                 state.products = action.payload;
                 state.products_loading = false;
             })
@@ -76,19 +92,17 @@ const productsSlice = createSlice({
                 state.products_loading = true;
             });
 
-        // builder
-        //     .addCase(fetchProductsByCategory.fulfilled, (state, action) => {
-        //         state.products.highlight = [...action.payload, ...state.products.highlight];
-        //         state.productItem_loading = false;
-        //     })
-        //     .addCase(fetchProductsByCategory.pending, (state) => {
-        //         state.productItem_loading = true;
-        //     });
+        builder
+            .addCase(fetchImageProduct.fulfilled, (state, action) => {
+                console.log("Return Image: ", action.payload);
+            })
 
         builder
             .addCase(fetchCategory.fulfilled, (state, action) => {
                 state.categories = action.payload;
             });
+        
+        
 
         builder
             .addCase(fetchProductItem.fulfilled, (state, action) => {

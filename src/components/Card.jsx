@@ -1,19 +1,62 @@
+import { useNavigate } from "react-router-dom";
 
-const Card = () => {
+const Card = ({product, imageUrl, onAddWishlist}) => {
+    const navigate = useNavigate();
+
+    const onNavigateProduct = () => navigate(`/Product/${product.id}`);
+    const onCalledWishlist = (e) => {
+        e.stopPropagation();
+        onAddWishlist();
+    }
 
     //Grid or Row
     return (
-        < >
-            <p>Product Name</p>
-            <img className="bg-red-400"/>
-            <p>Category/Sub-Category</p>
-            <p>Review: 32.5</p>
-            <section>
-                <p>Price: MYR3200</p>
-                <button>+</button>
-                <button>Wishlist</button>
-            </section>
-        </>
+        <div 
+            onClick={onNavigateProduct} 
+            className="
+                flex-1 flex flex-col 
+                border border-black 
+                cursor-pointer hover:scale-105 hover:transition-transform
+            "
+        >
+            <img  className="bg-orange-300 w-full aspect-[3/4]"/>
+            {/* src={imageUrl} */}
+
+            <div className="flex-1 flex flex-col gap-2 p-2 bg-white">
+                <div className="flex justify-between items-center">
+                    <p>COLOR</p>
+                    <button 
+                        onClick={onCalledWishlist} 
+                        className="
+                            border border-black px-2 rounded-lg 
+                            hover:bg-red-500 hover:transition-colors
+                        "
+                    >
+                        Liked
+                    </button>
+                </div>
+
+                <hr className="border-t border-black"/>
+
+                <div className="flex justify-between text-gray-700">
+                    <p>Category</p>
+                    <p>Size</p>
+                </div>
+
+                <hr className="border-t border-black"/>
+
+                <div className="flex-1 flex flex-col justify-between gap-2">
+                    <p className="text-lg">{product.name}</p>
+                
+                    <div className="flex items-end justify-between">
+                        <p className="font-semibold">RM {product.base_price}</p>
+                        {product.average_rating != null && (
+                            <p>Rating: {parseFloat(product.average_rating)} ({product.number_of_reviews})</p>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </div>
     )
 }
 

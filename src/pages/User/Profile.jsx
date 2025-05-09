@@ -39,81 +39,73 @@ const Wallet = () => {
     }
 
     return (
-        <section className="border-2 border-black">
+        <>
             <h2>Payment</h2>
-            {payment_loading && <p>Loading</p>}
-            {(!payment_loading && payment.length != 0) && (
-                payment.map((data, index) => (
-                    <section className="mb-4" key={data.uid}>
-                        <div className="bg-black text-white">
-                            <h3>Index: {index + 1}</h3>
+            
+            <div className="flex flex-col gap-4">
+                <form className="grid grid-cols-2 gap-4">
+                    <label>Payment Type:</label>
+                    <input 
+                        type="text" 
+                        onChange={(e) => setPayment_type(e.target.value)} 
+                        className="px-4 py-1 border border-black rounded-lg"
+                    />
+
+                    <label>Provider:</label>
+                    <input 
+                        type="text" 
+                        onChange={(e) => setProvider(e.target.value)} 
+                        className="px-4 py-1 border border-black rounded-lg"
+                    />
+
+                    <label>Account Number:</label>
+                    <input 
+                        type="text" 
+                        onChange={(e) => setAccount_number(e.target.value)} 
+                        className="px-4 py-1 border border-black rounded-lg"
+                    />
+
+                    <label>Expiry Date:</label>
+                    <input 
+                        type="text" 
+                        onChange={(e) => setExpiry_date(e.target.value)} 
+                        className="px-4 py-1 border border-black rounded-lg"
+                    />
+                </form>
+
+                <button onClick={onSubmit_Payment} className="bg-gray-300 py-4 rounded-lg cursor-pointer">
+                    Create Payment
+                </button>
+            </div>
+
+            <hr className="border-black"/>
+
+            <div className="flex flex-wrap gap-2">
+                {(!payment_loading && payment.length != 0) && (
+                    payment.map((data, index) => (
+                        <div className="bg-blue-200 p-2 flex flex-col border border-black transition-transform hover:translate-x-7" key={data.uid}>
+                            <h2>#{index + 1}</h2>
+
+                            <hr className="border-black my-4" />
+
                             <p>payment_type: {data.payment_type}</p>
                             <p>provider: {data.provider}</p>
                             <p>account_number: {data.account_number}</p>
                             <p>expiry_date: {data.expiry_date}</p>
-                            <p>is_default: {data.is_default}</p>
+
+                            <hr className="border-black my-4" />
+
+                            <button className="border border-black py-2 my-1">Edit Payment</button>
+                            <button className="border border-black py-2">Remove Payment</button>
                         </div>
-                    </section>
-                ))
-            )}
+                    ))
+                )}
+            </div>
+            
             {(!payment_loading && payment.length == 0) && (
-                <p>No payment method is created</p>
+                <h2>No payment method is created</h2>
             )}
-
-            {/* Create */}
-            <section>
-                <form className="flex flex-col gap-6 text-sm">
-                    <div className="flex flex-col gap-2">
-                        <label>Payment Type:</label>
-                        <input 
-                            type="text" 
-                            onChange={(e) => setPayment_type(e.target.value)} 
-                            className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
-                        />
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <label>Provider:</label>
-                        <input 
-                            type="text" 
-                            onChange={(e) => setProvider(e.target.value)} 
-                            className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
-                        />
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <label>Account Number:</label>
-                        <input 
-                            type="text" 
-                            onChange={(e) => setAccount_number(e.target.value)} 
-                            className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
-                        />
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <label>Expiry Date:</label>
-                        <input 
-                            type="text" 
-                            onChange={(e) => setExpiry_date(e.target.value)} 
-                            className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
-                        />
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <label>Is Default:</label>
-                        <input 
-                            type="checkbox" 
-                            onChange={(e) => setIs_default(e.target.value)} 
-                            className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
-                        />
-                    </div>
-                </form>
-
-                <button onClick={onSubmit_Payment} className="bg-gray-300 cursor-pointer">
-                    Create Payment
-                </button>
-            </section>
-        </section>
+        </>
     )
 }
 
@@ -149,156 +141,201 @@ const Address = () => {
     }
 
     return (
-        <section className="border-2 border-black">
+        < >
             <h2>Address</h2>
-            {address_loading && <p>Loading</p>}
-            {(!address_loading && address.length != 0) && (
-                address.map((data, index) => (
-                    <section className="mb-4" key={data.uid}>
-                        <div className="bg-black text-white">
-                            <h3>Index: {index + 1}</h3>
-                            <p>address line 1: {data.address_line1}</p>
-                            <p>address line 2: {data.address_line2}</p>
-                            <p>city: {data.city}</p>
-                            <p>Region: {data.region}</p>
-                            <p>Postal Code: {data.postal_code}</p>
-                        </div>
-                    </section>
-                ))
-            )}
+            
+            <div className="flex flex-col gap-4">
+                <form className="grid grid-cols-2 gap-4">
+                    <label>Address line 1:</label>
+                    <input 
+                        type="text" 
+                        onChange={(e) => setAddress_line1(e.target.value)} 
+                        className="px-4 py-1 border border-black rounded-lg"
+                    />
 
-            {/* Create */}
-            <section>
-                <form className="flex flex-col gap-6 text-sm">
-                    <div className="flex flex-col gap-2">
-                        <label>Address line 1:</label>
-                        <input 
-                            type="text" 
-                            onChange={(e) => setAddress_line1(e.target.value)} 
-                            className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
-                        />
-                    </div>
+                    <label>Address line 2:</label>
+                    <input 
+                        type="text" 
+                        onChange={(e) => setAddress_line2(e.target.value)} 
+                        className="px-4 py-1 border border-black rounded-lg"
+                    />
 
-                    <div className="flex flex-col gap-2">
-                        <label>Address line 2:</label>
-                        <input 
-                            type="text" 
-                            onChange={(e) => setAddress_line2(e.target.value)} 
-                            className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
-                        />
-                    </div>
+                    <label>City:</label>
+                    <input 
+                        type="text" 
+                        onChange={(e) => setCity(e.target.value)} 
+                        className="px-4 py-1 border border-black rounded-lg"
+                    />
 
-                    <div className="flex flex-col gap-2">
-                        <label>City:</label>
-                        <input 
-                            type="text" 
-                            onChange={(e) => setCity(e.target.value)} 
-                            className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
-                        />
-                    </div>
+                    <label>Region:</label>
+                    <input 
+                        type="text" 
+                        onChange={(e) => setRegion(e.target.value)} 
+                        className="px-4 py-1 border border-black rounded-lg"
+                    />
 
-                    <div className="flex flex-col gap-2">
-                        <label>Region:</label>
-                        <input 
-                            type="text" 
-                            onChange={(e) => setRegion(e.target.value)} 
-                            className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
-                        />
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <label>Postal Code:</label>
-                        <input 
-                            type="text" 
-                            onChange={(e) => setPostalCode(e.target.value)} 
-                            className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
-                        />
-                    </div>
+                    <label>Postal Code:</label>
+                    <input 
+                        type="text" 
+                        onChange={(e) => setPostalCode(e.target.value)} 
+                        className="px-4 py-1 border border-black rounded-lg"
+                    />
                 </form>
 
-                <button onClick={onSubmit_Address} className="bg-gray-300 cursor-pointer">
+                <button onClick={onSubmit_Address} className="bg-gray-300 py-4 rounded-lg cursor-pointer">
                     Create Address
                 </button>
-            </section>
-        </section>
+            </div>
+
+            <hr className="border-black"/>
+
+            <div className="flex flex-wrap gap-2">
+                {(!address_loading && address.length != 0) && (
+                    address.map((data, index) => (
+                        <div className="bg-blue-200 p-2 flex flex-col border border-black transition-transform hover:translate-x-7" key={data.uid}>
+                            <h2>#{index + 1}</h2>
+
+                            <hr className="border-black my-4" />
+
+                            <p>ADDRESS LINE 1: {data.address_line1}</p>
+                            {data.address_line2 != null && <p>Address line 2: {data.address_line2}</p>}
+                            <p>CITY: {data.city}</p>
+                            <p>REGION: {data.region}</p>
+                            <p>POSTAL CODE: {data.postal_code}</p>
+
+                            <hr className="border-black my-4" />
+
+                            <button className="border border-black py-2 my-1">Edit Address</button>
+                            <button className="border border-black py-2">Remove Address</button>
+                        </div>
+                    ))
+                )}
+            </div>
+        </>
     )
 }
 
+const UserProfile = ({info}) => {
+    const [username, setUsername] = useState(info.username);
+    const [phone, setPhone] = useState(info.phone);
+    const [gender, setGender] = useState(info.gender);
+    const [birth, setBirth] = useState(info.birth);
+
+    const [editMode, setEditMode] = useState(false);
+
+    const onToggleEdit = () => setEditMode(!editMode);
+
+    return (
+        <> 
+            <div className="flex gap-4 items-center">
+                <img className="bg-green-400 aspect-square max-w-32" />
+
+                <hr className="h-full border-r border-black" />
+
+                <div className="flex-1 grid grid-cols-2 items-center">
+                    <label>USERNAME:</label>
+                    {editMode   
+                        ? <input 
+                            type="email"
+                            value={info.username}
+                            placeholder="Example: Futura023"
+                            onChange={(e) => setUsername(e.target.value)}/>
+                        : <p>{username}</p>
+                    }
+
+                    <hr className="col-span-2 my-1 border-gray-300" />
+
+                    <label>PHONE:</label>
+                    {editMode   
+                        ? <input 
+                            type="tel"
+                            value={info.phone}
+                            onChange={(e) => setPhone(e.target.value)}/>
+                        : <p>{phone}</p>
+                    }
+
+                    <hr className="col-span-2 my-1 border-gray-300" />
+
+                    <label>GENDER:</label>
+                    {editMode   
+                        ? (
+                            <select 
+                                name="gender" 
+                                value={info.gender} 
+                                placeholder={(e) => setGender(e.value)}
+                            >
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select> )
+                        : <p>{gender}</p>
+                    }
+
+                    <hr className="col-span-2 my-1 border-gray-300" />
+
+                    <label>Birth:</label>
+                    {editMode   
+                        ? <input 
+                            type="date"
+                            value={info.birth.split("T")[0]}
+                            onChange={(e) => setBirth(e.target.value)}/>
+                        : <p>{birth.split("T")[0].split("-").join("/")}</p>
+                    }
+                </div>
+            </div>
+
+            <button onClick={onToggleEdit} className="border border-black py-2">
+                {editMode ? "CANCEL EDIT" : "EDIT PROFILE"}
+            </button>
+            {editMode && <button className="border border-black py-2">UPDATE PROFILE</button>}
+
+            <hr className="border-black" />
+
+            <button className="text-lg font-medium uppercase py-2 bg-red-700 text-white transition-all hover:bg-red-900 hover:rounded-lg">
+                Delete Account
+            </button>
+        </>
+    )
+}
 
 const Profile = () => {
     const { personal, personal_loading  } = useSelector((state) => state.users);
+    const [mode, setMode] = useState("PROFILE");
     const { currentUser } = useContext(AuthContext) || null;
     const dispatch = useDispatch();
 
-    const [username, setUsername] = useState();
-    const [phone, setPhone] = useState();
-    const [gender, setGender] = useState();
-    const [birth, setBirth] = useState();
-
     useEffect(() => {
-        const uid = currentUser.uid;
-
         if (personal.length === 0)
-            dispatch(fetchProfile(uid));
-
-        if (personal.length !== 0) {
-            setUsername(personal.username);
-            setPhone(personal.phone);
-            setGender(personal.gender);
-            setBirth(personal.birth);
-        }
-
+            dispatch(fetchProfile(currentUser.uid));
     }, [dispatch, personal])
 
-    const updateProfile = (e) => {
-        e.preventDefault;
-        const id = 0;
+    // const updateProfile = (e) => {
+    //     e.preventDefault;
+    //     const id = 0;
 
-        dispatch(updateUser({id, username, phone, gender, birth}));
-    }
+    //     dispatch(updateUser({id, username, phone, gender, birth}));
+    // }
 
     return (
-        <main className="flex flex-col gap-4">
-            {personal_loading && <p>is loading</p>}
-            <section className="border-2 border-black">
-                {!personal_loading && (<> 
-                    {/* <img src={`${true}`} /> */}
-                    <h3>{personal.username}</h3>
-                    <p>{personal.email}</p>
-                    <p>{personal.phone}</p>
-                    <p>{personal.gender}</p>
-                    <p>{personal.date}</p>
-                    
-                    {/* <h2>Edit Format</h2>
-                    <form onSubmit={updateProfile}>
-                        <label>Username</label>
-                        <input type="email" placeholder="Example: Futura023"/>
-
-                        <label>Birth Date</label>
-                        <input type="date" value={birth}/>
-
-                        <label>Gender</label>
-                        <select 
-                            name="gender" 
-                            value={gender} 
-                            placeholder={(e) => setGender(e.value)}
-                        >
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                        </select>
-
-                        <label>Phone Number</label>
-                        <input type="tel" value={phone}/>
-
-                        <button type="submit">Update</button>
-                    </form> */}
-                </>)}
+        <main className="flex flex-col my-4">
+            <section>
+                <h1 className="mb-8">PROFILE SETTINGS</h1>
             </section>
 
-            {/* Address */}
-            <Address />
+            <section className="flex gap-6">
+                <aside className="flex-[0.3] flex flex-col gap-2">
+                    <button onClick={() => setMode("PROFILE")} className="text-start p-1 text-xl border border-black hover:px-4 hover:scale-110 transition-all hover:bg-black hover:text-white">Profile</button>
+                    <button onClick={() => setMode("ADDRESS")} className="text-start p-1 text-xl border border-black hover:px-4 hover:scale-110 transition-all hover:bg-black hover:text-white">Address book</button>
+                    <button onClick={() => setMode("PAYMENT")} className="text-start p-1 text-xl border border-black hover:px-4 hover:scale-110 transition-all hover:bg-black hover:text-white">Payment book</button>
+                </aside>
 
-            <Wallet />
+                <div className="flex-1 flex flex-col gap-4 p-4 border border-gray-300">
+                    {personal_loading && <h1>Loading User</h1>}
+                    {(!personal_loading && mode == "PROFILE") && <UserProfile info={personal}/>}
+                    {(mode == "ADDRESS") && <Address />}
+                    {(mode == "PAYMENT") && <Wallet />}
+                </div>
+            </section>
+            
         </main>
     )
 }

@@ -5,27 +5,36 @@ const VITE_FUTURA_API = import.meta.env.VITE_FUTURA_API;
 
 export const createOrder = createAsyncThunk(
     'users/createOrder',
-    async (id) => {
-        const response = await axios.get(`${VITE_FUTURA_API}/users/${id}/order`);
+    async ({uid, payment_method_id, shipping_address_id, shipping_method, order_total, order_status}) => {
+        const body = {
+            payment_method_id: payment_method_id, 
+            shipping_address_id: shipping_address_id, 
+            shipping_method: shipping_method, 
+            order_total: order_total, 
+            order_status: order_status
+        }
+        
+        const response = await axios.post(`${VITE_FUTURA_API}/users/${uid}/order`, body);
         return response.data;
     }
 );
 
 export const fetchOrder = createAsyncThunk(
     'users/fetchOrder',
-    async (id) => {
-        const response = await axios.get(`${VITE_FUTURA_API}/users/${id}/order`);
+    async (uid) => {
+        const response = await axios.get(`${VITE_FUTURA_API}/users/${uid}/order`);
         return response.data;
     }
 );
 
 export const create_OrderItem = createAsyncThunk(
     'users/create_OrderItem',
-    async ({order_id, product_item_id, quantity, price}) => {
+    async ({order_id, product_id, quantity, price, product_variation_id}) => {
         const body = {
-            product_item_id: product_item_id,
+            product_id: product_id,
             quantity: quantity, 
-            price: price
+            price: price,
+            product_variation_id: product_variation_id
         }
 
         const response = await axios.post(`${VITE_FUTURA_API}/order/${order_id}`, body);
@@ -67,7 +76,7 @@ const ordersSlice = createSlice({
 
         builder
             .addCase(create_OrderItem.fulfilled, (state, action) => {
-                state.orderItem = [action.payload.data, ...state.orderItem];
+                state.orderItem = [...state.orderItem, action.payload.data];
                 state.orderItem_loading = false;
             })
             .addCase(create_OrderItem.pending, (state) => {
