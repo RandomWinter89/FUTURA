@@ -37,7 +37,6 @@ const LoginPage = () => {
             const uid = feedback.user.uid;
             console.log("UID: ", uid);
             dispatch(fetchProfile(uid));
-            navigate("/Homepage");
         } catch (error) {
             setError("Invalid: ", error.message);
             console.error("Error in Login: ", error);
@@ -45,7 +44,7 @@ const LoginPage = () => {
     }
 
     const onNavigate_Signup = () => {
-        navigate("/signup");
+        navigate("/Auth/Signup");
     }
 
     return (

@@ -31,7 +31,6 @@ const RegisterPage = () => {
         setFeedback("");
         const uid = currentUser.uid;
         dispatch(updateUser({uid, username, phone, gender, birth}));
-        navigate("/Homepage");
     }
 
     useEffect(() => {

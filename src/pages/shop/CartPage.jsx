@@ -118,7 +118,7 @@ const CartPage = () => {
     const discount = selectedDiscount.trim().length != 0 ? parseFloat(selectedDiscount) : 1;
 
     const onReturn = () => navigate(-1);
-    const onNavigate_Homepage = () => navigate("/Homepage");
+    const onNavigate_Homepage = () => navigate("/Shop/Homepage");
 
     return (
         <main className="m-4 flex flex-col gap-2">
@@ -158,7 +158,7 @@ const CartPage = () => {
                         <p>Order total: MYR {total * discount}</p>
 
                         <hr className="border-black my-4"/>
-                        <button onClick={() => navigate("/Checkout")} className="border border-black py-4">Proceed Checkout</button>
+                        <button onClick={() => navigate("/User/Checkout")} className="border border-black py-4">Proceed Checkout</button>
                     </div>
 
                     <label>Promotion Discount</label>

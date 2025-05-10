@@ -68,7 +68,7 @@ const SuccessPage = () => {
       {orderItem_loading && <p>Processing the cart to order</p>}
       {!orderItem_loading && 
         <button 
-          onClick={() => navigate("/Orders")}
+          onClick={() => navigate("/User/Order")}
           className="border border-black py-2 px-8 rounded-xl hover:bg-black hover:text-white"
         >
           Check your order

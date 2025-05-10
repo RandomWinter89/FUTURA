@@ -49,9 +49,9 @@ const Homepage = () => {
     }, []);
     
     return (
-        <main className="flex flex-col gap-20 mb-10">
+        < >
             {/* Cover page */}
-            <div className="h-[80svh] flex justify-center items-center text-center bg-slate-600 text-white">
+            <div className="h-[80svh] -mt-10 flex justify-center items-center text-center bg-slate-600 text-white">
                 <h1 className="text-balance">
                     UNLOCK CREATIVITY . BECOME PART OF THEM . BE WILD
                 </h1>
@@ -113,7 +113,7 @@ const Homepage = () => {
                     }
                 </div>
             </section>
-        </main>
+        </>
     )
 }
 

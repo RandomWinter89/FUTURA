@@ -1,0 +1,42 @@
+import { Navigate, useLocation } from "react-router-dom";
+
+const AuthChecker = ({auth_user, data_user, loading, children}) => {
+    const location = useLocation().pathname;
+
+    // ==========================
+    console.log("Hi, We're the maintainer of AuthChecker");
+
+    //Direct user to login:
+    //1. Not authorized
+    //2. Access restricted path
+    if (!auth_user && !(location.includes("Shop") || location.includes("Auth")) ) {
+        return <Navigate to="/Auth/Login" />
+    }
+
+    //Direct user to Register:
+    //1. Authorized
+    //2. No record of the user
+    if (auth_user && !data_user) {
+        return <Navigate to="/Auth/Register" />
+    }
+
+    //Direct user to admin
+    //1. Role is admin
+    //2. Access restricted path (Login, Shop, or User)
+    if ( data_user.role === "ADMIN" && (location.includes("/Auth") || location.includes("/Shop") || location.includes("/User")))
+        return <Navigate to="/Admin/Dashboard" />
+
+    //Direct user to homepage
+    //1. Role is user
+    //2. Access restricted path (Login or Admin)
+    if ( data_user.role === "USER" && (location.includes("/Auth") || location.includes("/Admin")))
+        return <Navigate to="/Shop/Homepage" />
+
+    return (
+        < >
+            {children}
+        </>
+    )
+}
+
+export default AuthChecker;

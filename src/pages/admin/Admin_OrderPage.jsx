@@ -2,11 +2,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAllOrder } from "../../features/orderedSlice.js"
 import { useEffect } from "react";
 
-const UpdateOrder_Modal = ({data}) => {
+const UpdateOrder_Modal = ({id, data}) => {
 
     return (
         < >
-            {data && <h2>Update Order #{data.id} from {data.name}</h2>}
+            {data && <h2>Update Order #{data[id].id} from {data[id].name}</h2>}
             <p>Status</p>
             <select value="Prepping">
                 <option value="Prepping">Prepping</option>
@@ -35,10 +35,17 @@ const Admin_OrderPage = () => {
                 <p>Prepare (Newest to Oldest)</p>
                 <div className="grid gap-4 grid-cols-4">
                     {order.filter((o) => o.order_status == "Prepping").map((o) => 
-                        <div>
-                            {/* Name */}
+                        <div className="flex flex-col p-4 border border-black">
+                            <p>{o.id}</p>
+                            <p>{o.name}</p>
                             <p>{o.order_date}</p>
-                            {/* Address */}
+                            <hr/>
+                            <p>{o.address_line1}</p>
+                            <p>{o.address_line2}</p>
+                            <p>{o.city}</p>
+                            <p>{o.region}</p>
+                            <p>{o.postal_code}</p>
+                            <hr/>
                             <p>{o.order_status}</p>
                         </div>
                     )}
@@ -49,10 +56,17 @@ const Admin_OrderPage = () => {
                 <p>Delivered (Newest to Oldest)</p>
                 <div className="grid gap-4 grid-cols-4">
                     {order.filter((o) => o.order_status == "Delivered").map((o) => 
-                        <div>
-                            {/* Name */}
+                        <div className="flex flex-col p-4 border border-black">
+                            <p>{o.id}</p>
+                            <p>{o.name}</p>
                             <p>{o.order_date}</p>
-                            {/* Address */}
+                            <hr/>
+                            <p>{o.address_line1}</p>
+                            <p>{o.address_line2}</p>
+                            <p>{o.city}</p>
+                            <p>{o.region}</p>
+                            <p>{o.postal_code}</p>
+                            <hr/>
                             <p>{o.order_status}</p>
                         </div>
                     )}

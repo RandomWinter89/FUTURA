@@ -8,7 +8,7 @@ const FailedPage = () => {
         <h1>Payment Cancelled</h1>
 
         <button 
-          onClick={() => navigate("/Checkout")}
+          onClick={() => navigate("/Shop/Homepage")}
           className="border border-black py-2 px-8 rounded-xl hover:bg-black hover:text-white"
         >
           Return to homepage

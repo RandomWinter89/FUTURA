@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 const Card = ({product, imageUrl = "NONE", onAddWishlist}) => {
     const navigate = useNavigate();
 
-    const onNavigateProduct = () => navigate(`/Product/${product.id}`);
+    const onNavigateProduct = () => navigate(`/Shop/Product/${product.id}`);
     const onCalledWishlist = (e) => {
         e.stopPropagation();
         onAddWishlist();

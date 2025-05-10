@@ -1,6 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { fetchProducts,  fetchCategory } from "../../features/productSlice";
+import { fetchProducts } from "../../features/productSlice";
 import { addWishlist_item } from "../../features/wishlistSlice";
+import { Category } from "../../database/category";
+
 
 import { AuthContext } from "../../Context/AuthProvider";
 
@@ -12,10 +14,10 @@ import { Card } from "../../components/ui";
 
 
 const CategoryPage = () => {
-    const { products, categories } = useSelector((state) => state.products);
+    const { products } = useSelector((state) => state.products);
     const { wishlist_id,  wishlists } = useSelector((state) => state.wishlists);
     const { currentUser } = useContext(AuthContext) || null;
-
+    const [categories] = useState(Category);
     const [activeCategories, setActiveCategories] = useState([]);
     const [selectedCategories, setSelectedCategories] = useState([]);
 
@@ -27,9 +29,6 @@ const CategoryPage = () => {
     useEffect(() => {
         if (products.length == 0)
             dispatch(fetchProducts());
-
-        if (categories.length == 0)
-            dispatch(fetchCategory());
     }, [dispatch])
 
     useEffect(() => {
@@ -58,7 +57,7 @@ const CategoryPage = () => {
         if (currentUser) {
             onAction_Wishlist(id);
         } else {
-            navigate("/Login");
+            navigate("/Auth/Login");
         }
     }
 

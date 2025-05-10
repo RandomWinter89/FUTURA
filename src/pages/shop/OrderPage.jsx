@@ -55,7 +55,7 @@ const OrderPage = () => {
                     {order
                         .sort((a, b) => new Date(b.order_date) - new Date(a.order_date))
                         .map((data, index) => (
-                            <div key={index} onClick={() => navigate(`/OrderReceipt/${data.id}`)}>
+                            <div key={index} onClick={() => navigate(`/User/Order/${data.id}`)}>
                                 <p>ORDER ID: #{data.id}</p>
                                 <p>ORDER DATE: {data.order_date.split("T")[0]}</p>
                                 <p>ORDER TOTAL: {data.order_total}</p>
@@ -64,7 +64,7 @@ const OrderPage = () => {
                         )
                     )}
 
-                    <GoogleCalenderService />
+                    {/* <GoogleCalenderService /> */}
                 </div>
 
                 {/* ORDER LIST */}

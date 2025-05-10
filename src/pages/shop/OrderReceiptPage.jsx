@@ -1,5 +1,8 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import { get_OrderItem } from '../../features/orderedSlice';
 
 const Item = () => {
 
@@ -31,8 +34,13 @@ const Item = () => {
 
 const OrderReceiptPage = () => {
     const { id } = useParams();
+    const { productItem } = useSelector((state) => state.orders);
+    const dispatch = useDispatch();
     
-
+    useEffect(() => {
+        if (productItem.length == 0)
+            dispatch(get_OrderItem(id))
+    }, [dispatch]);
     // ORDER ITEM
     // PAYMENT AND ADDRESS
     // PRODUCT 

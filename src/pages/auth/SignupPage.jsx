@@ -45,7 +45,7 @@ const SignupPage = () => {
 
             dispatch(createUser({uid, email}));
             setFeedback("");
-            navigate("/Signup2");
+            navigate("Auth/Register");
         } catch (error) {
             console.log(error);
         }

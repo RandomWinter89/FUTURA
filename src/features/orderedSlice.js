@@ -33,7 +33,7 @@ export const fetchOrder = createAsyncThunk(
 export const fetchAllOrder = createAsyncThunk(
     'admin/fetchAllOrder',
     async () => {
-        const response = await axios.get(`${VITE_FUTURA_API}/order`);
+        const response = await axios.get(`${VITE_FUTURA_API}/orders`);
         return response.data;
     }
 )
