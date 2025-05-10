@@ -75,7 +75,12 @@ const usersSlice = createSlice({
         users_loading: true,
         personal_loading: true
     },
-    reducers: {},
+    reducers: {
+        userCheckout: (state) => {
+            state.personal = null;
+            state.personal_loading = false;
+        },
+    },
     extraReducers: (builder) => {
         // Fetch all users =============>
         builder
@@ -133,5 +138,6 @@ const usersSlice = createSlice({
 });
 
 
+export const { userCheckout }  = usersSlice.actions;
 
 export default usersSlice.reducer;

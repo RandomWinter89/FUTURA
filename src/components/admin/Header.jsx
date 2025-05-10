@@ -5,12 +5,19 @@ import { getAuth } from "firebase/auth";
 import { NavLink } from "../common";
 
 import { useContext } from "react";
+import { useDispatch } from "react-redux";
+
+import { userCheckout } from "../../features/usersSlice";
 
 const Header = () => {
     const { currentUser } = useContext(AuthContext) || null;
     const auth = getAuth();
+    const dispatch = useDispatch();
 
-    const handleLogout = () => auth.signOut();
+    const handleLogout = () => {
+        auth.signOut();
+        dispatch(userCheckout());
+    };
 
     return (
         <div className="w-full h-26 py-6 px-9 bg-[#E6E6E6] text-black font-sans flex justify-between">
@@ -18,11 +25,11 @@ const Header = () => {
                 <Link to="/Admin/Dashboard" className="text-5xl max-lg:text-3xl max-sm:text-lg max-sm:font-bold">
                     Admin Dashboard
                 </Link>
-                <Link to="/Auth/Products" className="text-2xl text-right max-lg:text-xl max-sm:text-sm hover:bg-black hover:w-full hover:p-2 hover:rounded-md hover:text-white transition-all">
+                <Link to="/Admin/Products" className="text-2xl text-right max-lg:text-xl max-sm:text-sm hover:bg-black hover:w-full hover:p-2 hover:rounded-md hover:text-white transition-all">
                     Products
                 </Link>
-                <Link to="/Auth/Orders" className="text-2xl text-right max-lg:text-xl max-sm:text-sm hover:bg-black hover:w-full hover:p-2 hover:rounded-md hover:text-white transition-all">
-                    Products
+                <Link to="/Admin/Orders" className="text-2xl text-right max-lg:text-xl max-sm:text-sm hover:bg-black hover:w-full hover:p-2 hover:rounded-md hover:text-white transition-all">
+                    Orders
                 </Link>
             </nav>
 

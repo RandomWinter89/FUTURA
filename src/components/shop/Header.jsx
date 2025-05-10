@@ -5,12 +5,19 @@ import { getAuth } from "firebase/auth";
 import { NavLink } from "../common";
 
 import { useContext } from "react";
+import { useDispatch } from "react-redux";
+
+import { userCheckout } from "../../features/usersSlice";
 
 const Header = () => {
     const { currentUser } = useContext(AuthContext) || null;
     const auth = getAuth();
+    const dispatch = useDispatch();
 
-    const handleLogout = () => auth.signOut();
+    const handleLogout = () => {
+        auth.signOut();
+        dispatch(userCheckout());
+    };
 
     return (
         < >
