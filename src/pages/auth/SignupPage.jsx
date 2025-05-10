@@ -1,5 +1,5 @@
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
-import { createUser } from "../../features/usersSlice";
+import { createUser, uploadUser_Image } from "../../features/usersSlice";
 
 import { useDispatch } from "react-redux";
 import { useState } from "react";
@@ -10,6 +10,7 @@ const SignupPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [imageUrl, setImageUrl] = useState();
 
     // Dispatch Event
     const dispatch = useDispatch();
@@ -44,8 +45,9 @@ const SignupPage = () => {
             const uid = feedback.user.uid;
 
             dispatch(createUser({uid, email}));
+            dispatch(uploadUser_Image({uid, file:imageUrl}));
             setFeedback("");
-            navigate("Auth/Register");
+            // navigate("Auth/Register");
         } catch (error) {
             console.log(error);
         }
@@ -58,7 +60,7 @@ const SignupPage = () => {
 
     return (
         < >
-            <section className="bg-red-200 mb-6">
+            <section className="mb-6">
                 <form onSubmit={onRegisterAccount} className="flex flex-col gap-6">
                     <div className="flex flex-col gap-2">
                         <label className="font-medium px-4">Email</label>
@@ -98,6 +100,15 @@ const SignupPage = () => {
                             className="size-4"
                         />
                         <p className="leading-none">Show password</p>
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                        <label className="font-medium px-4">File</label>
+                        <input 
+                            type="file"
+                            onChange={(e) => setImageUrl(e.target.files[0])}
+                            className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
+                        />
                     </div>
 
 

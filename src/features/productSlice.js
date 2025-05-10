@@ -1,21 +1,25 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import { collection, doc, setDoc, getDocs } from "firebase/firestore";
+import { collection, updateDoc, doc, setDoc, getDoc, getDocs } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import { db, storage } from "../firebase";
 
 const VITE_FUTURA_API = import.meta.env.VITE_FUTURA_API;
 
-// Fetch Products =================================== >
+// ---------------------------------------------------------
+
+
+//Fetch product (data)
 export const fetchProducts = createAsyncThunk(
-    'users/fetchProducts',
+    'products/fetchProducts',
     async () => {
         const response = await axios.get(`${VITE_FUTURA_API}/products`);
         return response.data;
     }
 );
 
+//Fetch product (image)
 export const fetchImageProduct = createAsyncThunk(
     'products/fetchImageProduct',
     async () => {
@@ -35,7 +39,9 @@ export const fetchImageProduct = createAsyncThunk(
     }
 )
 
-// Create Product
+// == CREATE/UPLOAD =================
+
+//Create product (data)
 export const uploadProduct = createAsyncThunk(
     'admin/uploadProduct',
     async () => {
@@ -44,6 +50,7 @@ export const uploadProduct = createAsyncThunk(
     }
 )
 
+//Create product (image)
 export const uploadProductImage = createAsyncThunk(
     'admin/uploadProductImage',
     async ({sku, file}) => {
@@ -56,7 +63,7 @@ export const uploadProductImage = createAsyncThunk(
                 imageUrl = await getDownloadURL(response.ref);
             }
 
-            const prodRef = doc(db, `products/${sku}`);
+            const prodRef = doc(db, `products`);
             await setDoc(prodRef, {imageUrl})
 
             const product = {
@@ -72,20 +79,58 @@ export const uploadProductImage = createAsyncThunk(
     }
 );
 
-// Fetch Category =================================== >
+// == UPDATE =======================
 
-export const fetchCategory = createAsyncThunk(
-    'users/fetchCategory',
-    async () => {
-        const response = await axios.get(`${VITE_FUTURA_API}/categories`);
-        return response.data;
+//Update product (data - quantity edition)
+// export const updateProduct_Data = createAsyncThunk(
+//     'admin/updateProduct_Data',
+//     async ({}) => {
+//         const response = await axios.put(`${VITE_FUTURA_API}/products`);
+//         return response.data;
+//     }
+// )
+
+//Update product (image - new display)
+export const updateProduct_Image = createAsyncThunk(
+    async ({ prodID, newFile }) => {
+        try {
+            let newImageUrl;
+
+            if (newFile != null) {
+                const imageRef = ref(storage, `products/${newFile.name}`);
+                const response = await uploadBytes(imageRef, newFile);
+                newImageUrl = await getDownloadURL(response);
+            }
+
+            const prodRef = doc(db, `products/${prodID}`);
+            const prodSnap = await getDoc(prodRef);
+
+            if (prodSnap.exists()) {
+                const prodData = prodSnap.data();
+
+                const updatedData = {
+                    ...prodData,
+                    imageUrl: newImageUrl || prodData.imageUrl,
+                };
+
+                await updateDoc(prodRef, updatedData);
+
+                const updProd = { id: prodID, ...updatedData };
+                return updProd;
+            } else {
+                throw new Error("Product does not exist");
+            }
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
     }
-);
+)
+
 
 // Fetch Product's Data (Type and Variation) =================================== >
-
 export const fetchProductItem = createAsyncThunk(
-    'users/fetchProductItem',
+    'products/fetchProductItem',
     async (id) => {
         const response = await axios.get(`${VITE_FUTURA_API}/products/variation/${id}`);
         return response.data;
@@ -93,12 +138,16 @@ export const fetchProductItem = createAsyncThunk(
 );
 
 export const fetch_ProductVariation = createAsyncThunk(
-    'users/fetch_ProductVariation',
+    'products/fetch_ProductVariation',
     async () => {
         const response = await axios.get(`${VITE_FUTURA_API}/products/variations`);
         return response.data;
     }
 );
+
+
+// ---------------------------------------------------------
+
 
 const productsSlice = createSlice({
     name: "productsSlice",
@@ -137,10 +186,6 @@ const productsSlice = createSlice({
                 });
             })
 
-        builder
-            .addCase(fetchCategory.fulfilled, (state, action) => {
-                state.categories = action.payload;
-            });
         
         builder
             .addCase(fetchProductItem.fulfilled, (state, action) => {

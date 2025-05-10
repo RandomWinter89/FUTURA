@@ -1,11 +1,16 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+import { collection, updateDoc, doc, setDoc, getDoc, getDocs } from "firebase/firestore";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
+import { db, storage } from "../firebase";
+
 const VITE_FUTURA_API = import.meta.env.VITE_FUTURA_API;
 
-// ====== User Action ==============================================>
+// ---------------------------------------------------------
 
-// Fetch all users (only name and age)
+
+// Fetch users (all)(() => name && age)
 export const fetchAllUser = createAsyncThunk(
     'users/fetchAllUser',
     async () => {
@@ -14,7 +19,7 @@ export const fetchAllUser = createAsyncThunk(
     }
 );
 
-// Fetch own data
+// Fetch personal (data)
 export const fetchProfile = createAsyncThunk(
     'users/fetchProfile',
     async (uid) => {
@@ -23,7 +28,31 @@ export const fetchProfile = createAsyncThunk(
     }
 );
 
-// Create user database
+// Fetch personal (image)
+export const fetchUser_Image = createAsyncThunk(
+    'users/fetchUser_Image',
+    async () => {
+        try {
+            const usersRef = collection(db, "users");
+            const querySnapshot = await getDocs(usersRef);
+
+            const docs = querySnapshot.docs.map((doc) => 
+                ({id:doc.id, ...doc.data()})
+            );
+
+            return docs;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+)
+
+
+// == CREATE/UPLOAD ===================
+
+
+// Create personal (data)
 export const createUser = createAsyncThunk(
     'users/createUser',
     async ({uid, email}) => {
@@ -38,8 +67,43 @@ export const createUser = createAsyncThunk(
     }
 );
 
+// Upload personal (image)
+export const uploadUser_Image = createAsyncThunk(
+    'users/uploadUser_Image',
+    async ({uid, file}) => {
+        try {
+            console.log("uid: ", uid, " /file: ", file);
+            let imageUrl = "";
 
-// Update user database
+            if (file != null) {
+                const imageRef = ref(storage, `users/${file.name}`);
+                const response = await uploadBytes(imageRef, file);
+                imageUrl = await getDownloadURL(response.ref);
+            }
+
+            const userRef = doc(db, `users/${uid}`);
+            await setDoc(userRef, {imageUrl});
+
+            const user = {
+                id: uid,
+                imageUrl: imageUrl
+            };
+
+            console.log("User profile data: ", user);
+
+            return user;
+        } catch (error) {
+            console.error("Upload Image in user has received an error: ", error);
+            throw error;
+        }
+    }
+)
+
+
+// == UPDATE =========================
+
+
+//Update personal (data)
 export const updateUser = createAsyncThunk(
     'users/updateUser', 
     async ({uid, username, phone, gender, birth}) => {
@@ -56,22 +120,65 @@ export const updateUser = createAsyncThunk(
 );
 
 
+//Update personal (image)
+export const updateUser_Image = createAsyncThunk(
+    async ({ uid, newFile }) => {
+        try {
+            let newImageUrl;
+
+            if (newFile != null) {
+                const imageRef = ref(storage, `users/${newFile.name}`);
+                const response = await uploadBytes(imageRef, newFile);
+                newImageUrl = await getDownloadURL(response);
+            }
+
+            const userRef = doc(db, `users/${uid}`);
+            const userSnap = await getDoc(userRef);
+
+            if (userSnap.exists()) {
+                const userData = userSnap.data();
+
+                const updatedData = {
+                    ...userData,
+                    imageUrl: newImageUrl || userData.imageUrl,
+                };
+
+                await updateDoc(userRef, updatedData);
+
+                const updateUser = { id: uid, ...updatedData };
+                return updateUser;
+            } else {
+                throw new Error("User does not exist");
+            }
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+)
+
+
+// == REMOVE =========================
+
+
 // Delete user database
-export const deleteUser = createAsyncThunk(
-    'users/deleteUser',
-    async (id) => {
-        const response = await axios.delete(`${VITE_FUTURA_API}/users/${id}`);
+export const removeUser = createAsyncThunk(
+    'users/removeUser',
+    async (uid) => {
+        const response = await axios.delete(`${VITE_FUTURA_API}/users/${uid}`);
         return response.data;
     }
 );
 
-// User Slice ================>
+
+// -------------------------------------------------
 
 const usersSlice = createSlice({
     name: "usersSlice",
     initialState: {
         users: [],
         personal: {},
+        personalImage: {},
         users_loading: true,
         personal_loading: true
     },
@@ -102,9 +209,12 @@ const usersSlice = createSlice({
             .addCase(fetchProfile.pending, (state) => {
                 state.personal_loading = true;
             })
-            // .addCase(fetchProfile.rejected, (state, action) => {
-            //     state.report = 
-            // })
+
+        builder
+            .addCase(uploadUser_Image.fulfilled, (state, action) => {
+                console.log("Action from Upload Image: ", action.payload);
+                state.personalImage = action.payload;
+            })
 
         // Create User =============>
         builder
@@ -119,8 +229,7 @@ const usersSlice = createSlice({
         // Update User =============>
         builder
             .addCase(updateUser.fulfilled, (state, action) => {
-                console.log("Update User: ", action.payload.updatedData);
-                // state.personal = action.payload.updatedData;
+                state.personal = action.payload.updatedData;
                 state.personal_loading = false;
             })
             .addCase(updateUser.pending, (state) => {
@@ -129,8 +238,8 @@ const usersSlice = createSlice({
 
         // Delete User =============>
         builder
-            .addCase(deleteUser.fulfilled, (state) => {
-                state.personal = [];
+            .addCase(removeUser.fulfilled, (state) => {
+                state.personal = null;
                 state.personal_loading = true;
             })
         

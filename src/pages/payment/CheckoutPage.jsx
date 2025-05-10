@@ -111,7 +111,7 @@ const CheckoutPage = () => {
             return;
         
         try {
-          const response = await axios.post(`${VITE_FUTURA_API}/api/create-payment-intent//${addressID}`, {items});
+          const response = await axios.post(`${VITE_FUTURA_API}/api/create-payment-intent/${addressID}`, {items});
           window.location.href = response.data.url;
         } catch (err) {
           console.error("Error creating checkout session:", err);
@@ -119,7 +119,8 @@ const CheckoutPage = () => {
     };
 
     return (
-        <main className="m-4 flex flex-col gap-4">
+        < >
+            <section>
             <button 
                 onClick={() => navigate(-1)}
                 className="py-2 px-4 w-fit text-gray-800 hover:-translate-x-3 transition-transform"
@@ -152,7 +153,8 @@ const CheckoutPage = () => {
                     <p>**You're required to enter the payment by yourself. Stripe forbidden pre-set</p>
                 </section>
             </div>
-        </main>
+            </section>
+        </>
     )
 }
 

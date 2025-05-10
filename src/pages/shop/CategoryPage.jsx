@@ -75,7 +75,7 @@ const CategoryPage = () => {
     }
 
     return (
-        <main className="flex flex-col gap-4 my-4">
+        < >
             <section className="flex flex-col gap-2">
                 <h1>Category</h1>
                 <p>Here's where you find your stuff</p>
@@ -120,14 +120,14 @@ const CategoryPage = () => {
                             <Card 
                                 key={data.id} 
                                 product={data} 
-                                imageUrl={null} 
+                                imageUrl={data.imageUrl} 
                                 onAddWishlist={() => onWishlistProduct({id: data.id})}
                             />
                         ))
                     }
                 </div>
             </section>
-        </main>
+        </>
     )
 }
 

@@ -4,8 +4,6 @@ import { fetchProfile, updateUser } from "../../features/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useContext, useEffect} from "react";
 
-import { useNavigate } from "react-router-dom";
-
 const RegisterPage = () => {
     const [username, setUsername] = useState("");
     const [phone, setPhone] = useState("");
@@ -15,7 +13,6 @@ const RegisterPage = () => {
     const { currentUser } = useContext(AuthContext) || null;
 
     const { personal } = useSelector((state) => state.users);
-    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     // Feedback Error

@@ -23,7 +23,7 @@ const CartItem = ({
 
     return (
         <div className="w-fit h-40 flex gap-2 border border-black p-4">
-            <img className="flex-1 bg-orange-300 w-64 h-full"/>
+            {/* <img src={data.imageUrl} className="flex-1 bg-orange-300 w-64 h-full"/> */}
 
             <div className="flex flex-col my-auto">
                 <p>Product Name: {name}</p>
@@ -121,15 +121,8 @@ const CartPage = () => {
     const onNavigate_Homepage = () => navigate("/Shop/Homepage");
 
     return (
-        <main className="m-4 flex flex-col gap-2">
-            <button 
-                onClick={onReturn} 
-                className="border border-black py-2 px-6 rounded-xl h-fit hover:bg-black hover:text-white"
-            >
-                RETURN PAGE
-            </button>
-
-            <div className="flex gap-2">
+        < >
+            <section className="flex gap-2">
                 {/* Cart */}
                 <section className="flex flex-wrap gap-4 bg-green-50">
                     {carts.map((item, index) => 
@@ -176,8 +169,8 @@ const CartPage = () => {
                         Continue Shopping
                     </button>
                 </section>
-            </div>
-        </main>
+            </section>
+        </>
     )
 }
 

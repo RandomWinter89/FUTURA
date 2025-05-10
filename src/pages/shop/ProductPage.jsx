@@ -114,7 +114,7 @@ const ProductPage  = () => {
         <main className="flex flex-col gap-14 my-14">
             {/* Product Interaction */}
             <section className="flex gap-10 max-sm:flex-col">
-                <img className="flex-1 bg-purple-300 w-full aspect-[3/4]" />
+                <img src={product.imageUrl} className="flex-1 bg-purple-300 w-full aspect-[3/4]" />
 
                 {/* Product Showcase */}
                 {product != null && (
@@ -263,7 +263,7 @@ const ProductPage  = () => {
                         <Card 
                             key={data.id} 
                             product={data} 
-                            imageUrl={null} 
+                            imageUrl={data.imageUrl} 
                             onAddWishlist={() => console("Hello")}
                         />
                     )}

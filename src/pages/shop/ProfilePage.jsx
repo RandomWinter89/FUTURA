@@ -1,10 +1,10 @@
-import { getAuth } from "firebase/auth";
+import { getAuth, deleteUser } from "firebase/auth";
 import { AuthContext } from "../../Context/AuthProvider";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect, useContext } from "react";
 
-import { fetchProfile, updateUser, deleteUser} from "../../features/usersSlice";
+import { fetchProfile, updateUser, removeUser } from "../../features/usersSlice";
 
 import { createAddress, fetchAddress, updateAddress, removeAddress } from "../../features/addressSlice";
 const Address = () => {
@@ -40,6 +40,10 @@ const Address = () => {
     return (
         < >
             <h2>Address</h2>
+
+            <button onClick={onSubmit_Address} className="bg-gray-300 py-4 rounded-lg cursor-pointer">
+                Create Address
+            </button>
             
             <div className="flex flex-col gap-4">
                 <form className="grid grid-cols-2 gap-4">
@@ -79,9 +83,7 @@ const Address = () => {
                     />
                 </form>
 
-                <button onClick={onSubmit_Address} className="bg-gray-300 py-4 rounded-lg cursor-pointer">
-                    Create Address
-                </button>
+                
             </div>
 
             <hr className="border-black"/>
@@ -112,20 +114,44 @@ const Address = () => {
     )
 }
 
-const UserProfile = ({info}) => {
-    const [username, setUsername] = useState(info.username);
-    const [phone, setPhone] = useState(info.phone);
-    const [gender, setGender] = useState(info.gender);
-    const [birth, setBirth] = useState(info.birth);
+const UserProfile = ({info, imageUrl}) => {
+    const { currentUser } = useContext(AuthContext) || null;
 
+    const [username, setUsername] = useState(info.username);
+    const [phone, setPhone] = useState(info?.phone);
+    const [gender, setGender] = useState(info?.gender);
+    const [birth, setBirth] = useState(info?.birth);
     const [editMode, setEditMode] = useState(false);
+
+    const dispatch = useDispatch();
+    const auth = getAuth();
+
+    const onUpdate_Profile = () => {
+        dispatch(updateUser({
+            uid: currentUser.uid, 
+            username, 
+            phone, 
+            gender, 
+            birth
+        }))
+    }
+
+    const onRemove_Profile = async () => {
+        try {
+            await deleteUser(currentUser);
+            await auth.signOut();
+            await dispatch(removeUser(currentUser.uid));
+        } catch (error) {
+            console.log("Report: ", error);
+        }
+    }
 
     const onToggleEdit = () => setEditMode(!editMode);
 
     return (
         <> 
             <div className="flex gap-4 items-center">
-                <img className="bg-green-400 aspect-square max-w-32" />
+                <img src={imageUrl} className="bg-green-400 aspect-square max-w-32" />
 
                 <hr className="h-full border-r border-black" />
 
@@ -134,7 +160,7 @@ const UserProfile = ({info}) => {
                     {editMode   
                         ? <input 
                             type="email"
-                            value={info.username}
+                            value={username}
                             placeholder="Example: Futura023"
                             onChange={(e) => setUsername(e.target.value)}/>
                         : <p>{username}</p>
@@ -146,7 +172,7 @@ const UserProfile = ({info}) => {
                     {editMode   
                         ? <input 
                             type="tel"
-                            value={info.phone}
+                            value={phone}
                             onChange={(e) => setPhone(e.target.value)}/>
                         : <p>{phone}</p>
                     }
@@ -158,8 +184,8 @@ const UserProfile = ({info}) => {
                         ? (
                             <select 
                                 name="gender" 
-                                value={info.gender} 
-                                placeholder={(e) => setGender(e.value)}
+                                value={gender} 
+                                onChange={(e) => setGender(e.target.value)}
                             >
                                 <option value="Male">Male</option>
                                 <option value="Female">Female</option>
@@ -173,9 +199,9 @@ const UserProfile = ({info}) => {
                     {editMode   
                         ? <input 
                             type="date"
-                            value={info.birth.split("T")[0]}
+                            value={birth}
                             onChange={(e) => setBirth(e.target.value)}/>
-                        : <p>{birth.split("T")[0].split("-").join("/")}</p>
+                        : <p>{birth?.split("T")[0].split("-").join("/")}</p>
                     }
                 </div>
             </div>
@@ -183,11 +209,11 @@ const UserProfile = ({info}) => {
             <button onClick={onToggleEdit} className="border border-black py-2">
                 {editMode ? "CANCEL EDIT" : "EDIT PROFILE"}
             </button>
-            {editMode && <button className="border border-black py-2">UPDATE PROFILE</button>}
+            {editMode && <button onClick={onUpdate_Profile} className="border border-black py-2">UPDATE PROFILE</button>}
 
             <hr className="border-black" />
 
-            <button className="text-lg font-medium uppercase py-2 bg-red-700 text-white transition-all hover:bg-red-900 hover:rounded-lg">
+            <button onClick={onRemove_Profile} className="text-lg font-medium uppercase py-2 bg-red-700 text-white transition-all hover:bg-red-900 hover:rounded-lg">
                 Delete Account
             </button>
         </>
@@ -197,7 +223,7 @@ const UserProfile = ({info}) => {
 // ====================>
 
 const ProfilePage = () => {
-    const { personal, personal_loading  } = useSelector((state) => state.users);
+    const { personal, personal_loading, personalImage  } = useSelector((state) => state.users);
     const [mode, setMode] = useState("PROFILE");
     const { currentUser } = useContext(AuthContext) || null;
     const dispatch = useDispatch();
@@ -228,7 +254,7 @@ const ProfilePage = () => {
 
                 <div className="flex-1 flex flex-col gap-4 p-4 border border-gray-300">
                     {personal_loading && <h1>Loading User</h1>}
-                    {(!personal_loading && mode == "PROFILE") && <UserProfile info={personal}/>}
+                    {(!personal_loading && mode == "PROFILE") && <UserProfile info={personal} imageUrl={personalImage?.imageUrl}/>}
                     {(mode == "ADDRESS") && <Address />}
                 </div>
             </section>

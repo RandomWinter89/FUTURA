@@ -16,13 +16,8 @@ const Homepage = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (products.length == 0)
-            dispatch(fetchProducts());
-
         if (wishlist_id == null)
             dispatch(fetchWishlistId(currentUser.uid));
-
-        dispatch(fetchImageProduct());
     }, [dispatch])
 
     useEffect(() => {
@@ -87,7 +82,7 @@ const Homepage = () => {
                             <Card 
                                 key={data.id} 
                                 product={data} 
-                                imageUrl={null} 
+                                imageUrl={data.imageUrl} 
                                 onAddWishlist={() => onWishlistProduct(data.id)}
                             />
                         ))
@@ -106,7 +101,7 @@ const Homepage = () => {
                             <Card 
                                 key={data.id} 
                                 product={data} 
-                                imageUrl={null} 
+                                imageUrl={data.imageUrl} 
                                 onAddWishlist={() => onWishlistProduct(data.id)}
                             />
                         ))

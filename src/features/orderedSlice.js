@@ -6,9 +6,8 @@ const VITE_FUTURA_API = import.meta.env.VITE_FUTURA_API;
 // User -> Create Order
 export const createOrder = createAsyncThunk(
     'users/createOrder',
-    async ({uid, payment_method_id, shipping_address_id, shipping_method, order_total, order_status}) => {
+    async ({uid, shipping_address_id, shipping_method, order_total, order_status}) => {
         const body = {
-            payment_method_id: payment_method_id, 
             shipping_address_id: shipping_address_id, 
             shipping_method: shipping_method, 
             order_total: order_total, 

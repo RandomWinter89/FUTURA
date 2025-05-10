@@ -34,10 +34,14 @@ const OrderPage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (order.length != 0)
+        if (order.length == 0)
             dispatch(fetchOrder(currentUser.uid));
     }, [dispatch])
 
+    useEffect(() => {
+        console.log("Order: ", order);
+    }, []);
+    
     return (
         <main className="m-4 flex flex-col gap-2">
             <h2>ORDERS COLLECTION</h2>
@@ -53,7 +57,7 @@ const OrderPage = () => {
                     <hr className="border-black"/>
 
                     {order
-                        .sort((a, b) => new Date(b.order_date) - new Date(a.order_date))
+                        // .sort((a, b) => new Date(b.order_date) - new Date(a.order_date))
                         .map((data, index) => (
                             <div key={index} onClick={() => navigate(`/User/Order/${data.id}`)}>
                                 <p>ORDER ID: #{data.id}</p>

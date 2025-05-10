@@ -8,6 +8,7 @@ const AuthChecker = ({auth_user, data_user, loading, children}) => {
 
     // ==========================
     console.log("Hi, We're the maintainer of AuthChecker");
+    console.log("We're locating at: ", location);
     console.log("We do checking to ensure it correct: ", !auth_user);
 
     //Catcher: Responsible if data failed to checkout
@@ -24,6 +25,7 @@ const AuthChecker = ({auth_user, data_user, loading, children}) => {
     //Direct user to Register:
     //1. Authorized
     //2. No record of the user
+    //3. The REPORT MUST BE FROM USER SLICE!!!
     if (auth_user && !data_user) {
         return <Navigate to="/Auth/Register" />
     }

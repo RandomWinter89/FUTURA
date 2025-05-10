@@ -51,9 +51,9 @@ const SuccessPage = () => {
       carts.forEach((item) => {
         dispatch(create_OrderItem({
           order_id: order[0].id, 
-          product_item_id: item.product_id,
+          product_id: item.product_id,
           quantity: item.quantity, 
-          price: item.base_price + item.extra_charge,
+          price: parseFloat(item.base_price) + parseFloat(item.extra_charge),
           product_variation_id: item.product_variation_id
         }));
       });
