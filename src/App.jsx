@@ -48,7 +48,7 @@ function App() {
 
         <Route path="/Shop" element={
             <AuthChecker auth_user={currentUser} data_user={personal} loading={personal_loading}>
-              <GeneralLayout />
+              <GeneralLayout data_user={personal} />
             </AuthChecker>
           }
         >
@@ -60,7 +60,7 @@ function App() {
 
         <Route path="/Auth" element={
             <AuthChecker auth_user={currentUser} data_user={personal} loading={personal_loading}>
-              <GeneralLayout />
+              <GeneralLayout data_user={personal}/>
             </AuthChecker>
           }
         >
@@ -71,7 +71,7 @@ function App() {
         
         <Route path="/User" element={
             <AuthChecker auth_user={currentUser} data_user={personal} loading={personal_loading}>
-              <GeneralLayout />
+              <GeneralLayout data_user={personal}/>
             </AuthChecker>
           }
         >

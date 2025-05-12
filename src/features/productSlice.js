@@ -44,8 +44,10 @@ export const fetchImageProduct = createAsyncThunk(
 //Create product (data)
 export const uploadProduct = createAsyncThunk(
     'admin/uploadProduct',
-    async () => {
-        const response = await axios.post(`${VITE_FUTURA_API}/products`);
+    async ({category_id, name, description, base_price, sku}) => {
+        const body = {category_id, name, description, base_price, sku};
+        
+        const response = await axios.post(`${VITE_FUTURA_API}/products`, body);
         return response.data;
     }
 )

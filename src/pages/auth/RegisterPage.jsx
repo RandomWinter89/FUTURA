@@ -1,18 +1,18 @@
 import { AuthContext } from "../../Context/AuthProvider";
 
-import { fetchProfile, updateUser } from "../../features/usersSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { useState, useContext, useEffect} from "react";
+import { createUser_Full, uploadUser_Image } from "../../features/usersSlice";
+import { useDispatch } from "react-redux";
+import { useState, useContext } from "react";
 
 const RegisterPage = () => {
     const [username, setUsername] = useState("");
+    const [email] = useState(currentUser.email);
     const [phone, setPhone] = useState("");
     const [gender, setGender] = useState("Male");
     const [birth, setBirth] = useState("");
+    const [imageUrl, setImageUrl] = useState();
     
     const { currentUser } = useContext(AuthContext) || null;
-
-    const { personal } = useSelector((state) => state.users);
     const dispatch = useDispatch();
 
     // Feedback Error
@@ -26,15 +26,17 @@ const RegisterPage = () => {
             return setFeedback("Please fill-up the empty form");
 
         setFeedback("");
-        const uid = currentUser.uid;
-        dispatch(updateUser({uid, username, phone, gender, birth}));
+        dispatch(createUser_Full({
+            uid: currentUser.uid, 
+            username, 
+            email, 
+            phone, 
+            gender, 
+            birth
+        })).then(() => {
+            dispatch(uploadUser_Image({uid: currentUser.uid, file:imageUrl}));
+        })
     }
-
-    useEffect(() => {
-        const uid = currentUser.uid;
-        if (personal.length === 0)
-            dispatch(fetchProfile(uid));
-    }, [dispatch])
 
     return (
         < >
@@ -81,11 +83,15 @@ const RegisterPage = () => {
                                 className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
                             />
                         </div>
-                    </div>
 
-                    <div className="flex gap-4">
-                        <input type="file" className="flex-1 min-h-14 px-4 py-2 border-2 border-black rounded-lg"/>
-                        <img className="flex-[0.25] bg-slate-500 aspect-square" />
+                        <div className="flex flex-col gap-2">
+                            <label className="font-medium px-4">File</label>
+                            <input 
+                                type="file"
+                                onChange={(e) => setImageUrl(e.target.files[0])}
+                                className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
+                            />
+                        </div>
                     </div>
                     
 

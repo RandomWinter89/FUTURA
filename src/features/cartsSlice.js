@@ -89,7 +89,11 @@ const cartsSlice = createSlice({
         carts: [],
         loading: false,
     },
-    reducers: {},
+    reducers: {
+        clearCartData: (state) => {
+            state.carts = [];
+        },
+    },
     extraReducers: (builder) => {
         // Create CartID
         builder
@@ -166,5 +170,7 @@ const cartsSlice = createSlice({
             });
     },
 });
+
+export const { clearCartData } = cartsSlice.actions;
 
 export default cartsSlice.reducer;

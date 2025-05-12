@@ -4,7 +4,7 @@ import { AuthContext } from "../../Context/AuthProvider";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect, useContext } from "react";
 
-import { fetchProfile, updateUser, removeUser } from "../../features/usersSlice";
+import { fetchProfile, updateUser, removeUser, updateUser_Image } from "../../features/usersSlice";
 
 import { createAddress, fetchAddress, updateAddress, removeAddress } from "../../features/addressSlice";
 const Address = () => {
@@ -17,6 +17,11 @@ const Address = () => {
     const [city, setCity] = useState("");
     const [region, setRegion] = useState(""); 
     const [postal_code, setPostalCode] = useState("");
+
+    const [selectedAddress, setSelectedAddress] = useState();
+
+    const [editMode, setEditMode] = useState(false);
+    const [submitMode, setSubmitMode] = useState(false);
 
     useEffect(() => {
         if (address.length == 0) {
@@ -31,32 +36,97 @@ const Address = () => {
 
         //Remember to add algorithm to prevent empty input
 
-        const uid = currentUser.uid;
-        dispatch(createAddress({uid, address_line1, address_line2, city, region, postal_code}));
+        if (submitMode) {
+            dispatch(createAddress({
+                uid: currentUser.uid, 
+                address_line1, 
+                address_line2, 
+                city, 
+                region, 
+                postal_code
+            }));
+        }
+        
+        if (editMode) {
+            dispatch(updateAddress({
+                uid: currentUser.uid, 
+                address_line1, 
+                address_line2, 
+                city, 
+                region, 
+                postal_code
+            }));
+        }
+       
 
         //Remember to clear the form
     }
+
+    const onToggleCreateForm = () => {
+        if (!editMode)
+            setSubmitMode(!submitMode);
+    }
+
+    const onToggleEditForm = (index) => {
+        if (submitMode) 
+            return;
+
+        if (selectedAddress === index) {
+            setEditMode(false);
+            setSelectedAddress(null);
+        } else {
+            setEditMode(true);
+            setSelectedAddress(index);
+        }
+    }
+
+    // const onRemoveAddress = (id) => {
+    //     console.log("Hello"); 
+
+    //     dispatch(removeAddress({
+    //         uid: currentUser.uid,
+    //         address_id: id
+    //     }))
+    // }
+
+    useEffect(() => {
+        if (selectedAddress != null) {
+            const data = address.find((data) => data.id == selectedAddress);
+            if (data) {
+                setAddress_line1(data.address_line1);
+                setAddress_line2(data.address_line2);
+                setCity(data.city);
+                setRegion(data.region);
+                setPostalCode(data.postal_code);
+            }
+        } else {
+            setAddress_line1("");
+            setAddress_line2("");
+            setCity("");
+            setRegion("");
+            setPostalCode("");
+        }
+    }, [selectedAddress])
 
     return (
         < >
             <h2>Address</h2>
 
-            <button onClick={onSubmit_Address} className="bg-gray-300 py-4 rounded-lg cursor-pointer">
-                Create Address
-            </button>
-            
-            <div className="flex flex-col gap-4">
+            {/* {(onSubmit_Address)} */}
+            {(editMode || submitMode) &&
                 <form className="grid grid-cols-2 gap-4">
                     <label>Address line 1:</label>
                     <input 
                         type="text" 
+                        value={address_line1 || ""}
                         onChange={(e) => setAddress_line1(e.target.value)} 
                         className="px-4 py-1 border border-black rounded-lg"
                     />
 
                     <label>Address line 2:</label>
                     <input 
-                        type="text" 
+                        type="text"
+                        value={address_line2 || ""}
                         onChange={(e) => setAddress_line2(e.target.value)} 
                         className="px-4 py-1 border border-black rounded-lg"
                     />
@@ -64,6 +134,7 @@ const Address = () => {
                     <label>City:</label>
                     <input 
                         type="text" 
+                        value={city || ""}
                         onChange={(e) => setCity(e.target.value)} 
                         className="px-4 py-1 border border-black rounded-lg"
                     />
@@ -71,52 +142,71 @@ const Address = () => {
                     <label>Region:</label>
                     <input 
                         type="text" 
+                        value={region || ""}
                         onChange={(e) => setRegion(e.target.value)} 
                         className="px-4 py-1 border border-black rounded-lg"
                     />
 
                     <label>Postal Code:</label>
                     <input 
-                        type="text" 
+                        type="text"
+                        value={postal_code || ""} 
                         onChange={(e) => setPostalCode(e.target.value)} 
                         className="px-4 py-1 border border-black rounded-lg"
                     />
                 </form>
+            }
 
-                
-            </div>
+            {submitMode && (
+                <button onClick={onSubmit_Address} className="bg-gray-300 py-4 rounded-lg cursor-pointer">
+                   Confirm - Add New Address 
+                </button>
+            )}
 
-            <hr className="border-black"/>
+            {(editMode || submitMode) && <hr className="border-black"/>}
 
-            <div className="flex flex-wrap gap-2">
-                {(!address_loading && address.length != 0) && (
-                    address.map((data, index) => (
-                        <div className="bg-blue-200 p-2 flex flex-col border border-black transition-transform hover:translate-x-7" key={data.uid}>
-                            <h2>#{index + 1}</h2>
+            <div className="flex flex-col gap-4">
+                <button onClick={onToggleCreateForm} className="bg-gray-300 py-4 rounded-lg cursor-pointer">
+                    {!submitMode ? "Create Address" : "Cancel Create"} 
+                </button>
 
-                            <hr className="border-black my-4" />
+                <div className="flex flex-wrap gap-2">
+                    {(!address_loading && address.length != 0) && (
+                        address.map((data, index) => (
+                            <div className="bg-blue-200 p-2 flex flex-col border border-black transition-transform hover:translate-x-7" key={data.uid}>
+                                <h2>#{index + 1}</h2>
 
-                            <p>ADDRESS LINE 1: {data.address_line1}</p>
-                            {data.address_line2 != null && <p>Address line 2: {data.address_line2}</p>}
-                            <p>CITY: {data.city}</p>
-                            <p>REGION: {data.region}</p>
-                            <p>POSTAL CODE: {data.postal_code}</p>
+                                <hr className="border-black my-4" />
 
-                            <hr className="border-black my-4" />
+                                <p>ADDRESS LINE 1: {data.address_line1}</p>
+                                {data.address_line2 != null && <p>Address line 2: {data.address_line2}</p>}
+                                <p>CITY: {data.city}</p>
+                                <p>REGION: {data.region}</p>
+                                <p>POSTAL CODE: {data.postal_code}</p>
 
-                            <button className="border border-black py-2 my-1">Edit Address</button>
-                            <button className="border border-black py-2">Remove Address</button>
-                        </div>
-                    ))
-                )}
+                                <hr className="border-black my-4" />
+
+                                <button onClick={() => onToggleEditForm(data.id)} className="border border-black py-2 my-1">
+                                    {selectedAddress === data.id ? "Cancel Edit" : "Edit Address"}
+                                </button>
+                                {/* <button onClick={() => onRemoveAddress(data.id)} className="border border-black py-2">Remove Address</button> */}
+                            </div>
+                        ))
+                    )}
+                </div>
             </div>
         </>
     )
 }
 
+const Review = () => {
+
+}
+
 const UserProfile = ({info, imageUrl}) => {
     const { currentUser } = useContext(AuthContext) || null;
 
+    const [fileUrl, setFileUrl] = useState();
     const [username, setUsername] = useState(info.username);
     const [phone, setPhone] = useState(info?.phone);
     const [gender, setGender] = useState(info?.gender);
@@ -133,7 +223,10 @@ const UserProfile = ({info, imageUrl}) => {
             phone, 
             gender, 
             birth
-        }))
+        }));
+
+        console.log("Execute update image");
+        dispatch(updateUser_Image({uid: currentUser.uid, newFile: fileUrl}));
     }
 
     const onRemove_Profile = async () => {
@@ -151,7 +244,10 @@ const UserProfile = ({info, imageUrl}) => {
     return (
         <> 
             <div className="flex gap-4 items-center">
-                <img src={imageUrl} className="bg-green-400 aspect-square max-w-32" />
+                {editMode 
+                    ? <input type="file" onChange={(e) => setFileUrl(e.target.files[0])} />
+                    : <img src={imageUrl} className="bg-green-400 aspect-square max-w-32" />
+                }
 
                 <hr className="h-full border-r border-black" />
 

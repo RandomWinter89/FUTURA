@@ -80,13 +80,23 @@ const ordersSlice = createSlice({
     initialState: {
         order: [],
         orderItem: [],
+        orderId: null,
         order_loading: false,
         orderItem_loading: false,
     },
-    reducers: {},
+    reducers: {
+        reset_OrderReceipt: (state) => {
+            state.orderItem = [];
+            state.orderItem_loading = false;
+        }, 
+        reset_orderId: (state) => {
+            state.orderId = null;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(createOrder.fulfilled, (state, action) => {
+                state.orderId = action.payload.data?.id;
                 state.order = [...state.order, action.payload.data];
             })
 
@@ -123,5 +133,7 @@ const ordersSlice = createSlice({
             });
     },
 });
+
+export const { reset_OrderReceipt } = ordersSlice.actions;
 
 export default ordersSlice.reducer;

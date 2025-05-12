@@ -4,7 +4,7 @@ import { Category } from "../../database/category";
 import { useState, useEffect } from "react";
 
 import { useDispatch } from "react-redux";
-import {  } from "../../features/productSlice";
+import { uploadProduct, uploadProductImage } from "../../features/productSlice";
 
 const Admin_DashboardPage = () => {
     const [ category, setCategory ] = useState([]);
@@ -31,11 +31,20 @@ const Admin_DashboardPage = () => {
     const onUpload_Product = (e) => {
         e.preventDefault();
 
-        if (prodName.trim().length == 0 || prodDesc.trim().length == 0 || prodPrice == 0.0 ||
-        prodSKU.trim().length == 0 || prodImg.trim().length == 0 )
+        if (prodName.trim().length == 0 || prodDesc.trim().length == 0 || prodPrice == 0.0 || prodSKU.trim().length == 0 || prodImg.trim().length == 0 )
             return;
 
-        
+        // Add Condition to identity if admin add same prodSKU or prodName
+
+        dispatch(uploadProduct({
+            category_id: selectedCat, 
+            name: prodName, 
+            description: prodDesc, 
+            base_price: prodPrice, 
+            sku: prodSKU })
+        ).then(() => 
+            dispatch( uploadProductImage({sku: prodSKU, file: prodImg}))
+        )
     }   
 
     return (
@@ -44,7 +53,7 @@ const Admin_DashboardPage = () => {
                 <h1>Admin Page</h1>
                 <hr className="border-black" />
 
-                <form className="flex flex-col gap-4">
+                <form onSubmit={onUpload_Product} className="flex flex-col gap-4">
                     <label className="flex gap-2">
                         Product Name:
                         <input 
@@ -112,7 +121,7 @@ const Admin_DashboardPage = () => {
                         Image:
                         <input 
                             type="file"
-                            onChange={(e) => setProdImg(e.target.value)}
+                            onChange={(e) => setProdImg(e.target.files[0])}
                             className="border border-black"
                         />
                     </label>

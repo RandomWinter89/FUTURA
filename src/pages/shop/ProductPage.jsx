@@ -5,10 +5,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { fetchProducts, fetchProductItem, fetch_ProductVariation } from "../../features/productSlice";
 import { createReview, fetch_productReviews } from "../../features/reviewSlice";
 import { fetchAllUser } from "../../features/usersSlice";
-import { fetchCartId, addCart_item } from "../../features/cartsSlice";
+import { addCart_item, updateItem_quantity } from "../../features/cartsSlice";
 
 import { AuthContext } from "../../Context/AuthProvider";
-import { fetchWishlistId, addWishlist_item } from "../../features/wishlistSlice";
+import { addWishlist_item } from "../../features/wishlistSlice";
 
 import { Card } from "../../components/ui";
 
@@ -16,8 +16,8 @@ const ProductPage  = () => {
     const { products, productItem, itemVariation } = useSelector((state) => state.products);
     const { productReviews, productReviews_loading } = useSelector((state) => state.reviews);
     const { users, users_loading } = useSelector((state) => state.users);
-    const { wishlist_id } = useSelector((state) => state.wishlists);
-    const { cart_id } = useSelector((state) => state.carts);
+    const { wishlist_id, wishlists } = useSelector((state) => state.wishlists);
+    const { carts, cart_id } = useSelector((state) => state.carts);
 
     const { currentUser } = useContext(AuthContext) || null;
 
@@ -30,18 +30,9 @@ const ProductPage  = () => {
 
     const finalPrice = parseFloat(selectCharge) + parseFloat(product?.base_price);
 
-    const [finalRating, setFinalRating] = useState(0);
-
-    const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    //Product . Product Variation . Variation
-    //User
-
     useEffect(() => {
-        if (products.length === 0)
-            dispatch(fetchProducts());
-
         if (productItem.length === 0)
             dispatch(fetchProductItem(parseInt(id)));
 
@@ -53,12 +44,6 @@ const ProductPage  = () => {
 
         if (users.length === 0)
             dispatch(fetchAllUser());
-
-        if (cart_id == null || cart_id.length == 0)
-            dispatch(fetchCartId(currentUser.uid));
-
-        if (wishlist_id == null)
-            dispatch(fetchWishlistId(currentUser.uid));
     }, [dispatch])
 
     useEffect(() => {
@@ -66,34 +51,35 @@ const ProductPage  = () => {
             setProduct(products.find(item => item.id === parseInt(id)));
     }, [products])
 
-    useEffect(() => {
-        if (productReviews.length !== 0) {
-            const total = productReviews.reduce((total, item) => total + item.rating_value, 0);
-            const average = total / productReviews.length;
-            setFinalRating(average);
-        }
-
-    }, [productReviews])
 
     const onAddCart = () => {
-        dispatch(addCart_item({
-            cart_id: cart_id, 
-            product_id: id, 
-            product_variation_id: selectedVariation, 
-            quantity: quantity
-        }));
+
+        if (!carts.some((data) => data.product_id == id && data.product_variation_id == selectedVariation)){
+            dispatch(addCart_item({
+                cart_id: cart_id, 
+                product_id: id, 
+                product_variation_id: selectedVariation, 
+                quantity: quantity
+            }));
+        } else {
+            const item = carts.find(data => data.product_id == id && data.product_variation_id == selectedVariation);
+            dispatch(updateItem_quantity({
+                cart_id: cart_id, 
+                product_id: id, 
+                product_variation_id: selectedVariation, 
+                quantity: parseInt(item) + 1
+            }))
+        }
     }
 
     const onAddWishlist = (e) => {
         e.preventDefault();
 
-        if (wishlist_id != null) {
-            dispatch(addWishlist_item({
-                uid: currentUser.uid, 
-                wishlist_id: wishlist_id, 
-                product_id: id
-            }));
-        }
+        if (wishlist_id === null)
+            return;
+
+        if (wishlists.length === 0 || !wishlists.some((data) => data.product_id === id))
+            return dispatch(addWishlist_item({uid: currentUser.uid, wishlist_id, id}));
     }
 
     // Section Comment:

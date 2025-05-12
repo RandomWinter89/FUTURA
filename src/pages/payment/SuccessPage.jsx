@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useContext} from "react";
 import { AuthContext } from "../../Context/AuthProvider";
 
-import { createOrder, create_OrderItem } from "../../features/orderedSlice";
-import { fetchCartId, fetchCart_item } from "../../features/cartsSlice";
+import { createOrder, create_OrderItem, reset_OrderReceipt } from "../../features/orderedSlice";
+import { fetchCartId, clearCartData, fetchCart_item } from "../../features/cartsSlice";
 import { fetchAddress } from "../../features/addressSlice";
 
 const SuccessPage = () => {
   const { cart_id, carts } = useSelector((state) => state.carts);
-  const { order, orderItem_loading} = useSelector((state) => state.orders);
+  const { order, orderId, orderItem_loading} = useSelector((state) => state.orders);
   const { address } = useSelector((state) => state.address);
   const { addressID } = useParams();
   const { currentUser } = useContext(AuthContext) || null;
@@ -47,17 +47,26 @@ const SuccessPage = () => {
   }, [dispatch, address])
 
   useEffect(() => {
-    if (order.length != 0){
-      carts.forEach((item) => {
-        dispatch(create_OrderItem({
-          order_id: order[0].id, 
-          product_id: item.product_id,
-          quantity: item.quantity, 
-          price: parseFloat(item.base_price) + parseFloat(item.extra_charge),
-          product_variation_id: item.product_variation_id
-        }));
-      });
-    }
+    const migrate_CartToOrder = async () => {
+      if (orderId != null && carts.length > 0) {
+        await Promise.all(
+          carts.map(item => 
+            dispatch(create_OrderItem({
+              order_id: order[0].id, 
+              product_id: item.product_id,
+              quantity: item.quantity, 
+              price: parseFloat(item.base_price) + parseFloat(item.extra_charge),
+              product_variation_id: item.product_variation_id
+            }))
+          )
+        );
+
+        dispatch(clearCartData());
+        dispatch(reset_OrderReceipt());
+      }
+    };
+
+    migrate_CartToOrder();
       
   }, [dispatch, order])
 

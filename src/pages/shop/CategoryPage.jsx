@@ -62,16 +62,12 @@ const CategoryPage = () => {
     }
 
     //Add wishlist id
-    const onAction_Wishlist = (product_id) => {        
-        const uid = currentUser.uid;
+    const onAction_Wishlist = (product_id) => {
         if (wishlist_id === null)
             return;
 
-        if (wishlists.length === 0 )
-            return dispatch(addWishlist_item({uid, wishlist_id, product_id}));
-            
-        if (wishlists.length !== 0 && !wishlists.some((data) => data.product_id === product_id)) 
-            return dispatch(addWishlist_item({uid, wishlist_id, product_id}));
+        if (wishlists.length === 0 || !wishlists.some((data) => data.product_id === product_id))
+            return dispatch(addWishlist_item({uid: currentUser.uid, wishlist_id, product_id}));
     }
 
     return (

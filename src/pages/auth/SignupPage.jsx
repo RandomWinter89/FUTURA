@@ -1,20 +1,17 @@
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
-import { createUser, uploadUser_Image } from "../../features/usersSlice";
+import { createUser } from "../../features/usersSlice";
 
 import { useDispatch } from "react-redux";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 const SignupPage = () => {
     // Email & Password
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [imageUrl, setImageUrl] = useState();
 
     // Dispatch Event
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const auth = getAuth();
 
     // Password Feedback
@@ -45,9 +42,7 @@ const SignupPage = () => {
             const uid = feedback.user.uid;
 
             dispatch(createUser({uid, email}));
-            dispatch(uploadUser_Image({uid, file:imageUrl}));
             setFeedback("");
-            // navigate("Auth/Register");
         } catch (error) {
             console.log(error);
         }
@@ -100,15 +95,6 @@ const SignupPage = () => {
                             className="size-4"
                         />
                         <p className="leading-none">Show password</p>
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <label className="font-medium px-4">File</label>
-                        <input 
-                            type="file"
-                            onChange={(e) => setImageUrl(e.target.files[0])}
-                            className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
-                        />
                     </div>
 
 

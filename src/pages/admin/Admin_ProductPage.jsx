@@ -53,6 +53,8 @@ const Admin_ProductPage = () => {
                 </div>
                 <p>You can edit one of them and confirm</p>
             </section>
+
+            
             {!products_loading && (
                 <section className="my-20 grid grid-cols-5 gap-4">
                     {products.map((prod) => 

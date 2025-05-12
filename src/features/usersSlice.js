@@ -67,6 +67,23 @@ export const createUser = createAsyncThunk(
     }
 );
 
+export const createUser_Full = createAsyncThunk(
+    'users/createUser_Full',
+    async ({uid, username, email, phone, gender, birth}) => {
+        const body = {
+            uid,
+            username,
+            email,
+            phone,
+            gender,
+            birth
+        };
+
+        const response = await axios.post(`${VITE_FUTURA_API}/users/signup_full`, body);
+        return response.data;
+    }
+);
+
 // Upload personal (image)
 export const uploadUser_Image = createAsyncThunk(
     'users/uploadUser_Image',
@@ -122,14 +139,16 @@ export const updateUser = createAsyncThunk(
 
 //Update personal (image)
 export const updateUser_Image = createAsyncThunk(
+    'users/updateUser_Image',
     async ({ uid, newFile }) => {
         try {
+            console.log("Receive Update: ", newFile);
             let newImageUrl;
 
             if (newFile != null) {
                 const imageRef = ref(storage, `users/${newFile.name}`);
                 const response = await uploadBytes(imageRef, newFile);
-                newImageUrl = await getDownloadURL(response);
+                newImageUrl = await getDownloadURL(response.ref);
             }
 
             const userRef = doc(db, `users/${uid}`);
@@ -226,6 +245,15 @@ const usersSlice = createSlice({
                 state.personal_loading = true;
             })
 
+        builder
+            .addCase(createUser_Full.fulfilled, (state, action) => {
+                state.personal = action.payload.data;
+                state.personal_loading = false;
+            })
+            .addCase(createUser_Full.pending, (state) => {
+                state.personal_loading = true;
+            })
+
         // Update User =============>
         builder
             .addCase(updateUser.fulfilled, (state, action) => {
@@ -234,6 +262,11 @@ const usersSlice = createSlice({
             })
             .addCase(updateUser.pending, (state) => {
                 state.personal_loading = true;
+            })
+
+        builder
+            .addCase(updateUser_Image.fulfilled, (state, action) => {
+                state.personalImage = action.payload;
             })
 
         // Delete User =============>
