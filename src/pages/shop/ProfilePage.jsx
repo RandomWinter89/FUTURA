@@ -35,6 +35,13 @@ const Address = () => {
         e.preventDefault();
 
         //Remember to add algorithm to prevent empty input
+        if (address_line1.trim().length == 0 || 
+            address_line2.trim().length == 0 ||
+            city.trim().length == 0 || 
+            region.trim().length == 0 || 
+            postal_code.trim().length == 0 
+        )
+            return;
 
         if (submitMode) {
             dispatch(createAddress({
@@ -199,9 +206,34 @@ const Address = () => {
     )
 }
 
-const Review = () => {
+const ConfirmationModal = ({show, onHide, onRemove}) => {
 
+    if (!show) return null;
+
+    return (
+        <div 
+            className="fixed inset-0 flex bg-gray-200 bg-opacity-35"
+            role="dialog"
+            arial-modal="true"
+        >
+            <div className='size-80 m-auto flex flex-col gap-4 justify-center text-center border-black border p-4 bg-white'>
+                <h2>ARE YOU SURE?</h2>
+                <p>You will loss the account forever</p>
+                <hr />
+
+                <div className="flex gap-4">
+                    <button onClick={onRemove} className="flex-1 border border-black py-2 bg-red-500 text-white">
+                        DELETE
+                    </button>
+                    <button onClick={onHide} className="flex-1 border border-black py-2 ">
+                        CANCEL
+                    </button>
+                </div>
+            </div>
+        </div>
+    )
 }
+
 
 const UserProfile = ({info, imageUrl}) => {
     const { currentUser } = useContext(AuthContext) || null;
@@ -212,6 +244,8 @@ const UserProfile = ({info, imageUrl}) => {
     const [gender, setGender] = useState(info?.gender);
     const [birth, setBirth] = useState(info?.birth);
     const [editMode, setEditMode] = useState(false);
+
+    const [open, setOpen] = useState(false);
 
     const dispatch = useDispatch();
     const auth = getAuth();
@@ -309,9 +343,11 @@ const UserProfile = ({info, imageUrl}) => {
 
             <hr className="border-black" />
 
-            <button onClick={onRemove_Profile} className="text-lg font-medium uppercase py-2 bg-red-700 text-white transition-all hover:bg-red-900 hover:rounded-lg">
+            <button onClick={() => setOpen(true)} className="text-lg font-medium uppercase py-2 bg-red-700 text-white transition-all hover:bg-red-900 hover:rounded-lg">
                 Delete Account
             </button>
+
+            <ConfirmationModal show={open} onHide={() => setOpen(false)} onRemove={() => onRemove_Profile()}/>
         </>
     )
 }

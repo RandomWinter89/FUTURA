@@ -17,15 +17,15 @@ const CartItem = ({
     size, 
     quantity, 
     price,
-    extraCharge,
-    discount = 1.00
+    image,
+    extraCharge
 }) => {
 
-    const subtotal = ((parseFloat(price) + parseFloat(extraCharge)) * quantity) * discount;
+    const subtotal = ((parseFloat(price) + parseFloat(extraCharge)) * quantity);
 
     return (
         <div className="w-fit h-40 flex gap-2 border border-black p-4">
-            <img className="flex-1 bg-orange-300 w-64 h-full"/>
+            <img src={image} className="flex-1 bg-orange-300 w-64 h-full"/>
 
             <div className="flex flex-col my-auto">
                 <p>Product Name: {name}</p>
@@ -135,6 +135,7 @@ const CheckoutPage = () => {
                             size={item.value2}
                             quantity={item.quantity}
                             price = {item.base_price}
+                            image = {item.thumbnail_url}
                             extraCharge = {item.extra_charge}
                         />
                     )}

@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { fetchProducts } from "../../features/productSlice";
 import { addWishlist_item } from "../../features/wishlistSlice";
 import { Category } from "../../database/category";
 
@@ -10,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Card } from "../../components/ui";
+import { Card, ToastOverlay } from "../../components/ui";
 
 
 const CategoryPage = () => {
@@ -21,15 +20,18 @@ const CategoryPage = () => {
     const [activeCategories, setActiveCategories] = useState([]);
     const [selectedCategories, setSelectedCategories] = useState([]);
 
+    const [desc, setDesc] = useState("");
+    const [open, setOpen] = useState(false);
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     //==========================>
 
-    useEffect(() => {
-        if (products.length == 0)
-            dispatch(fetchProducts());
-    }, [dispatch])
+    // useEffect(() => {
+    //     if (products.length == 0)
+    //         dispatch(fetchProducts());
+    // }, [dispatch])
 
     useEffect(() => {
         if (categories.length != 0)
@@ -51,6 +53,14 @@ const CategoryPage = () => {
         );
     };
 
+    const onToggle_All = () => {
+        setSelectedCategories((prev) => 
+            prev.length === categories.length
+            ? []
+            : categories.map((cat) => cat.id)
+        );
+    }
+
     const onWishlistProduct = ({id}) => {
         console.log(id);
 
@@ -61,13 +71,23 @@ const CategoryPage = () => {
         }
     }
 
-    //Add wishlist id
-    const onAction_Wishlist = (product_id) => {
-        if (wishlist_id === null)
+    const onAction_Wishlist = (id) => {
+        if (wishlist_id == null)
             return;
 
-        if (wishlists.length === 0 || !wishlists.some((data) => data.product_id === product_id))
-            return dispatch(addWishlist_item({uid: currentUser.uid, wishlist_id, product_id}));
+        if (!wishlists.length || !wishlists.some((data) => data.product_id == id)) {
+            dispatch(addWishlist_item({
+                uid: currentUser.uid, 
+                wishlist_id: wishlist_id, 
+                product_id: id
+            }));
+
+            setDesc("Added to wishlists");
+            setOpen(true);
+        } else {
+            setDesc("This item is in wishlist already");
+            setOpen(true);
+        }
     }
 
     return (
@@ -80,6 +100,10 @@ const CategoryPage = () => {
             <section className="flex gap-10 justify-between">
                 {/* Category */}
                 <ul className="w-fit flex flex-col gap-2">
+                    <label className="flex gap-4">
+                        <input type="checkbox" checked={selectedCategories.length == categories.length} onChange={() => onToggle_All()} />
+                        Toggle All
+                    </label>
                     {categories
                         .filter((cat) => cat.parent_category_id === null)
                         .map((parent) => (
@@ -123,6 +147,8 @@ const CategoryPage = () => {
                     }
                 </div>
             </section>
+
+            <ToastOverlay show={open} onHide={() => setOpen(false)} desc={desc}/>
         </>
     )
 }

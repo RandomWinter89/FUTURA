@@ -26,7 +26,7 @@ const Header = () => {
                 <nav className="h-fit flex gap-6 max-lg:gap-4 max-sm:flex-col max-sm:gap-1">
                     <Link to="/Shop/Homepage" className="text-5xl max-lg:text-3xl max-sm:text-lg max-sm:font-bold">FUTURA</Link>
                     <NavLink path={"/Shop/Category"} name={"Category"}/>
-                    <NavLink path={"/Shop/Promotion"} name={"Promotion"}/>
+                    {/* <NavLink path={"/Shop/Promotion"} name={"Promotion"}/> */}
                 </nav>
                 
                 <nav className="h-fit flex gap-6 items-end max-sm:gap-2 max-sm:flex-col">

@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 const VITE_FUTURA_API = import.meta.env.VITE_FUTURA_API;
@@ -7,7 +7,7 @@ const VITE_FUTURA_API = import.meta.env.VITE_FUTURA_API;
 export const createWishlist = createAsyncThunk(
     'users/CreateWishlist',
     async (uid) => {
-        const response = await axios.post(`${VITE_FUTURA_API}/users/${uid}/wishlist`);
+        const response = await axios.post(`${VITE_FUTURA_API}/users/${uid}/wishlist_id`);
         return response.data;
     }
 );
@@ -15,31 +15,35 @@ export const createWishlist = createAsyncThunk(
 export const fetchWishlistId = createAsyncThunk(
     'users/fetchWishlistId',
     async (uid) => {
-        const response = await axios.get(`${VITE_FUTURA_API}/users/${uid}/wishlist`);
+        const response = await axios.get(`${VITE_FUTURA_API}/users/${uid}/wishlist_id`);
         return response.data;
     }
 );
 
+//
 export const fetchWishlist_item = createAsyncThunk(
     'users/fetchWishlist_item',
-    async (wishlist_id) => {
-        const response = await axios.get(`${VITE_FUTURA_API}/wishlist/${wishlist_id}/items`);
+    async (uid) => {
+        const response = await axios.get(`${VITE_FUTURA_API}/users/${uid}/wishlist`);
         return response.data;
     }
 )
 
+// == ADD item to wishlist
 export const addWishlist_item = createAsyncThunk(
     'users/addWishlist_item',
     async ({uid, wishlist_id, product_id}) => {
         const body = {
-            wishlist_id: wishlist_id,
+            product_id: product_id,
+            wishlist_id: wishlist_id
         }
 
-        const response = await axios.post(`${VITE_FUTURA_API}/users/${uid}/wishlist/${product_id}`, body)
+        const response = await axios.post(`${VITE_FUTURA_API}/users/${uid}/wishlist`, body)
         return response.data;
     }
 )
 
+// == REMOVE item from wishlist
 export const removeWishlist_item = createAsyncThunk(
     'users/removeWishlist_item',
     async ({uid, product_id, wishlist_id}) => {
@@ -47,11 +51,12 @@ export const removeWishlist_item = createAsyncThunk(
         const response = await axios.delete(`${VITE_FUTURA_API}/users/${uid}/wishlist/${product_id}`, { 
             data: {wishlist_id}
         });
+
         return response.data;
     }
 )
 
-// export const fetch_PersonalFollowing 
+
 const wishlistsSlice = createSlice({
     name: "cartsSlice",
     initialState: {
@@ -90,6 +95,7 @@ const wishlistsSlice = createSlice({
         
         builder
             .addCase(addWishlist_item.fulfilled, (state, action) => {
+                console.log("ADD WISHLIST: ", action.payload);
                 state.wishlists = [...state.wishlists, action.payload];
                 state.loading = false;
             })
@@ -100,11 +106,7 @@ const wishlistsSlice = createSlice({
         builder
             .addCase(removeWishlist_item.fulfilled, (state, action) => {
                 state.wishlists = state.wishlists.filter((item) => item.id !== action.payload.id);
-                state.loading = false;
             })
-            .addCase(removeWishlist_item.pending, (state) => {
-                state.loading = true;;
-            });
 
     },
 });

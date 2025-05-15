@@ -8,7 +8,7 @@ const NavLink = ({path, name}) => {
             className="
                 text-2xl 
                 max-lg:text-xl max-sm:text-sm 
-                hover:bg-black hover:w-full hover:p-2 hover:rounded-md hover:text-white transition-all
+                hover:bg-black hover:p-2 hover:rounded-md hover:text-white transition-all
             "
         >
             {name}

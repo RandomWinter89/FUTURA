@@ -1,11 +1,10 @@
-import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useContext} from "react";
 import { AuthContext } from "../../Context/AuthProvider";
 
 import { createOrder, create_OrderItem, reset_OrderReceipt } from "../../features/orderedSlice";
-import { fetchCartId, clearCartData, fetchCart_item } from "../../features/cartsSlice";
-import { fetchAddress } from "../../features/addressSlice";
+import { clearCart } from "../../features/cartsSlice";
 
 const SuccessPage = () => {
   const { cart_id, carts } = useSelector((state) => state.carts);
@@ -16,21 +15,6 @@ const SuccessPage = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (cart_id == null)
-      dispatch(fetchCartId(currentUser.uid));
-
-    if (address.length == 0)
-      dispatch(fetchAddress(currentUser.uid));
-  }, [dispatch])
-
-  useEffect(() => {
-    if (cart_id != null){
-      dispatch(fetchCart_item(cart_id));
-    }
-
-  }, [dispatch, cart_id])
 
   useEffect(() => {
     if (carts.length != 0 && address.length != 0) {
@@ -49,20 +33,24 @@ const SuccessPage = () => {
   useEffect(() => {
     const migrate_CartToOrder = async () => {
       if (orderId != null && carts.length > 0) {
-        await Promise.all(
-          carts.map(item => 
-            dispatch(create_OrderItem({
-              order_id: order[0].id, 
-              product_id: item.product_id,
-              quantity: item.quantity, 
-              price: parseFloat(item.base_price) + parseFloat(item.extra_charge),
-              product_variation_id: item.product_variation_id
-            }))
-          )
-        );
+        try { 
+          await Promise.all(
+            carts.map(item => 
+              dispatch(create_OrderItem({
+                order_id: orderId, 
+                product_id: item.product_id,
+                quantity: item.quantity, 
+                price: parseFloat(item.base_price) + parseFloat(item.extra_charge),
+                product_variation_id: item.product_variation_id
+              }))
+            )
+          );
 
-        dispatch(clearCartData());
-        dispatch(reset_OrderReceipt());
+          dispatch(clearCart(cart_id));
+          dispatch(reset_OrderReceipt());
+        } catch (error) {
+          console.error("MIGRATION FAILED: ", error);
+        }
       }
     };
 
@@ -77,10 +65,10 @@ const SuccessPage = () => {
       {orderItem_loading && <p>Processing the cart to order</p>}
       {!orderItem_loading && 
         <button 
-          onClick={() => navigate("/User/Order")}
+          onClick={() => navigate("/Shop/Homepage")}
           className="border border-black py-2 px-8 rounded-xl hover:bg-black hover:text-white"
         >
-          Check your order
+          Return homepage
         </button>
       }
     </main>

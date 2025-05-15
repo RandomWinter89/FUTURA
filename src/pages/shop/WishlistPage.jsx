@@ -21,29 +21,27 @@ const WishlistPage = () => {
             const uid = currentUser.uid;
             dispatch(fetchWishlistId(uid));
         }
-
         
     }, [dispatch])
 
     useEffect(() => {
         if (wishlist_id != null && wishlists.length === 0)
-            dispatch(fetchWishlist_item(wishlist_id));
+            dispatch(fetchWishlist_item(currentUser.uid));
     }, [dispatch, wishlist_id])
 
     // ==== Function ===================>
 
     const onRemove_WishlistItem = (product_id) => {
-        const uid = currentUser.uid;
-        dispatch(removeWishlist_item({uid, product_id, wishlist_id}))
+        dispatch(removeWishlist_item({uid: currentUser.uid, product_id, wishlist_id}))
     }
 
     const onAdd_Cart = (product_id) => { 
         console.log("Product_id: ", product_id);
     }
 
-    const removeButton = () => {
-        dispatch(resetWishlist());
-    }
+    // const removeButton = () => {
+    //     dispatch(resetWishlist());
+    // }
 
     // ==== Return Content ============>
 
@@ -54,7 +52,7 @@ const WishlistPage = () => {
                 <p>Here's your wishlist collect: You can add at category or product</p>
             </section>
             
-            <button onClick={removeButton}>Reset</button>
+            {/* <button onClick={removeButton}>Reset</button> */}
             <section>
                 {(loading && wishlists.length === 0) && <p>Loading</p>}
                 {(!loading && wishlists.length == 0) 

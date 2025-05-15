@@ -9,7 +9,7 @@ const AuthChecker = ({auth_user, data_user, loading, children}) => {
     // ==========================
     console.log("Hi, We're the maintainer of AuthChecker");
     console.log("We're locating at: ", location);
-    console.log("We do checking to ensure it correct: ", !auth_user);
+    console.log("We do checking to ensure it correct: ", data_user?.role);
 
     //Catcher: Responsible if data failed to checkout
     if (!auth_user && data_user)

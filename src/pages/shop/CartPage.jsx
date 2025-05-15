@@ -8,27 +8,25 @@ import { fetchPromotion } from "../../features/promotionSlice";
 import { AuthContext } from "../../Context/AuthProvider";
 
 const CartItem = ({
-        name, 
-        color, 
-        size, 
-        quantity, 
-        price,
-        extraCharge,
-        discount = 1.00, 
+        data,
+        product,
+        quantity,
         onCallUpdate,
-        onCallRemoval
+        onCallRemoval,
     }) => {
 
-    const subtotal = ((parseFloat(price) + parseFloat(extraCharge)) * quantity) * discount;
+    const subtotal = ((parseFloat(data.base_price) + parseFloat(data.extra_charge)) * data.quantity);
 
+    console.log("imageUrl", data);
     return (
         <div className="w-fit h-40 flex gap-2 border border-black p-4">
-            {/* <img src={data.imageUrl} className="flex-1 bg-orange-300 w-64 h-full"/> */}
+            
+            <img src={product.imageUrl} className="flex-1 bg-orange-300 w-64 h-full"/>
 
             <div className="flex flex-col my-auto">
-                <p>Product Name: {name}</p>
-                {color != null && <p>Color: {color}</p>}
-                {size != null && <p>Size: {size}</p>}
+                <p>Product Name: {data.name}</p>
+                {data.name1 != null && <p>Color: {data.value1}</p>}
+                {data.name2 != null && <p>Size: {data.value2}</p>}
 
                 <hr className="border-black"/>
 
@@ -38,6 +36,7 @@ const CartItem = ({
                     type="number" 
                     value={quantity} 
                     min="1"
+                    max="99"
                     onChange={(e) => onCallUpdate({quantity: parseInt(e.target.value)})} 
                 />
             </div>
@@ -54,17 +53,12 @@ const CartItem = ({
 
 const CartPage = () => {
     const [cartQuantities, setCartQuantities] = useState({});
-    const [selectedDiscount, setSelectedDiscount] = useState("");
     const [total, setTotal] = useState(0.00);
 
     // User Authentication
     const { cart_id, carts, cart_loading } = useSelector((state) => state.carts);
-    const { promotion, } = useSelector((state) => state.promotions);
+    const { products } = useSelector((state) => state.products);
     const { currentUser } = useContext(AuthContext) || null;
-
-    // Product, Item, Variation
-    // Cart
-    // promotion
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -72,9 +66,6 @@ const CartPage = () => {
     useEffect(() => {
         if (cart_id == null)
             dispatch(fetchCartId(currentUser.uid));
-
-        if (promotion.length == 0)
-            dispatch(fetchPromotion());
     }, [dispatch]);
 
     useEffect(() => {
@@ -88,10 +79,21 @@ const CartPage = () => {
             const price = carts.reduce((total, item) => 
                 total + ((parseFloat(item.base_price) + parseFloat(item.extra_charge)) * item.quantity)
             , 0)
-            console.log("Total: ", price)
             setTotal(price);
+        } else {
+            setTotal(0);
         }
     }, [carts])
+
+    useEffect(() => {
+        if (carts.length > 0) {
+            const initialQuantities = {};
+            carts.forEach(item => {
+                initialQuantities[item.id] = item.quantity;
+            });
+            setCartQuantities(initialQuantities);
+        }
+    }, [carts]);
 
     const onReceiveCall = (itemIndex, quantity, product_id, product_variation_id) => {
         setCartQuantities(prevState => ({
@@ -115,9 +117,6 @@ const CartPage = () => {
         }))
     }
 
-    const discount = selectedDiscount.trim().length != 0 ? parseFloat(selectedDiscount) : 1;
-
-    const onReturn = () => navigate(-1);
     const onNavigate_Homepage = () => navigate("/Shop/Homepage");
 
     return (
@@ -127,14 +126,10 @@ const CartPage = () => {
                 <section className="flex flex-wrap gap-4 bg-green-50">
                     {carts.map((item, index) => 
                         <CartItem key={index}
-                            name={item.name}
-                            color={item.value1}
-                            size={item.value2}
-                            quantity={cartQuantities[index] || 1}
-                            price={item.base_price}
-                            extraCharge={item.extra_charge}
-                            discount={1}
-                            onCallUpdate={({quantity}) => onReceiveCall(index, quantity, item.product_id, item.product_variation_id)}
+                            data={item}
+                            product={products.find((prev) => prev.id == item.product_id)}
+                            quantity={cartQuantities[item.id]}
+                            onCallUpdate={({quantity}) => onReceiveCall(item.id, quantity, item.product_id, item.product_variation_id)}
                             onCallRemoval={() => onReceiveCall_Remove(item.product_id, item.product_variation_id)}
                         /> 
                     )}
@@ -147,27 +142,23 @@ const CartPage = () => {
                         <hr className="border-black mb-4"/>
 
                         <p>Subtotal: MYR {total}</p>
-                        {selectedDiscount.trim().length != 0 && <p>Discount: {100 - (parseFloat(selectedDiscount) * 100)}%</p>}
-                        <p>Order total: MYR {total * discount}</p>
+                        <p>Order total: MYR {total}</p>
 
                         <hr className="border-black my-4"/>
-                        <button onClick={() => navigate("/User/Checkout")} className="border border-black py-4">Proceed Checkout</button>
+                        <button onClick={() => navigate("/User/Checkout")} 
+                            className="border border-black py-4 bg-emerald-300"
+                        >
+                            Proceed Checkout
+                        </button>
+                        <button 
+                            onClick={onNavigate_Homepage}
+                            className="border border-black bg-red-500 text-white font-bold mt-4 p-4 rounded-lg hover:bg-black hover:text-white"
+                        >
+                            Continue Shopping
+                        </button>
                     </div>
 
-                    <label>Promotion Discount</label>
-                    <select onChange={(e) => setSelectedDiscount(e.target.value)} className="border border-black p-1">
-                        <option value="">None</option>
-                        {promotion.map((data, index) => 
-                            <option key={index} value={data.offer}>{data.name}: {100 - (parseFloat(data.offer) * 100)}%</option>
-                        )}
-                    </select>
-
-                    <button 
-                        onClick={onNavigate_Homepage}
-                        className="border border-black py-1 px-6 rounded-lg hover:bg-black hover:text-white"
-                    >
-                        Continue Shopping
-                    </button>
+                    
                 </section>
             </section>
         </>

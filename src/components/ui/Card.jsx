@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { Category } from "../../database/category";
 
 const Card = ({product, imageUrl = "NONE", onAddWishlist}) => {
     const navigate = useNavigate();
@@ -8,6 +9,8 @@ const Card = ({product, imageUrl = "NONE", onAddWishlist}) => {
         e.stopPropagation();
         onAddWishlist();
     }
+
+    const productCat = Category.find(prev => prev.id == product.category_id).category_name;
 
     //Grid or Row
     return (
@@ -27,7 +30,7 @@ const Card = ({product, imageUrl = "NONE", onAddWishlist}) => {
 
             <div className="flex-1 flex flex-col gap-2 p-2 bg-white">
                 <div className="flex justify-between items-center">
-                    <p>COLOR</p>
+                    {/* <p>COLOR</p> */}
                     <button 
                         onClick={onCalledWishlist} 
                         className="
@@ -42,7 +45,7 @@ const Card = ({product, imageUrl = "NONE", onAddWishlist}) => {
                 <hr className="border-t border-black"/>
 
                 <div className="flex justify-between text-gray-700">
-                    <p>Category</p>
+                    <p>{productCat}</p>
                     <p>Size</p>
                 </div>
 

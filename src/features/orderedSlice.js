@@ -118,6 +118,18 @@ const ordersSlice = createSlice({
                 state.orderItem_loading = true;
             });
 
+        //UPDATE ORDER STATUS
+        builder
+            .addCase(updateOrderStatus.fulfilled, (state, action) => {
+                const data = action.payload.data;
+                state.order = state.order.map((item) => {
+                    if (item.id == data.id)
+                        return {...item, order_status: data.order_status}
+
+                    return item;
+                })
+            })
+
         builder
             .addCase(fetchAllOrder.fulfilled, (state, action) => {
                 state.order = action.payload.data;

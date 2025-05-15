@@ -9,8 +9,7 @@ const VITE_FUTURA_API = import.meta.env.VITE_FUTURA_API;
 
 // ---------------------------------------------------------
 
-
-//Fetch product (data)
+//FETCH PRODUCTS (DATA)
 export const fetchProducts = createAsyncThunk(
     'products/fetchProducts',
     async () => {
@@ -19,7 +18,7 @@ export const fetchProducts = createAsyncThunk(
     }
 );
 
-//Fetch product (image)
+//FETCH PRODUCT (IMAGE)
 export const fetchImageProduct = createAsyncThunk(
     'products/fetchImageProduct',
     async () => {
@@ -41,7 +40,7 @@ export const fetchImageProduct = createAsyncThunk(
 
 // == CREATE/UPLOAD =================
 
-//Create product (data)
+//CREATE PRODUCT (DATA)
 export const uploadProduct = createAsyncThunk(
     'admin/uploadProduct',
     async ({category_id, name, description, base_price, sku}) => {
@@ -52,25 +51,25 @@ export const uploadProduct = createAsyncThunk(
     }
 )
 
-//Create product (image)
+//CREATE PRODUCT (IMAGE)
 export const uploadProductImage = createAsyncThunk(
     'admin/uploadProductImage',
-    async ({sku, file}) => {
+    async ({sku, prodImg}) => {
         try {
-            let imageUrl = "";
+            let thumbnail_url = "";
 
-            if (file != null) {
-                const imageRef = ref(storage, `products/${file.name}`);
-                const response = await uploadBytes(imageRef, file);
-                imageUrl = await getDownloadURL(response.ref);
+            if (prodImg != null) {
+                const imageRef = ref(storage, `product/${prodImg.name}`);
+                const response = await uploadBytes(imageRef, prodImg);
+                thumbnail_url = await getDownloadURL(response.ref);
             }
 
-            const prodRef = doc(db, `products`);
-            await setDoc(prodRef, {imageUrl})
+            const prodRef = doc(db, `products/${sku}`);
+            await setDoc(prodRef, {thumbnail_url})
 
             const product = {
                 id: sku,
-                imageUrl
+                thumbnail_url: prodImg
             }
 
             return product;
@@ -81,25 +80,39 @@ export const uploadProductImage = createAsyncThunk(
     }
 );
 
-// == UPDATE =======================
+// == Product Variation =======================
+//CREATE PRODUCT VARIATION
+export const create_ProdVariation = createAsyncThunk(
+    'admin/create_ProdVariation',
+    async ({id, optionA_id, optionB_id, quantity, charge}) => {
+        const body = { optionA_id, optionB_id, quantity, charge };
 
-//Update product (data - quantity edition)
-// export const updateProduct_Data = createAsyncThunk(
-//     'admin/updateProduct_Data',
-//     async ({}) => {
-//         const response = await axios.put(`${VITE_FUTURA_API}/products`);
-//         return response.data;
-//     }
-// )
+        const response = await axios.post(`${VITE_FUTURA_API}/products/${id}/variations`, body);
+        return response.data;
+    }
+)
 
-//Update product (image - new display)
+//UPDATE PRODUCT VARIATION - STOCK
+export const update_ProdStock = createAsyncThunk(
+    'admin/update_ProdStock',
+    async ({id, quantity}) => {
+        const body = { quantity };
+
+        const response = await axios.put(`${VITE_FUTURA_API}/products/${id}/variations`, body);
+        return response.data;
+    }
+)
+
+//=============================?
+
+//UPDATE PRODUCT IMAGE
 export const updateProduct_Image = createAsyncThunk(
     async ({ prodID, newFile }) => {
         try {
             let newImageUrl;
 
             if (newFile != null) {
-                const imageRef = ref(storage, `products/${newFile.name}`);
+                const imageRef = ref(storage, `product/${newFile.name}`);
                 const response = await uploadBytes(imageRef, newFile);
                 newImageUrl = await getDownloadURL(response);
             }
@@ -112,7 +125,7 @@ export const updateProduct_Image = createAsyncThunk(
 
                 const updatedData = {
                     ...prodData,
-                    imageUrl: newImageUrl || prodData.imageUrl,
+                    thumbnail_url: newImageUrl || prodData.imageUrl,
                 };
 
                 await updateDoc(prodRef, updatedData);
@@ -129,8 +142,7 @@ export const updateProduct_Image = createAsyncThunk(
     }
 )
 
-
-// Fetch Product's Data (Type and Variation) =================================== >
+//GET PRODUCT'S VARIATION
 export const fetchProductItem = createAsyncThunk(
     'products/fetchProductItem',
     async (id) => {
@@ -139,6 +151,7 @@ export const fetchProductItem = createAsyncThunk(
     }
 );
 
+//GET PRODUCT VARIATION
 export const fetch_ProductVariation = createAsyncThunk(
     'products/fetch_ProductVariation',
     async () => {
@@ -146,7 +159,6 @@ export const fetch_ProductVariation = createAsyncThunk(
         return response.data;
     }
 );
-
 
 // ---------------------------------------------------------
 
@@ -188,16 +200,38 @@ const productsSlice = createSlice({
                 });
             })
 
+        builder
+            .addCase(uploadProduct.fulfilled, (state, action) => {
+                state.products = [...state.products, action.payload.data]
+            })
+
+        builder
+            .addCase(create_ProdVariation.fulfilled, (state, action) => {
+                state.productItem = [...state.productItem, action.payload.data];
+            })
+
+        builder
+            .addCase(update_ProdStock.fulfilled, (state, action) => {
+                state.productItem = state.productItem.map((prev) => {
+                    if (prev.id == action.payload.id)
+                        return {...prev, quantity: action.payload.quantity}
+
+                    return prev;
+                })
+            })
+
         
         builder
             .addCase(fetchProductItem.fulfilled, (state, action) => {
-                console.log("Item: ", action.payload);
                 state.productItem = action.payload;
                 state.productItem_loading = false;
             })
             .addCase(fetchProductItem.pending, (state) => {
                 state.productItem_loading = true;
-            });
+            })
+            .addCase(fetchProductItem.rejected, (state) => {
+                state.productItem = [];
+            })
 
         builder
             .addCase(fetch_ProductVariation.fulfilled, (state, action) => {

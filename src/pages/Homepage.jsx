@@ -1,47 +1,34 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 
 import { AuthContext } from "../Context/AuthProvider";
-import { fetchProducts, fetchImageProduct } from "../features/productSlice";
+import { addWishlist_item } from "../features/wishlistSlice";
 
-import { fetchWishlistId, fetchWishlist_item, addWishlist_item } from "../features/wishlistSlice";
-
-import { Card } from "../components/ui";
+import { ToastOverlay, Card } from "../components/ui";
 
 const Homepage = () => {
     const { products, products_loading } = useSelector((state) => state.products);
     const { wishlist_id, wishlists } = useSelector((state) => state.wishlists);
     const { currentUser } = useContext(AuthContext) || null;
 
+    const [open, setOpen] = useState(false);
+
     const dispatch = useDispatch();
-
-    useEffect(() => {
-        if (wishlist_id == null)
-            dispatch(fetchWishlistId(currentUser.uid));
-    }, [dispatch])
-
-    useEffect(() => {
-        if (wishlist_id != null && wishlists.length == 0) {
-            dispatch(fetchWishlist_item(wishlist_id));
-        }
-    }, [dispatch, wishlist_id])
 
     const onWishlistProduct = (id) => {
         if (wishlist_id == null)
             return;
 
-        if (!wishlists.length || !wishlists.some((data) => data.product_id === id)) {
+        if (!wishlists.length || !wishlists.some((data) => data.product_id == id)) {
             dispatch(addWishlist_item({
                 uid: currentUser.uid, 
                 wishlist_id: wishlist_id, 
                 product_id: id
             }));
+
+            setOpen(true);
         }
     }
-
-    useEffect(() => {
-        console.log("HOMEPAGE REPORT:: Loading State (", products_loading, ")");
-    }, []);
     
     return (
         < >
@@ -96,7 +83,7 @@ const Homepage = () => {
                     {!products_loading && products
                         .slice()
                         .sort(() => Math.random() - 0.5)
-                        .slice(0, 3)
+                        .slice(0, 5)
                         .map(data => (
                             <Card 
                                 key={data.id} 
@@ -108,6 +95,8 @@ const Homepage = () => {
                     }
                 </div>
             </section>
+
+            <ToastOverlay show={open} onHide={() => setOpen(false)} desc={"Wishlist Added"}/>
         </>
     )
 }

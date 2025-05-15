@@ -6,7 +6,7 @@ const AdminLayout = () => {
     return (
         < >
             <Header/>
-            <main>
+            <main className="flex flex-col gap-20 my-10">
                 <Outlet />
             </main>
         </>

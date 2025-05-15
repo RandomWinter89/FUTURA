@@ -31,7 +31,7 @@ const Admin_DashboardPage = () => {
     const onUpload_Product = (e) => {
         e.preventDefault();
 
-        if (prodName.trim().length == 0 || prodDesc.trim().length == 0 || prodPrice == 0.0 || prodSKU.trim().length == 0 || prodImg.trim().length == 0 )
+        if (prodName.trim().length == 0 || prodDesc.trim().length == 0 || prodPrice == 0.0 || prodSKU.trim().length == 0)
             return;
 
         // Add Condition to identity if admin add same prodSKU or prodName
@@ -43,7 +43,7 @@ const Admin_DashboardPage = () => {
             base_price: prodPrice, 
             sku: prodSKU })
         ).then(() => 
-            dispatch( uploadProductImage({sku: prodSKU, file: prodImg}))
+            dispatch( uploadProductImage({sku: prodSKU, prodImg}))
         )
     }   
 
@@ -54,39 +54,43 @@ const Admin_DashboardPage = () => {
                 <hr className="border-black" />
 
                 <form onSubmit={onUpload_Product} className="flex flex-col gap-4">
-                    <label className="flex gap-2">
+                    <label className="flex flex-col gap-2">
                         Product Name:
                         <input 
                             type="text" 
                             onChange={(e) => setProdName(e.target.value)}
-                            className="border border-black"
+                            className="flex-1 p-2 border border-black"
                         />
                     </label>
 
-                    <label className="flex gap-2">
+                    <label className="flex flex-col gap-2">
                         Description:
                         <input 
                             type="text" 
                             onChange={(e) => setProdDesc(e.target.value)}
-                            className="border border-black"
+                            className="flex-1 p-2 border border-black"
                         />
                     </label>
 
-                    <label className="flex gap-2">
+                    <label className="flex flex-col gap-2">
                         Pricing:
                         <input 
                             type="number"
                             min="0.00"
                             onChange={(e) => setProdPrice(e.target.value)}
-                            className="border border-black"
+                            className="flex-1 p-2 border border-black"
                         />
                     </label>
 
 
                     {/* Select Category */}
-                    <label className="flex gap-2">
-                        Product Category
-                        <select value={selectedCat} onChange={(e) => setSelectedCat(e.target.value)}>
+                    <label className="flex flex-col gap-2">
+                        Product Category:
+                        <select 
+                            value={selectedCat} 
+                            onChange={(e) => setSelectedCat(e.target.value)}
+                            className="flex-1 p-2"
+                        >
                             {category.map((parent) => 
                                 < >
                                     <option value={parent.id}>
@@ -108,25 +112,27 @@ const Admin_DashboardPage = () => {
                         </select>
                     </label>
 
-                    <label className="flex gap-2">
+                    <label className="flex flex-col gap-2">
                         SKU:
                         <input 
                             type="text"
                             onChange={(e) => setProdSKU(e.target.value)}
-                            className="border border-black"
+                            className="flex-1 p-2 border border-black"
                         />
                     </label>
 
-                    <label className="flex gap-2">
+                    <label className="flex flex-col gap-2">
                         Image:
                         <input 
                             type="file"
                             onChange={(e) => setProdImg(e.target.files[0])}
-                            className="border border-black"
+                            className="flex-1 p-4 bg-white border border-black"
                         />
                     </label>
 
-                    <button type="submit">Submit Product</button>
+                    <button type="submit" className="bg-white p-2 border border-black">
+                        Submit Product
+                    </button>
                 </form>
             </section>
         </>

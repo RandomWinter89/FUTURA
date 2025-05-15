@@ -10,7 +10,7 @@ import { addCart_item, updateItem_quantity } from "../../features/cartsSlice";
 import { AuthContext } from "../../Context/AuthProvider";
 import { addWishlist_item } from "../../features/wishlistSlice";
 
-import { Card } from "../../components/ui";
+import { Card, ToastOverlay } from "../../components/ui";
 
 const ProductPage  = () => {
     const { products, productItem, itemVariation } = useSelector((state) => state.products);
@@ -32,6 +32,10 @@ const ProductPage  = () => {
 
     const dispatch = useDispatch();
 
+    const [open, setOpen] = useState(false);
+    const [desc, setDesc] = useState("");
+    
+
     useEffect(() => {
         if (productItem.length === 0)
             dispatch(fetchProductItem(parseInt(id)));
@@ -51,9 +55,13 @@ const ProductPage  = () => {
             setProduct(products.find(item => item.id === parseInt(id)));
     }, [products])
 
+    useEffect(() => {
+        if (productItem.length != 0)
+            setSelectedVariation(productItem[0].id)
+    }, [productItem])
+
 
     const onAddCart = () => {
-
         if (!carts.some((data) => data.product_id == id && data.product_variation_id == selectedVariation)){
             dispatch(addCart_item({
                 cart_id: cart_id, 
@@ -70,16 +78,29 @@ const ProductPage  = () => {
                 quantity: parseInt(item) + 1
             }))
         }
+
+        setDesc("Added Cart");
+        setOpen(true);
     }
 
-    const onAddWishlist = (e) => {
-        e.preventDefault();
-
-        if (wishlist_id === null)
+    const onAddWishlist = (prodId) => {
+        if (wishlist_id == null)
             return;
 
-        if (wishlists.length === 0 || !wishlists.some((data) => data.product_id === id))
-            return dispatch(addWishlist_item({uid: currentUser.uid, wishlist_id, id}));
+        if (!wishlists.length || !wishlists.some((data) => data.product_id == prodId)) {
+            dispatch(addWishlist_item({
+                uid: currentUser.uid, 
+                wishlist_id: wishlist_id, 
+                product_id: prodId
+            }));
+
+            setDesc("Added to wishlists");
+            setOpen(true);
+        } else {
+            setDesc("This item is in wishlist already");
+            setOpen(true);
+        }
+        
     }
 
     // Section Comment:
@@ -88,16 +109,24 @@ const ProductPage  = () => {
     const onAddComment = (e) => {
         e.preventDefault();
 
-        dispatch(createReview({
-            uid: currentUser.uid, 
-            product_id: parseInt(id), 
-            comment: review, 
-            rating_value: rating
-        }))
+        if (!productReviews.some(rev => rev.created_by_userid == currentUser.uid)) { 
+            dispatch(createReview({
+                uid: currentUser.uid, 
+                product_id: parseInt(id), 
+                comment: review, 
+                rating_value: rating
+            }))
+
+            setDesc("Your review is added");
+            setOpen(true);
+        } else {
+            setDesc("You already review it");
+            setOpen(true);
+        }
     }
 
     return (
-        <main className="flex flex-col gap-14 my-14">
+        <>
             {/* Product Interaction */}
             <section className="flex gap-10 max-sm:flex-col">
                 <img src={product.imageUrl} className="flex-1 bg-purple-300 w-full aspect-[3/4]" />
@@ -145,13 +174,9 @@ const ProductPage  = () => {
                                 {productItem
                                     .filter(item => item.product_id == id)
                                     .map((item) => {
-                                        const color = itemVariation.find(data => data.variation_option_id == item.variation_option_id)?.value;
-                                        const size = itemVariation.find(data => data.variation_option_id == item.variation_option_2_id)?.value;
-                                        const extra = parseFloat(item.extra_charge) > 0 ? ` | Extra Charge: ${item.extra_charge}` : "";
-
                                         return (
                                             <option key={item.id} value={item.id} data-id={item.id} data-extra={item.extra_charge}>
-                                                COLOR: {color} | SIZE: {size} | Stock: {item.quantity} {extra}
+                                                COLOR: {item.value1} | SIZE: {item.value2} | Stock: {item.quantity}
                                             </option>
                                         )
                                     }
@@ -161,7 +186,18 @@ const ProductPage  = () => {
                             <input 
                                 type="number" 
                                 value={quantity}
-                                onChange={(e) => setQuantity(e.target.value)} 
+                                min="1"
+                                max="99"
+                                onChange={(e) => {
+                                    if (e.target.value > 0 || e.target.value < 100)
+                                        setQuantity(e.target.value)
+
+                                    if (e.target.value <= 0)
+                                        setQuantity(1);
+
+                                    if (e.target.value >= 100)
+                                        setQuantity(99);
+                                }} 
                                 className="border border-black py-2 px-4"
                             />
 
@@ -170,12 +206,10 @@ const ProductPage  = () => {
                                     Add Cart
                                 </button>
 
-                                <button onClick={onAddWishlist} className="flex-[0.2] border border-black py-2 rounded-lg">
+                                <button onClick={() => onAddWishlist(id)} className="flex-[0.2] border border-black py-2 rounded-lg">
                                     Liked
                                 </button>
                             </div>
-                            
-                            {/* {(product.created_date != undefined) && <p>Created Date: {product.created_date.split("T")[0].split("-").join("/")}</p>} */}
                         </div>
                     </div>
                 )}
@@ -250,12 +284,14 @@ const ProductPage  = () => {
                             key={data.id} 
                             product={data} 
                             imageUrl={data.imageUrl} 
-                            onAddWishlist={() => console("Hello")}
+                            onAddWishlist={() => onAddWishlist(data.id)}
                         />
                     )}
                 </div>
             </section>
-        </main>
+
+            <ToastOverlay show={open} onHide={() => setOpen(false)} desc={desc}/>
+        </>
     )
 }
 
