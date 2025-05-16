@@ -1,21 +1,20 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
-import { fetchProducts, fetchProductItem, fetch_ProductVariation } from "../../features/productSlice";
+import { fetchProductItem, fetch_ProductVariation } from "../../features/productSlice";
 import { createReview, fetch_productReviews } from "../../features/reviewSlice";
-import { fetchAllUser } from "../../features/usersSlice";
 import { addCart_item, updateItem_quantity } from "../../features/cartsSlice";
 
 import { AuthContext } from "../../Context/AuthProvider";
 import { addWishlist_item } from "../../features/wishlistSlice";
 
-import { Card, ToastOverlay } from "../../components/ui";
+import { ToastOverlay } from "../../components/ui";
+import { Grid } from "../../components/shop";
 
 const ProductPage  = () => {
-    const { products, productItem, itemVariation } = useSelector((state) => state.products);
+    const { products, productItem, products_loading } = useSelector((state) => state.products);
     const { productReviews, productReviews_loading } = useSelector((state) => state.reviews);
-    const { users, users_loading } = useSelector((state) => state.users);
     const { wishlist_id, wishlists } = useSelector((state) => state.wishlists);
     const { carts, cart_id } = useSelector((state) => state.carts);
 
@@ -37,23 +36,15 @@ const ProductPage  = () => {
     
 
     useEffect(() => {
-        if (productItem.length === 0)
-            dispatch(fetchProductItem(parseInt(id)));
-
-        if (itemVariation.length === 0)
-            dispatch(fetch_ProductVariation());
-
-        if (productReviews.length === 0)
-            dispatch(fetch_productReviews(id));
-
-        if (users.length === 0)
-            dispatch(fetchAllUser());
-    }, [dispatch])
+        dispatch(fetchProductItem(parseInt(id)));
+        dispatch(fetch_ProductVariation());
+        dispatch(fetch_productReviews(id));
+    }, [dispatch, id])
 
     useEffect(() => {
         if (products.length !== 0)
             setProduct(products.find(item => item.id === parseInt(id)));
-    }, [products])
+    }, [products, id])
 
     useEffect(() => {
         if (productItem.length != 0)
@@ -103,7 +94,6 @@ const ProductPage  = () => {
         
     }
 
-    // Section Comment:
     const [review, setReview] = useState("");
     const [rating, setRating] = useState(0.0);
     const onAddComment = (e) => {
@@ -124,6 +114,11 @@ const ProductPage  = () => {
             setOpen(true);
         }
     }
+
+    //Optimized
+    const sameCategoryProducts = useMemo(() => {
+        return products.slice().filter((info) => info.id != id && info.category_id == product.category_id);
+    }, [id, product.category_id, products]);
 
     return (
         <>
@@ -215,12 +210,8 @@ const ProductPage  = () => {
                 )}
             </section>
 
-            <section className="my-4">
-                <hr className="border-gray-400" />
-            </section>
-
             {/* Customer Review */}
-            <section className="flex flex-col gap-4" onSubmit={onAddComment}>
+            <section className="flex flex-col gap-4 py-10 border-y border-black" onSubmit={onAddComment}>
                 <h2>Customer Review</h2>
                 <div className="flex gap-4">
                     <form className="flex-1 flex flex-col gap-4">
@@ -230,7 +221,7 @@ const ProductPage  = () => {
                                 <span className="text-2xl">{rating}</span>
                             </label>
 
-                            <input type="range" min="0" max="5.0" step="0.1"
+                            <input type="range" min="0" max="5.0" step="0.5"
                                 value={rating} 
                                 onChange={(e) => setRating(e.target.value)}
                                 className="w-fit"
@@ -253,7 +244,7 @@ const ProductPage  = () => {
 
                     <hr className="border-r border-gray-400 mx-2 h-auto" />
 
-                    {(!productReviews_loading && !users_loading) && 
+                    {(!productReviews_loading) && 
                         <div className="flex-[0.6] h-fit overflow-y-auto grid gap-4 grid-cols-1">
                             {productReviews.map((data, index) => 
                                 <div key={index} className="border border-black rounded-lg p-4 h-fit">
@@ -267,27 +258,10 @@ const ProductPage  = () => {
                 </div>
             </section>
 
-
-            <section className="my-4">
-                <hr className="border-gray-400" />
-            </section>
-
             {/* Product Random in Same Category */}
             <section className="flex flex-col gap-4">
                 <h2>Other Product under same Category</h2>
-                <div className="grid grid-cols-5 gap-2 max-lg:grid-cols-4 max-sm:grid-cols-2">
-                    {products
-                        .filter((data) => (data.id != id && data.category_id == product.category_id))
-                        .map((data) => 
-                        
-                        <Card 
-                            key={data.id} 
-                            product={data} 
-                            imageUrl={data.imageUrl} 
-                            onAddWishlist={() => onAddWishlist(data.id)}
-                        />
-                    )}
-                </div>
+                <Grid collection={sameCategoryProducts} isLoading={products_loading}/>
             </section>
 
             <ToastOverlay show={open} onHide={() => setOpen(false)} desc={desc}/>

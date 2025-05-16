@@ -1,94 +1,62 @@
-import { useNavigate } from "react-router-dom";
-import { Category } from "../../database/category";
-
 import React from "react";
+import { cva } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
 
-const Card = ({product, imageUrl = "NONE", onAddWishlist}) => {
-    const navigate = useNavigate();
-
-    const onNavigateProduct = () => navigate(`/Shop/Product/${product.id}`);
-    const onCalledWishlist = (e) => {
-        e.stopPropagation();
-        onAddWishlist();
-    }
-
-    const productCat = Category.find(prev => prev.id == product.category_id).category_name;
-
-    //Grid or Row
-    return (
-        <div 
-            onClick={onNavigateProduct} 
-            className="
-                flex-1 flex flex-col 
-                border border-black 
-                cursor-pointer hover:scale-105 hover:transition-transform
-            "
-        >
-            {imageUrl != "NONE"
-                ? <img src={`${imageUrl}`} className="object-cover w-full aspect-[3/4]"/>
-                : <span className="bg-orange-300 w-full aspect-[3/4]" />
+const CardImageVariants = cva(
+    'flex-1 size-10 aspect-[3/4] object-cover',
+    { 
+        variants: {
+            variant: {
+                surface: "my-2",
+                full: "rounded-md"
             }
-
-
-            <div className="flex-1 flex flex-col gap-2 p-2 bg-white">
-                <div className="flex justify-between items-center">
-                    {/* <p>COLOR</p> */}
-                    <button 
-                        onClick={onCalledWishlist} 
-                        className="
-                            border border-black px-2 rounded-lg 
-                            hover:bg-red-500 hover:transition-colors
-                        "
-                    >
-                        Liked
-                    </button>
-                </div>
-
-                <hr className="border-t border-black"/>
-
-                <div className="flex justify-between text-gray-700">
-                    <p>{productCat}</p>
-                    <p>Size</p>
-                </div>
-
-                <hr className="border-t border-black"/>
-
-                <div className="flex-1 flex flex-col justify-between gap-2">
-                    <p className="text-lg">{product.name}</p>
-                
-                    <div className="flex items-end justify-between">
-                        <p className="font-semibold">RM {product.base_price}</p>
-                        {product.average_rating != null && (
-                            <p>Rating: {parseFloat(product.average_rating)} ({product.number_of_reviews})</p>
-                        )}
-                    </div>
-                </div>
-            </div>
-        </div>
-    )
-}
+        },
+        defaultVariants: {
+            variant: "surface",
+        }
+    }
+)
 
 // Prototype - Reusable Element
-const CardImage = React.forwardRef(({imageUrl, className}) => {
-    const based = "flex-1 rounded-sm aspect-[3:4]";
-
+const CardImage = React.forwardRef(({imageUrl, className, variant, ...prop}) => {
     return (
         < >
             {imageUrl == undefined 
-                ? <span className={twMerge(based + "bg-slate-300", className)} /> 
-                : <img src={imageUrl} className={twMerge(based, className)} />
+                ? <span className={twMerge(CardImageVariants(variant) + "s-10 bg-blue-300", className)} /> 
+                : <img src={imageUrl} className={twMerge(CardImageVariants(variant), className)} {...prop}/>
             }
         </>
     );
 })
 
-// Card Image
-
 // Text Area
 
 // Action Area
 
-// Indicator
+const CardVariants = cva(
+    'flex-1 flex',
+    {
+        variants: {
+            variant: {
+                horizontal: "flex-row gap-2",
+                vertical: "flex-col gap-2"
+            }
+        },
+        defaultVariants: {
+            variant: "horizontal"
+        }
+    }
+)
+
+const Card = ({ children, variant, className }) => {
+    return (
+        <div className={twMerge(CardVariants(variant), className)}>
+            {children}
+        </div>
+    )
+}
+
+
+Card.Image = CardImage;
 
 export default Card;

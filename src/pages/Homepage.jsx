@@ -7,6 +7,8 @@ import { Grid } from "../components/shop";
 // Asset Import
 import SHOWCASE from "../assets/SHOWCASE.png";
 
+import { CollectionCard } from '../components/shop';
+
 const Homepage = () => {
     const { products, products_loading } = useSelector((state) => state.products);
 
@@ -30,12 +32,6 @@ const Homepage = () => {
     
     return (
         < >
-            {/* Cover page */}
-            <img
-                src={SHOWCASE} 
-                className="h-[80svh] -mt-10 object-cover" 
-            />
-
             <section>
                 <h2 className="mb-2">New Product</h2>
                 <Grid collection={sortedNewProducts} isLoading={products_loading}/>

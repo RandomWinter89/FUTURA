@@ -1,13 +1,14 @@
 import { AuthContext } from "../../Context/AuthProvider";
 import { getAuth } from "firebase/auth";
 
-import { NavLink } from "../common";
-
 import { useContext } from "react";
 import { useDispatch } from "react-redux";
 
 import { userCheckout } from "../../features/usersSlice";
+import { NavLink } from "../common";
 import { Button } from "../ui";
+
+import "../UI.css";
 
 const Header = () => {
     const { currentUser } = useContext(AuthContext) || null;
@@ -39,7 +40,7 @@ const Header = () => {
 
                     {currentUser && (
                         < >
-                            <NavLink path={"/User/Cart"} name={"Carts"} />
+                            <NavLink path={"/User/Cart"} name={"Carts"}/>
                             <NavLink path={"/User/Wishlist"} name={"Wishlist"} />
                             <NavLink path={"/User/Order"} name={"Order"} />
                             <NavLink path={"/User/Profile"} name={"Profile"} />
