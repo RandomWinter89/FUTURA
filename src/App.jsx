@@ -20,7 +20,7 @@ import { Admin_DashboardPage, Admin_OrderPage, Admin_ProductPage } from "./pages
 import { LoginPage, RegisterPage, SignupPage } from "./pages/auth";
 
 //Layout ======================>
-import { AdminLayout, GeneralLayout } from "./components/common";
+import { AdminLayout, AuthLayout, GeneralLayout } from "./components/common";
 
 //Auth Checker ================>
 import AuthChecker from "./components/common/AuthChecker";
@@ -59,7 +59,7 @@ function App() {
 
         <Route path="/Auth" element={
             <AuthChecker auth_user={currentUser} data_user={personal} loading={personal_loading}>
-              <GeneralLayout data_user={personal}/>
+              <AuthLayout />
             </AuthChecker>
           }
         >

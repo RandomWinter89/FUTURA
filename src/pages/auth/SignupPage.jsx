@@ -1,8 +1,11 @@
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { createUser } from "../../features/usersSlice";
 
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
+
+import AuthShowcase from "../../assets/AuthShowcase.png";
 
 const SignupPage = () => {
     // Email & Password
@@ -11,12 +14,15 @@ const SignupPage = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
 
     // Dispatch Event
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const auth = getAuth();
 
     // Password Feedback
     const [hide, setHide] = useState(true);
+    const [hideB, setHideB] = useState(true);
     const [inputType, setInputType] = useState("password");
+    const [inputTypeB, setInputTypeB] = useState("password");
 
     // Feedback Error
     const [feedback, setFeedback] = useState("");
@@ -53,56 +59,77 @@ const SignupPage = () => {
         setHide(!hide);
     }
 
+    const onShowPasswordB = () => {
+        setInputTypeB(hideB ? "text" : "password");
+        setHideB(!hideB);
+    }
+
+    const onNavigate_Login = () => navigate("/Auth/Signup")
+
     return (
         < >
-            <section className="mb-6">
-                <form onSubmit={onRegisterAccount} className="flex flex-col gap-6">
-                    <div className="flex flex-col gap-2">
-                        <label className="font-medium px-4">Email</label>
-                        <input 
-                            type="email" 
-                            placeholder="Register Email" 
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
-                        />
-                    </div>
+            <div className="flex-1 flex flex-col justify-center items-center">
+                <div className="flex flex-col gap-2 mb-8 text-center">
+                    <h1>Welcome Back!</h1>
+                    <p className="font-medium text-lg leading-9">Log In to continue</p>
+                </div>
+                
+                <form onSubmit={onRegisterAccount} className="flex flex-col gap-3 w-[30rem]">
+                    <input 
+                        type="email" 
+                        value={email}
+                        placeholder="Email" 
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="min-h-14 px-4 py-2 border border-gray-400"
+                    />
 
-                    <div className="flex flex-col gap-2">
-                        <label className="font-medium px-4">Password</label>
+                    <div className="flex relative">
                         <input 
                             type={inputType}
-                            placeholder="Enter Password"
+                            placeholder="Password"
                             onChange={(e) => setPassword(e.target.value)}
-                            className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
+                            className="flex-1 pl-4 pr-12 py-4 border border-gray-400"
                         />
-                    </div>
 
-                    <div className="flex flex-col gap-2">
-                        <label className="font-medium px-4">Confirm Password</label>
-                        <input 
-                            type={inputType}
-                            placeholder="Enter Confirm Password"
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
-                        />
-                    </div>
-
-                    <div className="flex gap-1 mx-4">
                         <input 
                             type="checkbox" 
-                            value={!hide} 
+                            value={!hide}
                             onChange={onShowPassword}
-                            className="size-4"
+                            className="size-5 absolute top-[50%] right-2 translate-x-[-50%] translate-y-[-50%]"
                         />
-                        <p className="leading-none">Show password</p>
                     </div>
 
+                    <div className="flex relative">
+                        <input 
+                            type={inputTypeB}
+                            placeholder="Enter Confirm Password"
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            className="flex-1 pl-4 pr-12 py-4 border border-gray-400"
+                        />
 
-                    <button type="submit" className="text-white text-xl font-semibold bg-blue-400 h-14 px-4 py-3 rounded-lg">Create new account</button>
+                        <input 
+                            type="checkbox" 
+                            value={!hideB}
+                            onChange={onShowPasswordB}
+                            className="size-5 absolute top-[50%] right-2 translate-x-[-50%] translate-y-[-50%]"
+                        />
+                    </div>
+
+                    <button 
+                        type="submit" 
+                        className="bg-black text-white text-sm font-semibold h-14 px-4 py-4 mt-5"
+                    >
+                        Confirm
+                    </button>
+
+                    {feedback.trim().length != 0 && <p className="text-xl text-red-400">{feedback}</p>}
                 </form>
 
-                {feedback.trim().length != 0 && <p className="text-xl text-red-400">{feedback}</p>}
-            </section>
+                {/* <p>Forget password? <a className="text-red-400">Reset Password</a></p> */}
+                <p className="mt-4 flex gap-2">Have Account? <a className="underline font-bold" onClick={onNavigate_Login}>Login</a></p>
+            </div>
+
+            <img src={AuthShowcase} className="flex-[0.5] object-cover" />
         </>
     )
 }
