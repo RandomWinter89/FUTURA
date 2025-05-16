@@ -1,6 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { Category } from "../../database/category";
 
+import React from "react";
+import { twMerge } from "tailwind-merge";
+
 const Card = ({product, imageUrl = "NONE", onAddWishlist}) => {
     const navigate = useNavigate();
 
@@ -65,5 +68,27 @@ const Card = ({product, imageUrl = "NONE", onAddWishlist}) => {
         </div>
     )
 }
+
+// Prototype - Reusable Element
+const CardImage = React.forwardRef(({imageUrl, className}) => {
+    const based = "flex-1 rounded-sm aspect-[3:4]";
+
+    return (
+        < >
+            {imageUrl == undefined 
+                ? <span className={twMerge(based + "bg-slate-300", className)} /> 
+                : <img src={imageUrl} className={twMerge(based, className)} />
+            }
+        </>
+    );
+})
+
+// Card Image
+
+// Text Area
+
+// Action Area
+
+// Indicator
 
 export default Card;

@@ -72,40 +72,32 @@ const wishlistsSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
-        // Fetch all users
         builder
             .addCase(createWishlist.fulfilled, (state, action) => {
                 state.wishlist_id = action.payload.id;
             })
-        
-        builder
             .addCase(fetchWishlistId.fulfilled, (state, action) => {
                 state.wishlist_id = action.payload.id;
             })
-    
-        builder
             .addCase(fetchWishlist_item.fulfilled, (state, action) => {
                 state.wishlists = action.payload;
-                console.log("Finish Extract");
                 state.loading = false;
             })
             .addCase(fetchWishlist_item.pending, (state) => {
                 state.loading = true;
-            });
-        
-        builder
+            })
             .addCase(addWishlist_item.fulfilled, (state, action) => {
-                console.log("ADD WISHLIST: ", action.payload);
-                state.wishlists = [...state.wishlists, action.payload];
+                state.wishlists.push(action.payload);
                 state.loading = false;
             })
             .addCase(addWishlist_item.pending, (state) => {
                 state.loading = true;
-            });
-
-        builder
+            })
             .addCase(removeWishlist_item.fulfilled, (state, action) => {
-                state.wishlists = state.wishlists.filter((item) => item.id !== action.payload.id);
+                state.wishlists = state.wishlists.filter(
+                    (item) => item.id !== action.payload.id
+                );
+                state.loading = false;
             })
 
     },
