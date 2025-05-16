@@ -8,6 +8,11 @@ import { userCheckout } from "../../features/usersSlice";
 import { NavLink } from "../common";
 import { Button } from "../ui";
 
+import Futura from "../../assets/Futura.png";
+import cart from "../../assets/svg/cart_outline.svg";
+import heart from "../../assets/svg/heart_outline.svg";
+import profile from "../../assets/svg/profile_outline.svg";
+
 import "../UI.css";
 
 const Header = () => {
@@ -24,28 +29,46 @@ const Header = () => {
 
     return (
         < >
-            <header className="w-full h-26 py-6 px-9 bg-[#E6E6E6] text-black font-sans flex justify-between">
+            <header className="w-full h-26 py-6 px-9 bg-white border-b border-gray-300 text-black font-sans flex justify-between">
                 <nav className="flex justify-center items-center gap-6 max-lg:gap-4 max-md:flex-col max-sm:gap-1">
-                    <NavLink path={"/Shop/Homepage"} name={"FUTURA"} variant={"homepage"} type={"base"}/>
-                    <NavLink path={"/Shop/Category"} name={"Category"} />
+                    <NavLink path={"/Shop/Homepage"} variant={"homepage"} type={"homepage"} className={"flex"}>
+                        <img src={Futura} className="object-cover" />
+                    </NavLink>
+                    <NavLink path={"/Shop/Category"}>
+                        Category
+                    </NavLink>
                 </nav>
                 
-                <nav className="flex justify-center items-center gap-4 max-lg:gap-4 max-md:flex-col max-sm:gap-1">
+                <nav className="flex justify-center items-center gap-8 max-lg:gap-4 max-md:flex-col max-sm:gap-1">
                     {!currentUser && (
                         < >
-                            <NavLink path={"/Auth/Login"} name={"Login"} variant={"auth"} type={"positive"}/>
-                            <NavLink path={"/Auth/Signup"} name={"Signup"} variant={"auth"} type={"positive"}/>
+                            <NavLink path={"/Auth/Login"} variant={"auth"} type={"positive"}>
+                                Login
+                            </NavLink>
+                            <NavLink path={"/Auth/Signup"} variant={"auth"} type={"positive"}>
+                                Signup
+                            </NavLink>
                         </>
                     )}
 
                     {currentUser && (
                         < >
-                            <NavLink path={"/User/Cart"} name={"Carts"}/>
-                            <NavLink path={"/User/Wishlist"} name={"Wishlist"} />
-                            <NavLink path={"/User/Order"} name={"Order"} />
-                            <NavLink path={"/User/Profile"} name={"Profile"} />
+                            <NavLink path={"/User/Wishlist"}>
+                                <img src={heart} />
+                            </NavLink>
+
+                            <NavLink path={"/User/Cart"}>
+                                <img src={cart} />
+                            </NavLink>
+
+                            
+                            {/* <NavLink path={"/User/Order"}>Order</NavLink> */}
+                            <NavLink path={"/User/Profile"}>
+                                <img src={profile} />
+                            </NavLink>
+
                             <Button onClick={handleLogout} variant={"base"} state={"negative"}> 
-                                Logout
+                                Log out
                             </Button>
                         </>
                     )}

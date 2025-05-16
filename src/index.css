@@ -10,9 +10,13 @@
     --color-p-30: hsl(31, 80%, 30%);
     --spacing-1080: 1080px;
 
-    --h1-size: clamp(1.25rem, 0.65rem + 3vw, 4.25rem);
+    /* --h1-size: clamp(1.25rem, 0.65rem + 3vw, 4.25rem);
     --h1-height: clamp(1.5rem, 0.9rem + 3vw, 4.5rem);
-    --h1-weight: 600;
+    --h1-weight: 600; */
+
+    --h1-size: 3rem;
+    --h1-height: 4.125rem;
+    --h1-weight: 700;
 
     --h2-size: clamp(1rem, 0.675rem + 1.625vw, 2.625rem);
     --h2-height: clamp(1.5rem, 1.2rem + 1.5vw, 3rem);

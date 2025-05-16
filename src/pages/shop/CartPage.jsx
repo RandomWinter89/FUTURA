@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { fetchCart_item, fetchCartId, removeCartItem, updateItem_quantity } from "../../features/cartsSlice";
-import { fetchPromotion } from "../../features/promotionSlice";
 
 import { AuthContext } from "../../Context/AuthProvider";
 
@@ -19,12 +18,11 @@ const CartItem = ({
 
     console.log("imageUrl", data);
     return (
-        <div className="w-fit h-40 flex gap-2 border border-black p-4">
-            
-            <img src={product.imageUrl} className="flex-1 bg-orange-300 w-64 h-full"/>
+        <div className="flex gap-2 border border-black p-4">
+            <img src={product.imageUrl} className="flex-1 aspect-[3/4] object-cover"/>
 
-            <div className="flex flex-col my-auto">
-                <p>Product Name: {data.name}</p>
+            <div className="flex-1 flex flex-col gap-2 my-auto">
+                <p>{data.name}</p>
                 {data.name1 != null && <p>Color: {data.value1}</p>}
                 {data.name2 != null && <p>Size: {data.value2}</p>}
 
@@ -39,14 +37,14 @@ const CartItem = ({
                     max="99"
                     onChange={(e) => onCallUpdate({quantity: parseInt(e.target.value)})} 
                 />
-            </div>
 
-            <button 
-                onClick={onCallRemoval} 
-                className="my-auto border border-black py-2 px-6 h-fit rounded-lg"
-            >
-                X
-            </button>
+                <button 
+                    onClick={onCallRemoval} 
+                    className="my-auto border border-black py-2 px-6 h-fit rounded-lg"
+                >
+                    X
+                </button>
+            </div>
         </div>
     )
 }
@@ -123,7 +121,7 @@ const CartPage = () => {
         < >
             <section className="flex gap-2">
                 {/* Cart */}
-                <section className="flex flex-wrap gap-4 bg-green-50">
+                <section className="flex flex-wrap gap-4">
                     {carts.map((item, index) => 
                         <CartItem key={index}
                             data={item}

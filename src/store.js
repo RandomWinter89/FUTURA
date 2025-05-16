@@ -8,7 +8,6 @@ import addressReducer from "./features/addressSlice";
 import cartsReducer from "./features/cartsSlice";
 import ordersReducer from "./features/orderedSlice";
 import productsReducer from "./features/productSlice";
-import promotionsReducer from "./features/promotionSlice";
 import reviewsReducer from "./features/reviewSlice";
 import wishlistsReducer from "./features/wishlistSlice";
 
@@ -19,7 +18,6 @@ const reducers = combineReducers({
     carts: cartsReducer,
     orders: ordersReducer,
     products: productsReducer,
-    promotions: promotionsReducer,
     reviews: reviewsReducer,
     wishlists: wishlistsReducer,
 });

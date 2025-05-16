@@ -17,6 +17,7 @@ const LinkVariation = cva (
             },
             type: {
                 base: "bg-transparent hover:p-4 hover:bg-black hover:text-white",
+                homepage: "",
                 positive: "hover:bg-gray-300",
                 negative: "bg-red-700 hover:bg-red-950 hover:text-white"
             }
@@ -28,7 +29,7 @@ const LinkVariation = cva (
     }
 )
 
-const NavLink = React.forwardRef(({path, name, variant, type, className, ...props}) => {
+const NavLink = (({path, children, variant, type, className, ...props}) => {
     return (
         <RouterNavLink 
             to={`${path}`} 
@@ -36,13 +37,13 @@ const NavLink = React.forwardRef(({path, name, variant, type, className, ...prop
                 twMerge(
                     LinkVariation({variant, type}), 
                     className,
-                    isActive ? 'pointer-events-none opacity-40' : ''
+                    isActive ? 'pointer-events-none' : ''
                 )
             }
             end
             {...props}
         >
-            {name}
+            {children}
         </RouterNavLink>
     )
 });

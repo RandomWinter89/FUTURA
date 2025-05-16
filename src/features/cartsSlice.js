@@ -104,7 +104,6 @@ const cartsSlice = createSlice({
         // Get CartID
         builder
             .addCase(fetchCartId.fulfilled, (state, action) => {
-                console.log("Fetch Cart: ", action.payload.data);
                 state.cart_id = action.payload.data.id;
             })
 
@@ -124,7 +123,6 @@ const cartsSlice = createSlice({
         // Fetch Cart Item
         builder
             .addCase(fetchCart_item.fulfilled, (state, action) => {
-                console.log("Hello: ", action.payload.data);
                 state.carts = action.payload.data;
                 state.loading = false;
             })

@@ -2,16 +2,18 @@ import { cva } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
 import { useState } from "react";
 
+import { useNavigate } from "react-router-dom";
+
 import { ToastOverlay } from "../ui";
 import ProductCard from "./ProductCard";
 
 const GridVariants = cva(
-    'flex-1 grid gap-2',
+    'flex-1 grid gap-10',
     {
         variants: {
             variant: {
                 showcase: "grid-cols-5 max-lg:grid-cols-3 max-sm:grid-cols-2",
-                category: "grid-cols-4 max-lg:grid-cols-3 max-sm:grid-cols-1"
+                category: "grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-1"
             }
         },
         defaultVariants: {
@@ -20,12 +22,19 @@ const GridVariants = cva(
     }
 )
 
-const Grid = ({collection, isLoading, variant, className}) => {
+const Grid = ({collection, isLoading, header, variant, className}) => {
     const [open, setOpen] = useState(false);
     const [desc, setDesc] = useState("");
+    const navigate = useNavigate();
 
     return (
         < >
+            {header &&
+                <div className="flex justify-between">
+                    <h2 className="text-4xl leading-[2.875rem] font-bold">{header}</h2>
+                    <button onClick={() => navigate("/Shop/Category")} className="text-2xl leading-[2.875rem] font-medium underline">View all</button>
+                </div>
+            }
             <div className={twMerge(GridVariants({variant}), className)}>
                 {!isLoading && collection.map(item => 
                     <ProductCard 

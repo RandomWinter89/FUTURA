@@ -3,11 +3,11 @@ import { cva } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
 
 const CardImageVariants = cva(
-    'flex-1 size-10 aspect-[3/4] object-cover',
+    'flex-1 aspect-[3/4] object-cover',
     { 
         variants: {
             variant: {
-                surface: "my-2",
+                surface: "",
                 full: "rounded-md"
             }
         },
@@ -30,8 +30,22 @@ const CardImage = React.forwardRef(({imageUrl, className, variant, ...prop}) => 
 })
 
 // Text Area
+const CardText = ({ children, className }) => {
+    return (
+        <div className={twMerge("flex flex-col gap-2", className)}>
+            {children}
+        </div>
+    );
+}
 
 // Action Area
+const CardActions = ({children, className}) => {
+    return (
+        <div className={twMerge("flex gap-2", className)}>
+            {children}
+        </div>
+    );
+}
 
 const CardVariants = cva(
     'flex-1 flex',
@@ -48,6 +62,14 @@ const CardVariants = cva(
     }
 )
 
+const CardBody = ({children, className}) => {
+    return (
+        <div className={twMerge("flex flex-col gap-4 justify-center", className)}>
+            {children}
+        </div>
+    )
+}
+
 const Card = ({ children, variant, className }) => {
     return (
         <div className={twMerge(CardVariants(variant), className)}>
@@ -56,7 +78,9 @@ const Card = ({ children, variant, className }) => {
     )
 }
 
-
+Card.Body = CardBody;
+Card.Text = CardText;
 Card.Image = CardImage;
+Card.Actions = CardActions;
 
 export default Card;

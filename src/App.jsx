@@ -8,7 +8,7 @@ import Homepage from "./pages/Homepage";
 import { 
   CartPage, CategoryPage, OrderPage, 
   OrderReceiptPage, ProductPage, 
-  ProfilePage, PromotionPage, WishlistPage
+  ProfilePage, WishlistPage
 } from "./pages/shop";
 
 import {
@@ -54,7 +54,6 @@ function App() {
         >
           <Route path="Homepage"    element={<Homepage />} />
           <Route path="Category"    element={<CategoryPage />} />
-          <Route path="Promotion"   element={<PromotionPage />} />
           <Route path="Product/:id" element={<ProductPage />} />
         </Route>
 

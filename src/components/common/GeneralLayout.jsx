@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom"
-import { Header } from "../shop";
+import { Header, Footer } from "../shop";
 import { memo } from "react";
 
 import { useEffect } from "react";
@@ -61,9 +61,10 @@ const GeneralLayout = memo(({data_user}) => {
     return (
         < >
             <Header />
-            <main className="flex flex-col gap-20 my-10">
+            <main className="min-h-svh flex flex-col gap-16 my-10">
                 <Outlet />
             </main>
+            <Footer />
         </>
     )
 });
