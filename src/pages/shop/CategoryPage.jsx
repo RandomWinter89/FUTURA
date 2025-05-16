@@ -50,12 +50,7 @@ const CategoryPage = () => {
     }, [products,selectedCategories])
 
     return (
-        < >
-            <section className="flex flex-col gap-2">
-                <h1>Category</h1>
-                <p>Here's where you find your stuff</p>
-            </section>
-            
+        < >            
             <section className="flex gap-10 justify-between">
                 <ul className="w-fit flex flex-col gap-2">
                     {/* Select All */}

@@ -1,13 +1,13 @@
-import { Outlet, Link } from "react-router-dom";
 import { AuthContext } from "../../Context/AuthProvider";
 import { getAuth } from "firebase/auth";
-
-import { NavLink } from "../common";
 
 import { useContext } from "react";
 import { useDispatch } from "react-redux";
 
 import { userCheckout } from "../../features/usersSlice";
+
+import { NavLink } from "../common";
+import { Button } from "../ui";
 
 const Header = () => {
     const { currentUser } = useContext(AuthContext) || null;
@@ -21,36 +21,23 @@ const Header = () => {
     };
 
     return (
-        <div className="w-full h-26 py-6 px-9 bg-[#E6E6E6] text-black font-sans flex justify-between">
-            <nav className="h-fit flex gap-6 max-lg:gap-4 max-sm:flex-col max-sm:gap-1">
-                <Link to="/Admin/Dashboard" className="text-5xl max-lg:text-3xl max-sm:text-lg max-sm:font-bold">
-                    Admin Dashboard
-                </Link>
+        <div className="w-full h-26 py-6 px-9 bg-[#E6E6E6] font-sans flex justify-between">
+            <nav className="flex gap-6 max-md:gap-4 max-md:flex-col max-sm:gap-2">
+                <NavLink path={"/Admin/Dashboard"} name={"Admin Dashboard"} variant={"homepage"} type={"base"}/>
                 <NavLink path={"/Admin/Products"} name={"Products"}/>
                 <NavLink path={"/Admin/Orders"} name={"Orders"}/>
             </nav>
 
-            <nav className="h-fit flex gap-6 max-lg:gap-4 max-sm:flex-col max-sm:gap-1">
-                {!currentUser && (
-                    <div className="flex gap-3">
-                        <Link to="/Auth/Login" className="text-2xl text-right max-lg:text-xl max-sm:text-sm hover:bg-black hover:w-full hover:p-2 hover:rounded-md hover:text-white transition-all">
-                            Login
-                        </Link>
-                        
-                        <hr className="border-r border-black" />
-
-                        <Link to="/Auth/Signup" className="text-2xl text-right max-lg:text-xl max-sm:text-sm hover:bg-black hover:w-full hover:p-2 hover:rounded-md hover:text-white transition-all">
-                            Signup
-                        </Link>
-                    </div>
-                )}
-
-                {currentUser && (
-                    <button 
-                        onClick={handleLogout}
-                        className="text-2xl text-right max-lg:text-xl max-sm:text-sm hover:bg-black hover:w-full hover:p-2 hover:rounded-md hover:text-white transition-all"
-                    >Exit</button>
-                )}
+            <nav className="flex gap-2 max-md:flex-col max-md:gap-1">
+                {!currentUser 
+                    ?   <div className="flex gap-3">
+                            <NavLink path={"/Auth/Login"} name={"Login"} variant={"auth"} type={"positive"} />
+                            <NavLink path={"/Auth/Signup"} name={"Signup"} variant={"auth"} type={"positive"} />
+                        </div>
+                    :   <Button onClick={handleLogout} variant={"base"} state={"negative"}>
+                            Exit
+                        </Button>
+                }
             </nav>
         </div>
     )

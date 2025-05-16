@@ -1,4 +1,3 @@
-import { Outlet, Link } from "react-router-dom";
 import { AuthContext } from "../../Context/AuthProvider";
 import { getAuth } from "firebase/auth";
 
@@ -8,63 +7,49 @@ import { useContext } from "react";
 import { useDispatch } from "react-redux";
 
 import { userCheckout } from "../../features/usersSlice";
+import { Button } from "../ui";
 
 const Header = () => {
     const { currentUser } = useContext(AuthContext) || null;
-    const auth = getAuth();
     const dispatch = useDispatch();
-
+    const auth = getAuth();
+    
     const handleLogout = () => {
-        console.log("Logout");
         auth.signOut()
-            .then(() => {dispatch(userCheckout())});
+            .then(() => { 
+                dispatch(userCheckout()) 
+            });
     };
 
     return (
         < >
-            <div className="w-full h-26 py-6 px-9 bg-[#E6E6E6] text-black font-sans flex justify-between">
-                <nav className="h-fit flex gap-6 max-lg:gap-4 max-sm:flex-col max-sm:gap-1">
-                    <Link to="/Shop/Homepage" className="text-5xl max-lg:text-3xl max-sm:text-lg max-sm:font-bold">FUTURA</Link>
-                    <NavLink path={"/Shop/Category"} name={"Category"}/>
-                    {/* <NavLink path={"/Shop/Promotion"} name={"Promotion"}/> */}
+            <header className="w-full h-26 py-6 px-9 bg-[#E6E6E6] text-black font-sans flex justify-between">
+                <nav className="flex justify-center items-center gap-6 max-lg:gap-4 max-md:flex-col max-sm:gap-1">
+                    <NavLink path={"/Shop/Homepage"} name={"FUTURA"} variant={"homepage"} type={"base"}/>
+                    <NavLink path={"/Shop/Category"} name={"Category"} />
                 </nav>
                 
-                <nav className="h-fit flex gap-6 items-end max-sm:gap-2 max-sm:flex-col">
-                    <Link to="/User/Cart" className="text-2xl text-right max-lg:text-xl max-sm:text-sm hover:bg-black hover:w-full hover:p-2 hover:rounded-md hover:text-white transition-all">
-                        Carts
-                    </Link>
-
+                <nav className="flex justify-center items-center gap-4 max-lg:gap-4 max-md:flex-col max-sm:gap-1">
                     {!currentUser && (
-                        <div className="flex gap-3">
-                            <Link to="/Auth/Login" className="text-2xl text-right max-lg:text-xl max-sm:text-sm hover:bg-black hover:w-full hover:p-2 hover:rounded-md hover:text-white transition-all">
-                                Login
-                            </Link>
-                            
-                            <hr className="border-r border-black" />
-
-                            <Link to="/Auth/Signup" className="text-2xl text-right max-lg:text-xl max-sm:text-sm hover:bg-black hover:w-full hover:p-2 hover:rounded-md hover:text-white transition-all">
-                                Signup
-                            </Link>
-                        </div>
+                        < >
+                            <NavLink path={"/Auth/Login"} name={"Login"} variant={"auth"} type={"positive"}/>
+                            <NavLink path={"/Auth/Signup"} name={"Signup"} variant={"auth"} type={"positive"}/>
+                        </>
                     )}
 
                     {currentUser && (
                         < >
-                            <Link to="/User/Wishlist" className="text-2xl text-right max-lg:text-xl max-sm:text-sm hover:bg-black hover:w-full hover:p-2 hover:rounded-md hover:text-white transition-all">Wishlist</Link>
-                            <Link to="/User/Order" className="text-2xl text-right max-lg:text-xl max-sm:text-sm hover:bg-black hover:w-full hover:p-2 hover:rounded-md hover:text-white transition-all">Order</Link>
-                            <Link to="/User/Profile" className="text-2xl text-right max-lg:text-xl max-sm:text-sm hover:bg-black hover:w-full hover:p-2 hover:rounded-md hover:text-white transition-all">
-                                Profile
-                            </Link>
-
-                            <button 
-                                onClick={handleLogout}
-                                className="text-2xl text-right max-lg:text-xl max-sm:text-sm hover:bg-black hover:w-full hover:p-2 hover:rounded-md hover:text-white transition-all"
-                            >Exit</button>
-                           
+                            <NavLink path={"/User/Cart"} name={"Carts"} />
+                            <NavLink path={"/User/Wishlist"} name={"Wishlist"} />
+                            <NavLink path={"/User/Order"} name={"Order"} />
+                            <NavLink path={"/User/Profile"} name={"Profile"} />
+                            <Button onClick={handleLogout} variant={"base"} state={"negative"}> 
+                                Logout
+                            </Button>
                         </>
                     )}
                 </nav>
-            </div>
+            </header>
         </>
     )
 }

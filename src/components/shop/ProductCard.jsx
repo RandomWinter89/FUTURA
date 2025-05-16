@@ -8,18 +8,6 @@ import { AuthContext } from "../../Context/AuthProvider";
 import { useDispatch, useSelector } from "react-redux";
 import { addWishlist_item } from "../../features/wishlistSlice";
 
-
-    // const onWishlistProduct = ({id}) => {
-    //     console.log(id);
-
-    //     if (currentUser) {
-    //         onAction_Wishlist(id);
-    //     } else {
-    //         navigate("/Auth/Login");
-    //     }
-    // }
-
-
 const ProductCard = ({data, showToast, showFeedback}) => {
     const { wishlist_id, wishlists } = useSelector((state) => state.wishlists);
     const { currentUser } = useContext(AuthContext) || null;

@@ -1,19 +1,50 @@
-import { Link } from 'react-router-dom';
+import { NavLink as RouterNavLink } from 'react-router-dom';
 
-const NavLink = ({path, name}) => {
+import { cva } from 'class-variance-authority';
+import { twMerge } from 'tailwind-merge';
 
+import React from 'react';
+
+const LinkVariation = cva (
+    'text-2xl max-lg:text-xl max-sm:text-sm transition-all duration-300',
+    {
+        variants: {
+            variant: {
+                homepage: "p-4 text-6xl font-bold max-lg:text-4xl max-sm:text-xl",
+                icon: "flex gap-1 ",
+                base: "",
+                auth: "px-4 py-1 border border-black",
+            },
+            type: {
+                base: "bg-transparent hover:p-4 hover:bg-black hover:text-white",
+                positive: "hover:bg-gray-300",
+                negative: "bg-red-700 hover:bg-red-950 hover:text-white"
+            }
+        },
+        defaultVariants: {
+            variant: "base",
+            type: "base"
+        }
+    }
+)
+
+const NavLink = React.forwardRef(({path, name, variant, type, className, ...props}) => {
     return (
-        <Link 
-            to={`${path}`}
-            className="
-                text-2xl 
-                max-lg:text-xl max-sm:text-sm 
-                hover:bg-black hover:p-2 hover:rounded-md hover:text-white transition-all
-            "
+        <RouterNavLink 
+            to={`${path}`} 
+            className={({isActive}) => 
+                twMerge(
+                    LinkVariation({variant, type}), 
+                    className,
+                    isActive ? 'pointer-events-none opacity-40' : ''
+                )
+            }
+            end
+            {...props}
         >
             {name}
-        </Link>
+        </RouterNavLink>
     )
-}
+});
 
 export default NavLink;
