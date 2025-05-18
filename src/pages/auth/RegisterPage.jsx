@@ -5,6 +5,8 @@ import { useDispatch } from "react-redux";
 import { useState, useContext } from "react";
 
 const RegisterPage = () => {
+    const { currentUser } = useContext(AuthContext) || null;
+    
     const [username, setUsername] = useState("");
     const [email] = useState(currentUser.email);
     const [phone, setPhone] = useState("");
@@ -12,7 +14,7 @@ const RegisterPage = () => {
     const [birth, setBirth] = useState("");
     const [imageUrl, setImageUrl] = useState();
     
-    const { currentUser } = useContext(AuthContext) || null;
+    
     const dispatch = useDispatch();
 
     // Feedback Error
@@ -40,68 +42,76 @@ const RegisterPage = () => {
 
     return (
         < >
-            <h2>Create Profile Form</h2>
-            <section className="bg-green-200">
-                <form onSubmit={onSubmit_PersonalInfo} className="flex flex-col gap-6">
-                    <div className="flex flex-col gap-2">
-                        <label>Username</label>
-                        <input 
-                            type="text" 
-                            onChange={(e) => setUsername(e.target.value)}
-                            className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
-                        />
-                    </div>
-
-                    <div className="flex gap-4">
-                        <div className="flex-[0.4] flex flex-col gap-2">
-                            <label>Birth Date</label>
-                            <input 
-                                type="date"
-                                onChange={(e) => setBirth(e.target.value)}
-                                className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
-                            />
-                        </div>
-
-                        <div className="flex-[0.2] flex flex-col gap-2">
-                            <label>Gender</label>
-                            <select 
-                                name="gender" 
-                                value={gender}
-                                onChange={(e) => setGender(e.target.value)}
-                                className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
-                            >
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                            </select>
-                        </div>
-
-                        <div className="flex-1 flex flex-col gap-2">
-                            <label>Phone Number</label>
-                            <input 
-                                type="tel" 
-                                onChange={(e) => setPhone(e.target.value)}
-                                className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
-                            />
-                        </div>
-
-                        <div className="flex flex-col gap-2">
-                            <label className="font-medium px-4">File</label>
-                            <input 
-                                type="file"
-                                onChange={(e) => setImageUrl(e.target.files[0])}
-                                className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
-                            />
-                        </div>
-                    </div>
-                    
-
-                    <button type="submit" className="text-white text-xl font-semibold bg-blue-400 h-14 px-4 py-3 rounded-lg">Update</button>
-                </form>
-
-                {feedback.trim().length != 0 && <p className="text-xl text-red-400">{feedback}</p>}
+            <section>
+                <h2>HELLO</h2>
             </section>
         </>
     )
+
+    // return (
+    //     < >
+    //         <h2>Create Profile Form</h2>
+    //         <section className="bg-green-200">
+    //             <form onSubmit={onSubmit_PersonalInfo} className="flex flex-col gap-6">
+    //                 <div className="flex flex-col gap-2">
+    //                     <label>Username</label>
+    //                     <input 
+    //                         type="text" 
+    //                         onChange={(e) => setUsername(e.target.value)}
+    //                         className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
+    //                     />
+    //                 </div>
+
+    //                 <div className="flex gap-4">
+    //                     <div className="flex-[0.4] flex flex-col gap-2">
+    //                         <label>Birth Date</label>
+    //                         <input 
+    //                             type="date"
+    //                             onChange={(e) => setBirth(e.target.value)}
+    //                             className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
+    //                         />
+    //                     </div>
+
+    //                     <div className="flex-[0.2] flex flex-col gap-2">
+    //                         <label>Gender</label>
+    //                         <select 
+    //                             name="gender" 
+    //                             value={gender}
+    //                             onChange={(e) => setGender(e.target.value)}
+    //                             className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
+    //                         >
+    //                             <option value="Male">Male</option>
+    //                             <option value="Female">Female</option>
+    //                         </select>
+    //                     </div>
+
+    //                     <div className="flex-1 flex flex-col gap-2">
+    //                         <label>Phone Number</label>
+    //                         <input 
+    //                             type="tel" 
+    //                             onChange={(e) => setPhone(e.target.value)}
+    //                             className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
+    //                         />
+    //                     </div>
+
+    //                     <div className="flex flex-col gap-2">
+    //                         <label className="font-medium px-4">File</label>
+    //                         <input 
+    //                             type="file"
+    //                             onChange={(e) => setImageUrl(e.target.files[0])}
+    //                             className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
+    //                         />
+    //                     </div>
+    //                 </div>
+                    
+
+    //                 <button type="submit" className="text-white text-xl font-semibold bg-blue-400 h-14 px-4 py-3 rounded-lg">Update</button>
+    //             </form>
+
+    //             {feedback.trim().length != 0 && <p className="text-xl text-red-400">{feedback}</p>}
+    //         </section>
+    //     </>
+    // )
 }
 
 export default RegisterPage;

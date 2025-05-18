@@ -6,6 +6,12 @@ import { fetchCart_item, fetchCartId, removeCartItem, updateItem_quantity } from
 
 import { AuthContext } from "../../Context/AuthProvider";
 
+import framer from "../../assets/svg/Frame.svg";
+import dash from "../../assets/svg/dash.svg";
+import plus from "../../assets/svg/plus.svg";
+import bin from "../../assets/svg/deleteBin.svg";
+
+
 const CartItem = ({
         data,
         product,
@@ -13,37 +19,74 @@ const CartItem = ({
         onCallUpdate,
         onCallRemoval,
     }) => {
+    const [qty, setQty] = useState(1);
+
+    const incrementQuantity = () => {
+        setQty(prev => {
+            if (prev + 1 >= 100)
+                return 99;
+
+            return prev + 1;
+        })
+    }
+
+    const decrementQuantity = () => {
+        setQty(prev => {
+            if (prev - 1 <= 0)
+                return 1;
+
+            return prev - 1;
+        })
+    }
+
+    useEffect(() => {
+        onCallUpdate({quantity: parseInt(qty)});
+    }, [qty])
 
     const subtotal = ((parseFloat(data.base_price) + parseFloat(data.extra_charge)) * data.quantity);
 
-    console.log("imageUrl", data);
     return (
-        <div className="flex gap-2 border border-black p-4">
-            <img src={product.imageUrl} className="flex-1 aspect-[3/4] object-cover"/>
+        <div className="flex gap-2 border border-black p-4 max-md:flex-col">
+            <img src={product.imageUrl} className="w-32 aspect-square object-cover max-md:w-full"/>
 
-            <div className="flex-1 flex flex-col gap-2 my-auto">
-                <p>{data.name}</p>
-                {data.name1 != null && <p>Color: {data.value1}</p>}
-                {data.name2 != null && <p>Size: {data.value2}</p>}
+            <div className="flex-1 flex justify-between max-md:flex-col">
+                <div className="flex flex-col justify-between">
+                    <p className="subtitle1">{data.name}</p>
+                    {data.name1 != null && <p>Color: {data.value1}</p>}
+                    {data.name2 != null && <p>Size: {data.value2}</p>}
 
-                <hr className="border-black"/>
+                    <h3 className="mt-auto">MYR{subtotal}</h3>
+                </div>
 
-                <p>Subtotal price: MYR{subtotal}</p>
+                
+                <div className="flex flex-col justify-between items-end">
+                    <button onClick={onCallRemoval} >
+                        <img src={bin} />
+                    </button>
 
-                <input 
-                    type="number" 
-                    value={quantity} 
-                    min="1"
-                    max="99"
-                    onChange={(e) => onCallUpdate({quantity: parseInt(e.target.value)})} 
-                />
+                    <div className="w-fit min-h-12 flex gap-2 border border-black">
+                        <button onClick={decrementQuantity} className="px-5 py-4">
+                            <img src={dash} />
+                        </button>
+                        <input 
+                            type="number" 
+                            value={quantity}
+                            onChange={(e) => {
+                                if (e.target.value >= 100)
+                                    return setQty(99)
 
-                <button 
-                    onClick={onCallRemoval} 
-                    className="my-auto border border-black py-2 px-6 h-fit rounded-lg"
-                >
-                    X
-                </button>
+                                if (e.target.value <= 0)
+                                    return setQty(1)
+
+                                setQty(e.target.value);
+                            }}
+                            className="text-center max-w-12"
+                        />
+                        <button onClick={incrementQuantity} className="px-5 py-4">
+                            <img src={plus} />
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     )
@@ -54,7 +97,7 @@ const CartPage = () => {
     const [total, setTotal] = useState(0.00);
 
     // User Authentication
-    const { cart_id, carts, cart_loading } = useSelector((state) => state.carts);
+    const { cart_id, carts } = useSelector((state) => state.carts);
     const { products } = useSelector((state) => state.products);
     const { currentUser } = useContext(AuthContext) || null;
 
@@ -115,51 +158,71 @@ const CartPage = () => {
         }))
     }
 
-    const onNavigate_Homepage = () => navigate("/Shop/Homepage");
-
     return (
-        < >
-            <section className="flex gap-2">
-                {/* Cart */}
-                <section className="flex flex-wrap gap-4">
-                    {carts.map((item, index) => 
-                        <CartItem key={index}
-                            data={item}
-                            product={products.find((prev) => prev.id == item.product_id)}
-                            quantity={cartQuantities[item.id]}
-                            onCallUpdate={({quantity}) => onReceiveCall(item.id, quantity, item.product_id, item.product_variation_id)}
-                            onCallRemoval={() => onReceiveCall_Remove(item.product_id, item.product_variation_id)}
-                        /> 
-                    )}
-                </section>
+        <section className="flex flex-col gap-11">
+            <div className="body2 w-fit flex gap-2">
+                <span onClick={() => navigate("/Shop/Homepage")} className="text-gray-500 cursor-pointer">
+                    Home
+                </span>
+                <img src={framer} className="flex-1 aspect-square"/>
 
-                {/* Order Summary */}
-                <section className="flex flex-col gap-2">
-                    <div className="py-4 px-2 flex flex-col border border-black">
-                        <h2>Order Summary</h2>
-                        <hr className="border-black mb-4"/>
+                <span className="cursor-pointer">
+                    Carts
+                </span>
+            </div>
 
-                        <p>Subtotal: MYR {total}</p>
-                        <p>Order total: MYR {total}</p>
+            <div className="flex flex-col gap-11">
+                <h2>Your Cart</h2>
 
-                        <hr className="border-black my-4"/>
-                        <button onClick={() => navigate("/User/Checkout")} 
-                            className="border border-black py-4 bg-emerald-300"
+                <div className="flex gap-16">
+                    <div className="flex-1 flex flex-col gap-6">
+                        {products.length != 0 && carts.map((item, index) =>
+                            < >
+                                <CartItem key={index}
+                                    data={item}
+                                    product={products.find((prev) => prev.id == item.product_id)}
+                                    quantity={cartQuantities[item.id]}
+                                    onCallUpdate={({quantity}) => onReceiveCall(item.id, quantity, item.product_id, item.product_variation_id)}
+                                    onCallRemoval={() => onReceiveCall_Remove(item.product_id, item.product_variation_id)}
+                                /> 
+
+                                {index != carts.length - 1 && <hr className="border-gray-400"/>}
+                            </>
+                        )}
+                    </div>
+
+                    <div className="flex-[0.6] flex flex-col gap-6">
+                        <h3>Order Summary</h3>
+
+                        <div className="flex flex-col gap-5">
+                            <span className="flex gap-2 justify-between items-center">
+                                <p className="subtitle1 font-normal opacity-60">Subtotal</p>
+                                <p className="subtitle1">RM{total}</p>
+                            </span>
+
+                            <span className="flex gap-2 justify-between items-center">
+                                <p className="subtitle1 font-normal opacity-60">Delivery</p>
+                                <p className="subtitle1">RM15</p>
+                            </span>
+
+                            <hr className="border-gray-400"/>
+
+                            <span className="flex gap-2 justify-between items-center">
+                                <p className="subtitle1 font-normal opacity-60">Total</p>
+                                <h3>RM{total}</h3>
+                            </span>
+                        </div>
+
+                        <button 
+                            onClick={() => navigate("/User/Checkout")} 
+                            className="bg-black text-white py-4"
                         >
                             Proceed Checkout
                         </button>
-                        <button 
-                            onClick={onNavigate_Homepage}
-                            className="border border-black bg-red-500 text-white font-bold mt-4 p-4 rounded-lg hover:bg-black hover:text-white"
-                        >
-                            Continue Shopping
-                        </button>
                     </div>
-
-                    
-                </section>
-            </section>
-        </>
+                </div>
+            </div>
+        </section>
     )
 }
 

@@ -27,7 +27,7 @@ const Homepage = () => {
     return (
         < >
             <div 
-                className="-mt-10 h-[55svh] flex flex-col gap-4 justify-center p-24 bg-cover bg-right" 
+                className="h-[55svh] flex flex-col gap-4 justify-center p-24 bg-cover bg-right" 
                 style={{ 
                     backgroundImage: `url(${SHOWCASE02})`, 
                     backgroundRepeat: 'no-repeat',
@@ -42,21 +42,21 @@ const Homepage = () => {
                 <p className="font-medium text-lg leading-9">At Futura, we're all about  staying ahead of the curve. We curate the freshest, most stylish trends  in fashion, bringing you clothing that’s as bold and dynamic as you are. From runway-inspired looks to streetwear must-haves, every piece in our collection is handpicked to keep you effortlessly on-trend. Whether  you’re dressing up or keeping it casual, we've got the fits that turn  heads and spark confidence.</p>
             </div>
 
-            <div className="px-20 flex flex-col gap-6">
+            <section className="flex flex-col gap-6">
                 <Grid 
                     collection={sortedNewProducts} 
                     isLoading={products_loading} 
                     header={"New Products"}
                 />
-            </div>
+            </section>
 
-            <div className="px-20 flex flex-col gap-6">
+            <section className="flex flex-col gap-6">
                 <Grid 
                     collection={randomizedProducts} 
                     isLoading={products_loading} 
                     header={"Recommend"}
                 />
-            </div>
+            </section>
         </>
     )
 }

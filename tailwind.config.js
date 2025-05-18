@@ -9,8 +9,9 @@ export default {
     extend: {
       // Install Custom Font
       fontFamily: {
-
+        inter: ["Inter"]
       }
+      
     },
   },
   plugins: [],

@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,35 +7,7 @@
 
 /* Variables */
 :root {
-    --color-p-10: hsl(31, 80%, 10%);
-    --color-p-30: hsl(31, 80%, 30%);
     --spacing-1080: 1080px;
-
-    /* --h1-size: clamp(1.25rem, 0.65rem + 3vw, 4.25rem);
-    --h1-height: clamp(1.5rem, 0.9rem + 3vw, 4.5rem);
-    --h1-weight: 600; */
-
-    --h1-size: 3rem;
-    --h1-height: 4.125rem;
-    --h1-weight: 700;
-
-    --h2-size: clamp(1rem, 0.675rem + 1.625vw, 2.625rem);
-    --h2-height: clamp(1.5rem, 1.2rem + 1.5vw, 3rem);
-    --h2-weight: 600;
-    
-    --p-size: clamp(0.75rem, 0.7rem + 0.25vw, 1rem);
-    --p-height: clamp(1rem, 0.9rem + 0.5vw, 1.5rem);
-    --p-weight: 400;
-}
-
-/* Utilities */
-@layer utilities {
-    .font-h1 {
-        font-size: var(--h1-size);
-        font-weight: var(--h1-weight);
-        line-height: var(--h1-height);
-        /* @apply my-2; */
-    }
 }
 
 /* Global Styles */
@@ -47,36 +20,75 @@
         scroll-behavior: smooth;
     }
     h1 {
-        font-size: var(--h1-size);
-        font-weight: var(--h1-weight);
-        line-height: var(--h1-height);
+        font-size: 3rem;
+        line-height: 4.125rem;
 
-        /* @apply my-2; */
+        @apply font-inter font-bold;
     }
     h2 {
-        font-size: var(--h2-size);
-        font-weight: var(--h2-weight);
-        line-height: var(--h2-height);
+        font-size: 2.25rem;
+        line-height: 2.875rem;
 
-        /* @apply my-2; */
+        @apply font-inter font-bold;
     }
-    p, button {
-        font-size: var(--p-size);
-        font-weight: var(--p-weight);
-        line-height: var(--p-height);
+    h3 {
+        font-size: 1.5rem;
+        line-height: 46px;
 
-        /* @apply my-2; */
+        @apply font-inter font-semibold;
     }
-    /* a {
-        @apply text-pink-100 no-underline;
+    button {
+        font-size: 0.875rem;
+        line-height: normal;
+
+        @apply font-inter font-semibold;
     }
-    a:hover {
-        @apply text-pink-300;
-    } */
+    a {
+        font-size: 0.75rem;
+        line-height: 1.25rem;
+        @apply font-inter font-medium;
+    }
     img {
         @apply w-full;
     }
     section {
-        @apply w-11/12 max-w-[1080px] mx-auto;
+        @apply w-[87.5%] mx-auto my-14;
+    }
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        appearance: none;
+        margin: 0;
+    }
+    input[type=number] {
+        appearance: textfield;
+    }
+}
+
+/* Utilities */
+@layer components {
+    .body1 {
+        font-size: 1.125rem;
+        line-height: 2.25rem;
+        @apply font-inter font-medium;
+    }
+    .body2 {
+        font-size: 1rem;
+        line-height: 1.25rem;
+        @apply font-inter font-medium;
+    }
+    .subtitle1 {
+        font-size: 1.25rem;
+        line-height: 1.25rem;
+        @apply font-inter font-bold;
+    }
+    .subtitle2 {
+        font-size: 1.125rem;
+        line-height: 1.25rem;
+        @apply font-inter font-semibold;
+    }
+    .link {
+        font-size: 0.75rem;
+        line-height: 1.25rem;
+        @apply font-inter font-medium;
     }
 }

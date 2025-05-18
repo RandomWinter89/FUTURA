@@ -31,7 +31,6 @@ import { fetchProfile } from "./features/usersSlice";
 
 
 function App() {
-  // isfeedback
   const { currentUser } = useContext(AuthContext) || null;
   const { personal, personal_loading } = useSelector((state) => state.users);
   const dispatch = useDispatch();

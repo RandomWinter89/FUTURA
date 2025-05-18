@@ -2,6 +2,8 @@ import { useEffect, useState, useContext, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
+import { useNavigate } from "react-router-dom";
+
 import { fetchProductItem, fetch_ProductVariation } from "../../features/productSlice";
 import { createReview, fetch_productReviews } from "../../features/reviewSlice";
 import { addCart_item, updateItem_quantity } from "../../features/cartsSlice";
@@ -11,6 +13,23 @@ import { addWishlist_item } from "../../features/wishlistSlice";
 
 import { ToastOverlay } from "../../components/ui";
 import { Grid } from "../../components/shop";
+
+import heart from "../../assets/svg/heart_outline.svg";
+import arrow_left from "../../assets/svg/arrow-left.svg";
+import arrow_right from "../../assets/svg/arrow-right.svg";
+import star_outline from "../../assets/svg/star_outline.svg";
+import star_filled from "../../assets/svg/star_filled.svg";
+import framer from "../../assets/svg/Frame.svg";
+
+import dash from "../../assets/svg/dash.svg";
+import plus from "../../assets/svg/plus.svg";
+
+
+import StarRating from "../../components/common/StarRating";
+
+//==============================
+
+const ITEMS_PER_PAGE = 4;
 
 const ProductPage  = () => {
     const { products, productItem, products_loading } = useSelector((state) => state.products);
@@ -33,7 +52,65 @@ const ProductPage  = () => {
 
     const [open, setOpen] = useState(false);
     const [desc, setDesc] = useState("");
+
+    const navigate = useNavigate();
+
+    const [page, setPage] = useState(0);
+    const maximumPage = useMemo(() => {
+        if (productReviews.length != 0)
+            return Math.ceil(productReviews.length / ITEMS_PER_PAGE)
+
+        return 0;
+    }, [productReviews]);
+
+    const handleNext = () => setPage((p) => Math.min(p + 1, maximumPage - 1));
+    const handlePrev = () => setPage((p) => Math.max(p - 1, 0));
+
+
+    const [selectedColor, setSelectedColor] = useState("");
+    const [selectedSize, setSelectedSize] = useState("");
+
+    const uniqueColors = useMemo(() => {
+        if (productItem.length != 0)
+            return [...new Set(productItem.map(item => item.value1))];
+        return [];
+    }, [productItem])
+
+    const availableSizes = useMemo(() => {
+        if (productItem.length != 0 && selectedColor != null)
+            return [...new Set(
+                productItem.filter(item => item.value1 === selectedColor)
+            )];
+
+        return []
+    }, [selectedColor])
+
+    const currentItem = useMemo(() => {
+        if (productReviews.length != 0)
+            return productReviews.slice(page * ITEMS_PER_PAGE, (page + 1) * ITEMS_PER_PAGE);
+        return [];
+    }, [page, productReviews]);
+
+    //Modified Number
+    const incrementQuantity = () => {
+        setQuantity(prev => {
+            if (prev + 1 >= 100)
+                return 99;
+
+            return prev + 1;
+        })
+    }
+
+    const decrementQuantity = () => {
+        setQuantity(prev => {
+            if (prev - 1 <= 0)
+                return 1;
+
+            return prev - 1;
+        })
+    }
     
+    //USE EFFECT
 
     useEffect(() => {
         dispatch(fetchProductItem(parseInt(id)));
@@ -51,6 +128,7 @@ const ProductPage  = () => {
             setSelectedVariation(productItem[0].id)
     }, [productItem])
 
+    //ACTION
 
     const onAddCart = () => {
         if (!carts.some((data) => data.product_id == id && data.product_variation_id == selectedVariation)){
@@ -94,11 +172,11 @@ const ProductPage  = () => {
         
     }
 
+    //REVIEW
+    const [reviewMode, setReviewMode] = useState(false);
     const [review, setReview] = useState("");
-    const [rating, setRating] = useState(0.0);
-    const onAddComment = (e) => {
-        e.preventDefault();
-
+    const [rating, setRating] = useState(0);
+    const onAddComment = () => {
         if (!productReviews.some(rev => rev.created_by_userid == currentUser.uid)) { 
             dispatch(createReview({
                 uid: currentUser.uid, 
@@ -115,160 +193,251 @@ const ProductPage  = () => {
         }
     }
 
-    //Optimized
+    //Optimized Category
     const sameCategoryProducts = useMemo(() => {
         return products.slice().filter((info) => info.id != id && info.category_id == product.category_id);
     }, [id, product.category_id, products]);
 
     return (
         <>
-            {/* Product Interaction */}
-            <section className="flex gap-10 max-sm:flex-col">
-                <img src={product.imageUrl} className="flex-1 bg-purple-300 w-full aspect-[3/4]" />
+            {/* ROW 1 - DETAIL */}
+            <section className="flex flex-col gap-12">
+                {/* CAN MAKE IT INTO ELEMENT */}
+                <div className="body2 w-fit flex gap-2">
+                    <span onClick={() => navigate("/Shop/Homepage")} className="text-gray-500 cursor-pointer">
+                        Home
+                    </span>
+                    <img src={framer} className="flex-1 aspect-square"/>
 
-                {/* Product Showcase */}
-                {product != null && (
-                    <div className="flex-1 flex flex-col gap-3 justify-center">
-                        <div className="flex flex-col gap-1">
-                            <h2>{product.name}</h2>
-                            <p className="flex gap-4 font-light">
-                                <strong className="font-semibold">Product Number</strong> 
-                                {product.sku}
-                            </p>
-                            <p>{product.description}</p>
+                    <span onClick={() => navigate("/Shop/Category")} className="text-gray-500 cursor-pointer">
+                        Category
+                    </span>
+                    <img src={framer} className="flex-1 aspect-square"/>
 
-                            {product.average_rating != 0 && (
-                                <p className="my-3 text-lg">
-                                    Rating: {parseFloat(product.average_rating)} 
-                                    <strong className="font-normal text-sm"> / 5 ({product.number_of_reviews} reviews)</strong>
-                                </p>
-                            )}
+                    <p>{product.name}</p>
+                </div>
+                
+                {/* DETAIL CONTAINER */}
+                <div className="flex gap-10 max-sm:flex-col">
+                    <img 
+                        src={product.imageUrl} 
+                        className="flex-[0.5] w-full aspect-[3/4] object-cover" 
+                    />
+
+                    {/* Product Showcase */}
+                    <div className="flex-1 flex flex-col justify-center gap-6">
+                        {/* R1 - Content */}
+                        <div className="flex flex-col gap-6">
+                            {/* TITLE AND DESCRIPTION */}
+                            <div className="flex flex-col gap-1">
+                                <h1>{product.name}</h1>
+                                <p className="mt-2 body1 opacity-65">{product.description}</p>
+                            </div>
+
+                            {/* PRICE AND CAPTION */}
+                            <div className="flex items-end gap-3">
+                                <h2 className="leading-none">RM{finalPrice}</h2>
+                                <p className="link opacity-65">Including consumption tax</p>
+                            </div>
                         </div>
 
                         <hr className="border-gray-400" />
 
-                        {/* Pricing */}
+                        {/* R2 - Variation */}
                         <div className="flex flex-col gap-3">
-                            <div className="flex flex-col gap-2">
-                                <p className="text-4xl leading-none font-semibold">
-                                    RM {finalPrice}
-                                </p>
-                                <p className="text-gray-600 italic text-sm leading-none">
-                                    Including consumption tax
-                                </p>
-                            </div>
-
                             {/* Variation Option */}
-                            <select 
-                                className="bg-white border border-black p-3 rounded-lg" 
+                            <select
+                                className="bg-white border border-black p-3 body2"
                                 onChange={(e) => {
-                                    setSelectedVariation(e.target.selectedOptions[0].dataset.id); 
-                                    setSelectCharge(e.target.selectedOptions[0].dataset.extra);
+                                    setSelectedColor(e.target.value);
+                                    setSelectedSize(null);
                                 }}
                             >
-                                {productItem
-                                    .filter(item => item.product_id == id)
-                                    .map((item) => {
-                                        return (
-                                            <option key={item.id} value={item.id} data-id={item.id} data-extra={item.extra_charge}>
-                                                COLOR: {item.value1} | SIZE: {item.value2} | Stock: {item.quantity}
-                                            </option>
-                                        )
-                                    }
-                                )} 
+                                <option value={null}>Select Color</option>
+                                {uniqueColors.map(color => (
+                                    <option key={color} value={color}>{color}</option>
+                                ))}
                             </select>
 
-                            <input 
-                                type="number" 
-                                value={quantity}
-                                min="1"
-                                max="99"
-                                onChange={(e) => {
-                                    if (e.target.value > 0 || e.target.value < 100)
-                                        setQuantity(e.target.value)
+                            {selectedColor && (
+                                <select 
+                                    className="bg-white border border-black p-3 body2"
+                                    onChange={(e) => {
+                                        setSelectedSize(e.target.value);
+                                    }}
+                                >
+                                    <option value={null}>Select Size</option>
+                                    {availableSizes.map(data => (
+                                        <option key={data.id} value={data.id}>{data.value2}</option>
+                                    ))}
+                                </select>
+                            )}
 
-                                    if (e.target.value <= 0)
-                                        setQuantity(1);
-
-                                    if (e.target.value >= 100)
-                                        setQuantity(99);
-                                }} 
-                                className="border border-black py-2 px-4"
-                            />
-
-                            <div className="flex gap-2">
-                                <button onClick={onAddCart} className="flex-1 bg-slate-700 text-white text-lg font-semibold py-2 rounded-lg">
-                                    Add Cart
+                            <div className="w-fit flex gap-2 border border-black">
+                                <button onClick={decrementQuantity} className="px-5 py-4">
+                                    <img src={dash} />
                                 </button>
+                                <input 
+                                    type="number" 
+                                    value={quantity}
+                                    onChange={(e) => {
+                                        if (e.target.value >= 100)
+                                            return setQuantity(99)
 
-                                <button onClick={() => onAddWishlist(id)} className="flex-[0.2] border border-black py-2 rounded-lg">
-                                    Liked
+                                        if (e.target.value <= 0)
+                                            return setQuantity(1)
+
+                                        setQuantity(e.target.value);
+                                    }}
+                                    className="text-center max-w-12"
+                                />
+                                <button onClick={incrementQuantity} className="px-5 py-4">
+                                    <img src={plus} />
                                 </button>
                             </div>
                         </div>
+                            
+                        {/* R3 - ACTION BUTTON */}
+                        <div className="flex gap-2">
+                            <button onClick={onAddCart} className="flex-1 bg-black text-white py-4">
+                                Add to Cart
+                            </button>
+
+                            <button onClick={() => onAddWishlist(id)} className="aspect-square flex justify-center items-center border border-black py-2">
+                                <img src={heart} className="w-fit"/>
+                            </button>
+                        </div>
                     </div>
-                )}
-            </section>
 
-            {/* Customer Review */}
-            <section className="flex flex-col gap-4 py-10 border-y border-black" onSubmit={onAddComment}>
-                <h2>Customer Review</h2>
-                <div className="flex gap-4">
-                    <form className="flex-1 flex flex-col gap-4">
-                        <div className="flex flex-col gap-1">
-                            <label className="flex gap-2 items-center">
-                                <p>PLEASE ENTER YOUR RATING</p> 
-                                <span className="text-2xl">{rating}</span>
-                            </label>
-
-                            <input type="range" min="0" max="5.0" step="0.5"
-                                value={rating} 
-                                onChange={(e) => setRating(e.target.value)}
-                                className="w-fit"
-                            />
-                        </div>
-
-                        <div className="flex flex-col gap-1">
-                            <label>COMMENT</label>
-                            <textarea 
-                                onChange={(e) => setReview(e.target.value)}
-                                className="border border-black min-h-fit py-2"
-                            />
-                        </div>
-
-                        <button 
-                            className="border border-black py-2 rounded-lg"
-                            type="submit"
-                        >Add comment</button>
-                    </form>
-
-                    <hr className="border-r border-gray-400 mx-2 h-auto" />
-
-                    {(!productReviews_loading) && 
-                        <div className="flex-[0.6] h-fit overflow-y-auto grid gap-4 grid-cols-1">
-                            {productReviews.map((data, index) => 
-                                <div key={index} className="border border-black rounded-lg p-4 h-fit">
-                                    <p>Date: {data.created_datetime.split("T")[0].split("-").join("/")}</p>
-                                    <p>Comment: {data.comment}</p>
-                                    <p>Rating: {data.rating_value}</p>
-                                </div>
-                            )}
-                        </div>
-                    }
+                    <span className="flex-[0.3] max-lg:hidden"/>
                 </div>
             </section>
 
-            {/* Product Random in Same Category */}
+            {/* REVIEW */}
+            <section className="flex flex-col gap-8">
+                {/* HEADER */}
+                <div className="flex justify-between items-center">
+                    {/* TITLE */}
+                    <div className="flex gap-6">
+                        <h2>Reviews</h2>
+                        {/* Star Rating */}
+                        <div className="flex gap-4 items-center">
+                            {/* ICON */}
+                            <div className="flex gap-1">
+                                <img src={star_filled} />
+                                <img src={star_filled} />
+                                <img src={star_filled} />
+                                <img src={star_filled} />
+                                <img src={star_filled} />
+                            </div>
+
+                            {/* VALUE */}
+                            <p className="body2">
+                                {parseFloat(product.average_rating)} ({product.number_of_reviews})
+                            </p>
+                        </div>
+                    </div>
+                    
+                    {/* ACTION BUTTON */}
+                    <div className="flex gap-3">
+                        {reviewMode &&
+                            <button 
+                                onClick={() => setReviewMode(false)}
+                                className="border border-black px-9 py-4"
+                            >
+                                Cancel Review
+                            </button>
+                        }
+
+                        <button 
+                            onClick={() => {
+                                if (reviewMode) {
+                                    onAddComment()
+                                } else {
+                                    setReviewMode(true);
+                                }  
+                            }}
+                            className="bg-black text-white px-9 py-4"
+                        >
+                           {!reviewMode ? "Write a Review" : "Submit Review"}
+                        </button>
+                    </div>
+                </div>
+
+                {/* FORM */}
+                {reviewMode && 
+                    <div className="flex flex-col gap-6">
+                        <label className="flex gap-4 body2">
+                            Rating: 
+                            <div className="flex gap-1">
+                                <StarRating rate={rating} setRate={(value) => setRating(value)} />
+                            </div>
+                        </label>
+
+                        <label className="flex flex-col gap-5 body2">
+                            Comments
+                            <textarea 
+                                placeholder={"I absolutely love this t-shirt! The design is unique and the fabric feels so comfortable. As a fellow designer, I appreciate the attention to detail. It's become my favorite go-to shirt."}
+                                onChange={(e) => setReview(e.target.value)}
+                                className="border border-black min-h-fit p-8"
+                            />
+                        </label>
+                    </div>
+                }
+
+                <hr className="border-gray-300" />
+
+                {/* REVIEW */}
+                <div className="flex flex-col gap-8 items-center">
+                    <div className="w-full grid grid-cols-2 gap-6 max-sm:grid-cols-1">
+                        {(!productReviews_loading) && 
+                            currentItem.map((data, index) => 
+                                <div key={index} className="border border-black p-9 flex flex-col gap-6">
+                                    {/* Profile Name */}
+                                    <div className="flex flex-col gap-4">
+                                        {/* <p>Rating: {data.rating_value}</p> */}
+                                        <div className="w-fit flex gap-1">
+                                            <img src={star_filled} />
+                                            <img src={star_filled} />
+                                            <img src={star_filled} />
+                                            <img src={star_filled} />
+                                            <img src={star_filled} />
+                                        </div>
+                                        <p className="subtitle1">Samantha D.</p>
+                                        <p className="body2 opacity-60">"{data.comment}"</p>
+                                    </div>
+                                    
+                                    
+                                    <p className="body2 opacity-60">Posted on: {data.created_datetime.split("T")[0].split("-").join("/")}</p>
+                                </div>
+                            )
+                        }
+                    </div>
+
+                    {/* Arrow Head */}
+                    <div className="flex gap-4">
+                        <button onClick={handlePrev} disabled={page === 0}>
+                            <img src={arrow_left} />
+                        </button>
+
+                        <p className="body2">{page}</p>
+
+                        <button onClick={handleNext} disabled={page >= maximumPage - 1}>
+                            <img src={arrow_right} />
+                        </button>
+                    </div>
+                </div>
+            </section>
+            
+            {/* MORE PRODUCT */}
             <section className="flex flex-col gap-4">
-                <h2>Other Product under same Category</h2>
-                <Grid collection={sameCategoryProducts} isLoading={products_loading}/>
+                <h2>You May Also Like</h2>
+                <Grid collection={sameCategoryProducts} isLoading={products_loading} variant={"detail"}/>
             </section>
 
             <ToastOverlay show={open} onHide={() => setOpen(false)} desc={desc}/>
         </>
     )
 }
-
-// onWishlistProduct({id: data.id})
 
 export default ProductPage;

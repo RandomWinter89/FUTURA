@@ -61,7 +61,8 @@ const GeneralLayout = memo(({data_user}) => {
     return (
         < >
             <Header />
-            <main className="flex flex-col min-h-svh gap-16 my-10">
+            {/*  gap-16 my-10 */}
+            <main className="flex flex-col min-h-svh">
                 <Outlet />
             </main>
             <Footer />

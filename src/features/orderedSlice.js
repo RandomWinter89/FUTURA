@@ -75,6 +75,16 @@ export const get_OrderItem = createAsyncThunk(
     }
 );
 
+export const getAllItem = createAsyncThunk(
+    'users/getAllItem',
+    async (uid) => {
+        console.log("Fetch data");
+        const response = await axios.get(`${VITE_FUTURA_API}/user/${uid}/order/items`);
+        console.log("Info from All: ", response.data);
+        return response.data;
+    }
+)
+
 const ordersSlice = createSlice({
     name: "ordersSlice",
     initialState: {
@@ -98,6 +108,9 @@ const ordersSlice = createSlice({
             .addCase(createOrder.fulfilled, (state, action) => {
                 state.orderId = action.payload.data?.id;
                 state.order = [...state.order, action.payload.data];
+            })
+            .addCase(getAllItem.fulfilled, (state, action) => {
+                state.orderItem = action.payload.data;
             })
 
         builder

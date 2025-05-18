@@ -24,6 +24,28 @@ const buttonVariants = cva(
     }
 );
 
+// const buttonVariants = cva(
+//     'py-2 transition-all duration-300',
+//     {
+//         variants: {
+//             variant: {
+//                 primary_outline: "border border-black text-black",
+//                 primary_filled: "bg-black text-white",
+//                 secondary_outline: "border border-red-500 text-red-500",
+//                 secondary_filled: "bg-red-500 text-white",
+//             },
+//             state: {
+//                 fit: "w-fit px-11",
+//                 full: "w-full"
+//             }
+//         },
+//         defaultVariants: {
+//             variant: "primary_filled",
+//             state: "full",
+//         }
+//     }
+// );
+
 // Version 1
 const Button = forwardRef(({variant, state, className, children, ...props}) => {
     return (

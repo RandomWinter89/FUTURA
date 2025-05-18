@@ -26,7 +26,7 @@ const AuthChecker = ({auth_user, data_user, loading, children}) => {
     //1. Authorized
     //2. No record of the user
     //3. The REPORT MUST BE FROM USER SLICE!!!
-    if (auth_user && !data_user) {
+    if (auth_user && !data_user && !location.includes("/Auth/Register")) {
         return <Navigate to="/Auth/Register" />
     }
 
