@@ -174,7 +174,7 @@ const ProductPage  = () => {
 
     //REVIEW
     const [reviewMode, setReviewMode] = useState(false);
-    const [review, setReview] = useState("");
+    const [review, setReview] = useState(""); 
     const [rating, setRating] = useState(0);
     const onAddComment = () => {
         if (!productReviews.some(rev => rev.created_by_userid == currentUser.uid)) { 
