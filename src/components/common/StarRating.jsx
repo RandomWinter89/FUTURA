@@ -7,7 +7,7 @@ export default function StarRating({ rate, setRate }) {
 
   function handleClick(getCurrentIndex) {
     setRating(getCurrentIndex);
-    setRate({value: getCurrentIndex});
+    setRate(getCurrentIndex);
   }
 
   function handleMouseEnter(getCurrentIndex) {

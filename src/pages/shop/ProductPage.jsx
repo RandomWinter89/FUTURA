@@ -178,6 +178,7 @@ const ProductPage  = () => {
     const [rating, setRating] = useState(0);
     const onAddComment = () => {
         if (!productReviews.some(rev => rev.created_by_userid == currentUser.uid)) { 
+            console.log("Rating: ", rating)
             dispatch(createReview({
                 uid: currentUser.uid, 
                 product_id: parseInt(id), 

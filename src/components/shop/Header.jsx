@@ -13,8 +13,6 @@ import cart from "../../assets/svg/cart_outline.svg";
 import heart from "../../assets/svg/heart_outline.svg";
 import profile from "../../assets/svg/profile_outline.svg";
 
-import "../UI.css";
-
 const Header = () => {
     const { currentUser } = useContext(AuthContext) || null;
     const dispatch = useDispatch();
