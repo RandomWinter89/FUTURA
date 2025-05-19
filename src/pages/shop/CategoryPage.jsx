@@ -100,7 +100,13 @@ const CategoryPage = () => {
                 </div>
 
                 <div className="flex-1 flex flex-col gap-6">
-                    <Grid collection={sortedCategoryProduct} header={"Category"} isLoading={products_loading} variant={"category"}/>
+                    <Grid 
+                        collection={sortedCategoryProduct}
+                        isLoading={products_loading} 
+                        header={"Category"}  
+                        enableMore={false}
+                        variant={"category"}
+                    />
                 </div>
             </section>
         </>

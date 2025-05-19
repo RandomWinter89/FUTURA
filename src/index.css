@@ -54,6 +54,12 @@
     section {
         @apply w-[87.5%] mx-auto my-14;
     }
+    input {
+        @apply body2 border border-gray-400 text-gray-500 px-6 py-4;
+    }
+    select {
+        @apply body2 border border-gray-400 text-gray-500 px-6 py-4;
+    }
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
         appearance: none;
@@ -90,5 +96,19 @@
         font-size: 0.75rem;
         line-height: 1.25rem;
         @apply font-inter font-medium;
+    }
+    
+    .skeleton {
+        animation: skeleton-loading 1s linear infinite alternate;
+    }
+    
+    @keyframes skeleton-loading {
+        0% {
+            background-color: hsl(200, 20%, 70%);
+        }
+    
+        100% {
+            background-color: hsl(200, 20%, 95%);
+        }
     }
 }

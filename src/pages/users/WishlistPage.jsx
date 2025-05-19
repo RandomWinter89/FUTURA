@@ -38,10 +38,6 @@ const WishlistPage = () => {
         dispatch(removeWishlist_item({uid: currentUser.uid, product_id, wishlist_id}))
     }
 
-    const onAdd_Cart = (product_id) => { 
-        console.log("Product_id: ", product_id);
-    }
-
     // const removeButton = () => {
     //     dispatch(resetWishlist());
     // }

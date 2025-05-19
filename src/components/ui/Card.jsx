@@ -18,7 +18,7 @@ const CardImageVariants = cva(
 )
 
 // Prototype - Reusable Element
-const CardImage = React.forwardRef(({imageUrl, className, variant, ...prop}) => {
+const CardImage = (({imageUrl, className, variant, ...prop}) => {
     return (
         < >
             {imageUrl == undefined 

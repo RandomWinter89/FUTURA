@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom"
-import { Header, Footer } from "../shop";
+import { Header, Footer } from ".";
 import { memo } from "react";
 
 import { useEffect } from "react";

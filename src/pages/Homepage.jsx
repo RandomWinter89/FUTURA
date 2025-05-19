@@ -27,7 +27,7 @@ const Homepage = () => {
     return (
         < >
             <div 
-                className="h-[55svh] flex flex-col gap-4 justify-center p-24 bg-cover bg-right" 
+                className="h-[55svh] skeleton flex flex-col gap-4 justify-center p-24 bg-cover bg-right" 
                 style={{ 
                     backgroundImage: `url(${SHOWCASE02})`, 
                     backgroundRepeat: 'no-repeat',

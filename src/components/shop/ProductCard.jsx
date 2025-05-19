@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addWishlist_item } from "../../features/wishlistSlice";
 
 import heart from '../../assets/svg/heart_outline.svg';
+import heart_filled from '../../assets/svg/heart_filled.svg'
 import star from '../../assets/svg/star_filled.svg';
 
 const ProductCard = ({data, showToast, showFeedback}) => {
@@ -52,7 +53,10 @@ const ProductCard = ({data, showToast, showFeedback}) => {
             "
         >
             {data.imageUrl != "NONE"
-                ? <img src={`${data.imageUrl}`} className="object-cover w-full aspect-[3/4] rounded-xl border border-gray-200"/>
+                ? <img 
+                    src={`${data.imageUrl}`} 
+                    className="object-cover w-full aspect-[3/4] rounded-xl skeleton border border-gray-200"
+                    />
                 : <span className="bg-orange-300 w-full aspect-[3/4]" />
             }
 
@@ -61,7 +65,9 @@ const ProductCard = ({data, showToast, showFeedback}) => {
                 <div className="flex justify-between gap-4 items-start">
                     <p className="text-xl font-bold">{data.name}</p>
                     <button onClick={addToWishlist}>
-                        <img src={heart}/>
+                        {wishlists.find((prev) => prev.product_id == data.id) 
+                        ? <img src={heart_filled}/> 
+                        : <img src={heart}/>}
                     </button>
                 </div>
 

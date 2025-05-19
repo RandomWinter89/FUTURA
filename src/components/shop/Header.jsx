@@ -67,7 +67,7 @@ const Header = () => {
                                 <img src={profile} />
                             </NavLink>
 
-                            <Button onClick={handleLogout} variant={"base"} state={"negative"}> 
+                            <Button onClick={handleLogout} variant={"primary_outline"} state={"fit"}> 
                                 Log out
                             </Button>
                         </>

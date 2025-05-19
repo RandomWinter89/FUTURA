@@ -34,7 +34,7 @@ const Header = () => {
                             <NavLink path={"/Auth/Login"} name={"Login"} variant={"auth"} type={"positive"} />
                             <NavLink path={"/Auth/Signup"} name={"Signup"} variant={"auth"} type={"positive"} />
                         </div>
-                    :   <Button onClick={handleLogout} variant={"base"} state={"negative"}>
+                    :   <Button onClick={handleLogout} variant={"primary_filled"} state={"fit"}>
                             Exit
                         </Button>
                 }
