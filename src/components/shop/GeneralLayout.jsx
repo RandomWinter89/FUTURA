@@ -1,6 +1,5 @@
 import { Outlet } from "react-router-dom"
 import { Header, Footer } from ".";
-import { memo } from "react";
 
 import { useEffect } from "react";
 
@@ -13,12 +12,14 @@ import { fetchOrder } from "../../features/orderedSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 
-const GeneralLayout = memo(({data_user}) => {
+const GeneralLayout = ({auth_user}) => {
     const { products } = useSelector((state) => state.products);
-    const { address } = useSelector((state) => state.address);
+    const { addressStatus } = useSelector((state) => state.address);
     const { cart_id, carts } = useSelector((state) => state.carts);
     const { wishlists, wishlist_id } = useSelector((state) => state.wishlists);
     const { order } = useSelector((state) => state.orders);
+
+
 
     const dispatch = useDispatch();
 
@@ -34,29 +35,29 @@ const GeneralLayout = memo(({data_user}) => {
     // Order
 
     useEffect(() => {
-        if (!data_user) return;
+        if (!auth_user) return;
 
-        if (address.length == 0)
-            dispatch(fetchAddress(data_user.uid));
+        if (addressStatus == "idle")
+            dispatch(fetchAddress(auth_user.uid));
 
         if (cart_id == null)
-            dispatch(fetchCartId(data_user.uid))
+            dispatch(fetchCartId(auth_user.uid))
                 .then(() => dispatch(fetchCart_item(cart_id)));
 
         if (cart_id != null && carts.length === 0)
             dispatch(fetchCart_item(cart_id));
 
         if (wishlist_id == null)
-            dispatch(fetchWishlistId(data_user.uid))
-                .then(() => dispatch(readUserWishlists(data_user.uid)));
+            dispatch(fetchWishlistId(auth_user.uid))
+                .then(() => dispatch(readUserWishlists(auth_user.uid)));
 
         if (wishlist_id != null && wishlists.length === 0)
-            dispatch(readUserWishlists(data_user.uid));
+            dispatch(readUserWishlists(auth_user.uid));
 
         if (order.length == 0)
-            dispatch(fetchOrder(data_user.uid));
+            dispatch(fetchOrder(auth_user.uid));
 
-    }, [dispatch, data_user])
+    }, [dispatch, auth_user])
     
     return (
         < >
@@ -68,6 +69,6 @@ const GeneralLayout = memo(({data_user}) => {
             <Footer />
         </>
     )
-});
+};
 
 export default GeneralLayout;

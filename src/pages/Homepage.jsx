@@ -7,7 +7,8 @@ import { Grid } from "../components/shop";
 // Asset Import
 import SHOWCASE02 from "../assets/SHOWCASE02.png";
 
-import { CollectionCard } from '../components/shop';
+
+import { ToggleMode } from "../components/common";
 
 const Homepage = () => {
     const { products, products_loading } = useSelector((state) => state.products);

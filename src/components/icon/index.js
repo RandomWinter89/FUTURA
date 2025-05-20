@@ -1,0 +1,10 @@
+export { default as iconArrowLeft } from "./iconArrowLeft.jsx";
+export { default as iconArrowRight } from "./iconArrowRight.jsx";
+export { default as iconBin } from "./iconBin.jsx";
+export { default as iconCartOutline } from "./iconCartOutline.jsx";
+export { default as iconDash } from "./iconDash.jsx";
+export { default as iconFramer } from "./iconFramer.jsx";
+export { default as iconHeart } from "./iconHeart.jsx";
+export { default as iconPlus } from "./iconPlus.jsx";
+export { default as iconProfile } from "./iconProfile.jsx";
+export { default as iconStar } from "./iconStar.jsx";

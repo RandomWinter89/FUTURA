@@ -6,14 +6,14 @@ import { Category } from "../../database/category";
 import { useContext } from "react";
 import { AuthContext } from "../../Context/AuthProvider";
 import { useDispatch, useSelector } from "react-redux";
-import { addToUserWishlists } from "../../features/wishlistSlice";
+import { updateWishlistToggle, toggleWishlist } from "../../features/wishlistSlice";
 
 import heart from '../../assets/svg/heart_outline.svg';
 import heart_filled from '../../assets/svg/heart_filled.svg'
 import star from '../../assets/svg/star_filled.svg';
 
 const ProductCard = ({data, showToast, showFeedback}) => {
-    const { wishlist_id, wishlists } = useSelector((state) => state.wishlists);
+    const { wishlists, wishlistActionStatus } = useSelector((state) => state.wishlists);
     const { currentUser } = useContext(AuthContext) || null;
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -23,17 +23,13 @@ const ProductCard = ({data, showToast, showFeedback}) => {
     const addToWishlist = (e) => {
         e.stopPropagation();
 
-        if (wishlist_id == null)
+        if (wishlistActionStatus == "loading")
             return;
 
-        console.log("Called from Product");
-        if (!wishlists.length || !wishlists.some((info) => info.product_id == data.id)) {
-            dispatch(addToUserWishlists({
-                uid: currentUser.uid, 
-                wishlist_id: wishlist_id, 
-                product_id: data.id
-            }));
+        dispatch(toggleWishlist({product_id: data.id}));
+        dispatch(updateWishlistToggle({uid: currentUser.uid, product_id: data.id}));
 
+        if (wishlists.find(data => data.product_id == data.id)) {
             showFeedback("Added to wishlist");
             showToast();
         } else {

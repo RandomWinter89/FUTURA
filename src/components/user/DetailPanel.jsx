@@ -6,7 +6,6 @@ import { getAuth, deleteUser } from "firebase/auth";
 import { useDispatch } from "react-redux";
 
 const ConfirmationModal = ({show, onCancel, onConfirm}) => {
-
     if (!show) return null;
 
     return (
@@ -77,6 +76,7 @@ const DetailPanel = ({authUser, dataUser, imageUrl, loading}) => {
             await deleteUser(authUser);
             await auth.signOut();
             dispatch(deleteDBUser(authUser));
+            dispatch(resetWishlist());
         } catch (err) {
             console.log("Critical Error by Detail Panel: ", err);
         }

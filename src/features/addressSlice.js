@@ -3,6 +3,7 @@ import axios from 'axios';
 
 const VITE_FUTURA_API = import.meta.env.VITE_FUTURA_API;
 
+// == CREATE =======>
 
 export const createAddress = createAsyncThunk(
     'users/createAddress',
@@ -21,14 +22,20 @@ export const createAddress = createAsyncThunk(
 );
 
 
+// == READ =======>
+
 export const fetchAddress = createAsyncThunk(
     'users/fetchAddress',
     async (uid) => {
+        console.log("Requesting Address, ", uid);
         const response = await axios.get(`${VITE_FUTURA_API}/users/${uid}/address`);
+        console.log("Result Address", response.data);
         return response.data;
     }
 );
 
+
+// == UPDATE =======>
 
 export const updateAddress = createAsyncThunk(
     'users/updateAddress',
@@ -47,6 +54,8 @@ export const updateAddress = createAsyncThunk(
 );
 
 
+// == DELETE =======>
+
 export const removeAddress = createAsyncThunk(
     'users/removeAddress',
     async ({uid, address_id}) => {
@@ -55,33 +64,40 @@ export const removeAddress = createAsyncThunk(
     }
 );
 
+// ---------------------------------------------
+
 const addressSlice = createSlice({
     name: "addressSlice",
     initialState: {
         address: [],
+        addressStatus: "idle",
         address_loading: false,
     },
-    reducers: {},
+    reducers: {
+
+    },
     extraReducers: (builder) => {
         builder
             .addCase(createAddress.fulfilled, (state, action) => {
                 state.address = [...state.address, action.payload.data];
-                state.address_loading = false;
+                state.addressStatus = "succeed";
             })
             .addCase(createAddress.pending, (state) => {
                 state.address_loading = true;
-            });
+                state.addressStatus = "loading";
+            })
 
-        builder
+            .addCase(fetchAddress.pending, (state) => {
+                state.addressStatus = "loading";
+            })
             .addCase(fetchAddress.fulfilled, (state, action) => {
                 state.address = action.payload.data;
-                state.address_loading = false;
+                state.addressStatus = "succeed";
             })
-            .addCase(fetchAddress.pending, (state) => {
-                state.address_loading = true;
-            });
+            .addCase(fetchAddress.rejected, (state) => {
+                state.addressStatus = "failed";
+            })
 
-        builder
             .addCase(updateAddress.fulfilled, (state, action) => {
                 const data = action.payload.data;
                 state.address = state.address.map((item) => {
@@ -90,13 +106,8 @@ const addressSlice = createSlice({
                     }
                     return item;
                 });
-                state.address_loading = false;
             })
-            .addCase(updateAddress.pending, (state) => {
-                state.address_loading = true;
-            });
 
-        builder
             .addCase(removeAddress.fulfilled, (state, action) => {
                 const data = action.payload.data;
                 state.address = state.address.filter((item) => item.id !== data.id);

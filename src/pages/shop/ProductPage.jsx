@@ -9,7 +9,7 @@ import { createReview, fetch_productReviews } from "../../features/reviewSlice";
 import { addCart_item, updateItem_quantity } from "../../features/cartsSlice";
 
 import { AuthContext } from "../../Context/AuthProvider";
-import { addToUserWishlists } from "../../features/wishlistSlice";
+import { toggleWishlist, updateWishlistToggle } from "../../features/wishlistSlice";
 
 import { ToastOverlay } from "../../components/ui";
 import { Grid } from "../../components/shop";
@@ -34,7 +34,7 @@ const ITEMS_PER_PAGE = 4;
 const ProductPage  = () => {
     const { products, productItem, products_loading } = useSelector((state) => state.products);
     const { productReviews, productReviews_loading } = useSelector((state) => state.reviews);
-    const { wishlist_id, wishlists } = useSelector((state) => state.wishlists);
+    const { wishlists, wishlistActionStatus } = useSelector((state) => state.wishlists);
     const { carts, cart_id } = useSelector((state) => state.carts);
 
     const { currentUser } = useContext(AuthContext) || null;
@@ -153,24 +153,18 @@ const ProductPage  = () => {
     }
 
     const onAddWishlist = (prodId) => {
-        if (wishlist_id == null)
+        if (wishlistActionStatus == "loading")
             return;
 
-        console.log("Called from here");
-        if (!wishlists.length || !wishlists.some((data) => data.product_id == prodId)) {
-            dispatch(addToUserWishlists({
-                uid: currentUser.uid, 
-                wishlist_id: wishlist_id, 
-                product_id: prodId
-            }));
+        dispatch(toggleWishlist({product_id: prodId}));
+        dispatch(updateWishlistToggle({uid: currentUser.uid, product_id: prodId}));
 
-            setDesc("Added to wishlists");
-            setOpen(true);
+        if (wishlists.find(data => data.product_id == data.id)) {
+            setDesc("Added to wishlist");
         } else {
             setDesc("This item is in wishlist already");
-            setOpen(true);
         }
-        
+        setOpen(true);
     }
 
     //REVIEW
@@ -275,8 +269,8 @@ const ProductPage  = () => {
                                 </select>
                             )}
 
-                            <div className="w-fit flex gap-2 border border-black">
-                                <button onClick={decrementQuantity} className="px-5 py-4">
+                            <div className="w-fit flex border border-black">
+                                <button onClick={decrementQuantity} className="px-5 py-4 hover:bg-slate-200">
                                     <img src={dash} />
                                 </button>
                                 <input 
@@ -291,7 +285,7 @@ const ProductPage  = () => {
 
                                         setQuantity(e.target.value);
                                     }}
-                                    className="text-center max-w-12"
+                                    className="border-none text-center w-16"
                                 />
                                 <button onClick={incrementQuantity} className="px-5 py-4">
                                     <img src={plus} />
@@ -395,7 +389,6 @@ const ProductPage  = () => {
                         {(!productReviews_loading) && 
                             currentItem.map((data, index) => 
                                 <div key={index} className="border border-black p-9 flex flex-col gap-6">
-                                    {/* Profile Name */}
                                     <div className="flex flex-col gap-4">
                                         {/* <p>Rating: {data.rating_value}</p> */}
                                         <div className="w-fit flex gap-1">
@@ -405,7 +398,7 @@ const ProductPage  = () => {
                                             <img src={star_filled} />
                                             <img src={star_filled} />
                                         </div>
-                                        <p className="subtitle1">Samantha D.</p>
+                                        <p className="subtitle1">{data.username} : {data.rating_value}</p>
                                         <p className="body2 opacity-60">"{data.comment}"</p>
                                     </div>
                                     

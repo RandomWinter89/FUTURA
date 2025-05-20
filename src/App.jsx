@@ -42,7 +42,7 @@ function App() {
 
         <Route path="/Shop" element={
             <AuthChecker auth_user={currentUser} data_user={currentDBUser} status={currentDBUserStatus}>
-              <GeneralLayout data_user={currentDBUser} />
+              <GeneralLayout auth_user={currentUser} />
             </AuthChecker>
           }
         >
@@ -64,7 +64,7 @@ function App() {
         
         <Route path="/User" element={
             <AuthChecker auth_user={currentUser} data_user={currentDBUser} status={currentDBUserStatus}>
-              <GeneralLayout data_user={currentDBUser}/>
+              <GeneralLayout auth_user={currentUser}/>
             </AuthChecker>
           }
         >

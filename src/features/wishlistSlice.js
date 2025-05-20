@@ -7,7 +7,6 @@ const VITE_FUTURA_API = import.meta.env.VITE_FUTURA_API;
 
 // == USER'S WISHLIST ======================>
 
-
 export const createUserWishlistID = createAsyncThunk(
     'users/createUserWishlistID',
     async (uid) => {
@@ -24,8 +23,8 @@ export const fetchWishlistId = createAsyncThunk(
     }
 );
 
-// == WISHLIST ITEM ======================>
 
+// == WISHLIST ITEM ======================>
 
 export const readUserWishlists = createAsyncThunk(
     'users/readUserWishlists',
@@ -36,33 +35,14 @@ export const readUserWishlists = createAsyncThunk(
     }
 )
 
-export const addToUserWishlists = createAsyncThunk(
-    'users/addToUserWishlists',
-    async ({uid, wishlist_id, product_id}) => {
-        const body = {
-            product_id: product_id,
-            wishlist_id: wishlist_id
-        }
-
-        
-
-        const response = await axios.post(`${VITE_FUTURA_API}/users/${uid}/wishlist/addItem`, body)
+// Toggle Wishlist
+export const updateWishlistToggle = createAsyncThunk(
+    'users/updateWishlists',
+    async ({uid, product_id}) => {
+        const response = await axios.put(`${VITE_FUTURA_API}/users/${uid}/wishlist/${product_id}`);
         return response.data;
     }
 )
-
-export const removeFromUserWishlists = createAsyncThunk(
-    'users/removeFromUserWishlists',
-    async ({uid, product_id, wishlist_id}) => {
-
-        const response = await axios.delete(`${VITE_FUTURA_API}/users/${uid}/wishlist/${product_id}`, { 
-            data: {wishlist_id}
-        });
-
-        return response.data;
-    }
-)
-
 
 // -------------------------------------------------
 // Loading replaced to status
@@ -72,48 +52,76 @@ const wishlistsSlice = createSlice({
         wishlist_id: null,
         wishlists: [],
         wishlistStatus: "idle",
-        loading: false,
+        wishlistActionStatus: "idle",
     },
     reducers: {
-
+        toggleWishlist: (state, action) => {
+            if (state.wishlists.find(prev => prev.product_id == action.payload.product_id)) {
+                state.wishlists = state.wishlists.filter(
+                    (item) => item.product_id !== action.payload.product_id
+                );
+            }
+            else {
+                state.wishlists.push(action.payload);
+            }
+        },
         resetWishlist: (state) => {
             state.wishlist_id = null;
             state.wishlists = [];
-            state.loading = false;
+            state.wishlistStatus = "idle";
+            state.wishlistActionStatus = "idle";
         },
     },
     extraReducers: (builder) => {
         builder
             .addCase(createUserWishlistID.fulfilled, (state, action) => {
                 state.wishlist_id = action.payload.id;
+                state.wishlistStatus = "succeed";
+            })
+
+            .addCase(fetchWishlistId.pending, (state) => {
+                state.wishlistStatus = "loading";
             })
             .addCase(fetchWishlistId.fulfilled, (state, action) => {
                 state.wishlist_id = action.payload.id;
+                state.wishlistStatus = "succeed";
+            })
+
+            
+            .addCase(readUserWishlists.pending, (state) => {
+                state.wishlistStatus = "loading";
             })
             .addCase(readUserWishlists.fulfilled, (state, action) => {
                 state.wishlists = action.payload;
-                state.loading = false;
+                state.wishlistStatus = "succeed";
             })
-            .addCase(readUserWishlists.pending, (state) => {
-                state.loading = true;
-            })
-            .addCase(addToUserWishlists.fulfilled, (state, action) => {
-                state.wishlists.push(action.payload);
-                state.loading = false;
-            })
-            .addCase(addToUserWishlists.pending, (state) => {
-                state.loading = true;
-            })
-            .addCase(removeFromUserWishlists.fulfilled, (state, action) => {
-                state.wishlists = state.wishlists.filter(
-                    (item) => item.id !== action.payload.id
-                );
-                state.loading = false;
+            .addCase(readUserWishlists.rejected, (state) => {
+                state.wishlistStatus = "failed";
             })
 
+
+            .addCase(updateWishlistToggle.pending, (state) => {
+                state.wishlistActionStatus = "loading";
+            })
+            .addCase(updateWishlistToggle.fulfilled, (state) => {
+                state.wishlistActionStatus = "succeed";
+            })
+            .addCase(updateWishlistToggle.rejected, (state, action) => {
+                state.wishlistActionStatus = "failed";
+                const productId = action.meta.arg.product_id;
+                
+                if (state.wishlists.find(prev => prev.product_id == productId)) {
+                    state.wishlists = state.wishlists.filter(
+                        (item) => item.product_id !== productId
+                    );
+                }
+                else {
+                    state.wishlists.push(productId);
+                }
+            })
     },
 });
 
-export const { resetWishlist }  = wishlistsSlice.actions;
+export const { resetWishlist, toggleWishlist }  = wishlistsSlice.actions;
 
 export default wishlistsSlice.reducer;

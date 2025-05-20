@@ -12,13 +12,7 @@ import plus from "../../assets/svg/plus.svg";
 import bin from "../../assets/svg/deleteBin.svg";
 
 
-const CartItem = ({
-        data,
-        product,
-        quantity,
-        onCallUpdate,
-        onCallRemoval,
-    }) => {
+const CartItem = ({data, product, quantity, onCallUpdate, onCallRemoval,}) => {
     const [qty, setQty] = useState(1);
 
     const incrementQuantity = () => {
@@ -46,7 +40,7 @@ const CartItem = ({
     const subtotal = ((parseFloat(data.base_price) + parseFloat(data.extra_charge)) * data.quantity);
 
     return (
-        <div className="flex gap-2 border border-black p-4 max-md:flex-col">
+        <div className="flex gap-2 p-4 max-md:flex-col">
             <img src={product.imageUrl} className="w-32 aspect-square object-cover max-md:w-full"/>
 
             <div className="flex-1 flex justify-between max-md:flex-col">
@@ -64,8 +58,8 @@ const CartItem = ({
                         <img src={bin} />
                     </button>
 
-                    <div className="w-fit min-h-12 flex gap-2 border border-black">
-                        <button onClick={decrementQuantity} className="px-5 py-4">
+                    <div className="w-fit max-h-12 flex gap-2 border border-black">
+                        <button onClick={decrementQuantity} className="p-2">
                             <img src={dash} />
                         </button>
                         <input 
@@ -80,9 +74,9 @@ const CartItem = ({
 
                                 setQty(e.target.value);
                             }}
-                            className="text-center max-w-12"
+                            className="border-none text-center w-16"
                         />
-                        <button onClick={incrementQuantity} className="px-5 py-4">
+                        <button onClick={incrementQuantity} className="p-2">
                             <img src={plus} />
                         </button>
                     </div>
@@ -97,7 +91,7 @@ const CartPage = () => {
     const [total, setTotal] = useState(0.00);
 
     // User Authentication
-    const { cart_id, carts } = useSelector((state) => state.carts);
+    const { cart_id, carts, cartStatus } = useSelector((state) => state.carts);
     const { products } = useSelector((state) => state.products);
     const { currentUser } = useContext(AuthContext) || null;
 
@@ -108,7 +102,7 @@ const CartPage = () => {
         if (cart_id == null)
             dispatch(fetchCartId(currentUser.uid));
     }, [dispatch]);
-
+    
     useEffect(() => {
         if (cart_id != null)
             dispatch(fetchCart_item(cart_id));
@@ -160,6 +154,7 @@ const CartPage = () => {
 
     return (
         <section className="flex flex-col gap-11">
+            {/* Breadcrumb */}
             <div className="body2 w-fit flex gap-2">
                 <span onClick={() => navigate("/Shop/Homepage")} className="text-gray-500 cursor-pointer">
                     Home
@@ -175,10 +170,16 @@ const CartPage = () => {
                 <h2>Your Cart</h2>
 
                 <div className="flex gap-16">
+                    {/* Cart List */}
                     <div className="flex-1 flex flex-col gap-6">
-                        {products.length != 0 && carts.map((item, index) =>
+                        {cartStatus == "loading" && 
+                            <h3>Fetching Cart Item</h3>
+                        }
+                        
+                        {cartStatus ==  "succeed" && carts.map((item, index) =>
                             < >
-                                <CartItem key={index}
+                                <CartItem 
+                                    key={index}
                                     data={item}
                                     product={products.find((prev) => prev.id == item.product_id)}
                                     quantity={cartQuantities[item.id]}
@@ -186,11 +187,12 @@ const CartPage = () => {
                                     onCallRemoval={() => onReceiveCall_Remove(item.product_id, item.product_variation_id)}
                                 /> 
 
-                                {index != carts.length - 1 && <hr className="border-gray-400"/>}
+                                {index != carts.length - 1 && <hr key={index} className="border-gray-400"/>}
                             </>
                         )}
                     </div>
 
+                    {/* Order Summary */}
                     <div className="flex-[0.6] flex flex-col gap-6">
                         <h3>Order Summary</h3>
 

@@ -1,5 +1,7 @@
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { registerUser } from "../../features/usersSlice";
+import { createUserWishlistID } from "../../features/wishlistSlice";
+import { createCart } from "../../features/cartsSlice";
 
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -47,7 +49,11 @@ const SignupPage = () => {
             const feedback = await createUserWithEmailAndPassword(auth, email, password);
             const uid = feedback.user.uid;
 
-            dispatch(registerUser({uid, email}));
+            dispatch( registerUser({uid, email}) )
+                .then(() => dispatch( createUserWishlistID(uid) ))
+                .then(() => dispatch( createCart(uid) ))
+            
+            
             setFeedback("");
         } catch (error) {
             console.log(error);

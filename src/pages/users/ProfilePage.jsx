@@ -3,8 +3,6 @@ import { AuthContext } from "../../Context/AuthProvider";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect, useContext } from "react";
 
-// import { fetchAddress } from "../../features/addressSlice";
-
 import { fetchOrder, getAllItem } from "../../features/orderedSlice";
 
 // Panel Component

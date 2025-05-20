@@ -3,7 +3,11 @@ import axios from 'axios';
 
 const VITE_FUTURA_API = import.meta.env.VITE_FUTURA_API;
 
-// Create CartID
+// ---------------------------------------------------
+
+// == CREATE ================>
+
+// Create cart id
 export const createCart = createAsyncThunk(
     'users/createCart',
     async (id) => {
@@ -12,7 +16,7 @@ export const createCart = createAsyncThunk(
     }
 );
 
-// Fetch CartID
+// Read cart id 
 export const fetchCartId = createAsyncThunk(
     'users/fetchCartId',
     async (id) => {
@@ -82,12 +86,15 @@ export const clearCart = createAsyncThunk(
     }
 );
 
+// --------------------------------------
+
 const cartsSlice = createSlice({
     name: "cartsSlice",
     initialState: {
         cart_id: null,
         carts: [],
-        loading: false,
+        cartStatus: "idle",
+        cartActionStatus: "idle",
     },
     reducers: {
         clearCartData: (state) => {
@@ -99,39 +106,39 @@ const cartsSlice = createSlice({
         builder
             .addCase(createCart.fulfilled, (state, action) => {
                 state.cart_id = action.payload.data;
+                state.cartStatus = "succeed";
             })
         
-        // Get CartID
-        builder
             .addCase(fetchCartId.fulfilled, (state, action) => {
                 state.cart_id = action.payload.data.id;
+                state.cartStatus = "succeed";
             })
 
-        // ===========================
-
-        // Add Cart Item
-        builder
-            .addCase(addCart_item.fulfilled, (state, action) => {
-                
-                state.carts = [...state.carts, action.payload.data];
-                state.loading = false;
-            })
+            //CREATE ITEM TO CART
             .addCase(addCart_item.pending, (state) => {
-                state.loading = true;
-            });
+                state.cartActionStatus = "loading";
+            })
+            .addCase(addCart_item.fulfilled, (state, action) => {
+                state.carts = [...state.carts, action.payload.data];
+                state.cartActionStatus = "succeed"
+            })
+            .addCase(addCart_item.rejected, (state) => {
+                state.cartActionStatus = "failed";
+            })
 
-        // Fetch Cart Item
-        builder
+            //READ ITEM FROM CART    
+            .addCase(fetchCart_item.pending, (state) => {
+                state.cartStatus = "loading"
+            })
             .addCase(fetchCart_item.fulfilled, (state, action) => {
                 state.carts = action.payload.data;
-                state.loading = false;
+                state.cartStatus = "succeed";
             })
-            .addCase(fetchCart_item.pending, (state) => {
-                state.loading = true;
-            });
+            .addCase(fetchCart_item.rejected, (state) => {
+                state.cartStatus = "failed";
+            })
 
-        // Update Cart Quantity
-        builder
+            //UPDATE ITEM QUANTITY FROM CART
             .addCase(updateItem_quantity.fulfilled, (state, action) => {
                 const data = action.payload.data;
                 state.carts = state.carts.map((item) => {
@@ -141,31 +148,29 @@ const cartsSlice = createSlice({
 
                     return item;
                 })
-                state.loading = false;
             })
-            .addCase(updateItem_quantity.pending, (state) => {
-                state.loading = true;
-            });
 
-        // Delete Cart Items - Require fixing
-        builder
+            //DELETE ITEM FROM CART
+            .addCase(removeCartItem.pending, (state) => {
+                state.cartActionStatus = "loading";
+            })
             .addCase(removeCartItem.fulfilled, (state, action) => {
                 const data = action.payload.data;
                 state.carts = state.carts.filter((item) => item.id !== data.id);
+                state.cartActionStatus = "succeed"
             })
-            .addCase(removeCartItem.pending, (state) => {
-                state.loading = true;
-            });
+            .addCase(removeCartItem.rejected, (state) => {
+                state.cartActionStatus = "failed";
+            })
 
-        // Clear Cart
-        builder
+            //CLEAR CART
             .addCase(clearCart.fulfilled, (state) => {
                 state.carts = [];
-                state.loading = false;
+                state.cartStatus = "failed";
             })
             .addCase(clearCart.pending, (state) => {
-                state.loading = true;
-            });
+                state.cartStatus = "loading";
+            })
     },
 });
 
