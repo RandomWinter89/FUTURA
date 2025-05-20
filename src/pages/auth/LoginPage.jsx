@@ -2,15 +2,15 @@ import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
-import { fetchProfile } from "../../features/usersSlice";
+import { readCurrentUserProfile } from "../../features/usersSlice";
 import { useState } from "react";
 
 import AuthShowcase from "../../assets/AuthShowcase.png";
 
 
 const LoginPage = () => {
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
     const [error, setError] = useState("");
     const [hide, setHide] = useState(true);
@@ -35,9 +35,7 @@ const LoginPage = () => {
 
         try {
             const feedback = await signInWithEmailAndPassword(auth, email, password);
-            const uid = feedback.user.uid;
-            console.log("UID: ", uid);
-            dispatch(fetchProfile(uid));
+            dispatch(readCurrentUserProfile(feedback.user.uid));
         } catch (error) {
             setError("Invalid: ", error.message);
             console.error("Error in Login: ", error);

@@ -2,10 +2,12 @@ import { Navigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { userCheckout } from "../../features/usersSlice";
 
-const AuthChecker = ({auth_user, data_user, loading, children}) => {
+const AuthChecker = ({auth_user, data_user, status, children}) => {
     const location = useLocation().pathname;
     const dispatch = useDispatch();
 
+
+    console.log("Checker Auth: ", status, " | Location: ", location);
     // ==========================
 
     //Catcher: Responsible if data failed to checkout
@@ -15,7 +17,7 @@ const AuthChecker = ({auth_user, data_user, loading, children}) => {
     //Direct user to login:
     //1. Not authorized
     //2. Access restricted path
-    if (!auth_user && !(location.includes("Shop") || location.includes("Auth")) ) {
+    if (!auth_user && status == 'idle' && !(location.includes("Shop") || location.includes("Auth")) ) {
         return <Navigate to="/Auth/Login" />
     }
 
@@ -23,20 +25,20 @@ const AuthChecker = ({auth_user, data_user, loading, children}) => {
     //1. Authorized
     //2. No record of the user
     //3. The REPORT MUST BE FROM USER SLICE!!!
-    if (auth_user && !data_user && !location.includes("/Auth/Register")) {
+    if (auth_user && !data_user && status == 'failed' && !location.includes("/Auth/Register")) {
         return <Navigate to="/Auth/Register" />
     }
 
     //Direct user to admin
     //1. Role is admin
     //2. Access restricted path (Login, Shop, or User)
-    if (data_user?.role === "ADMIN" && (location.includes("/Auth") || location.includes("/Shop") || location.includes("/User")))
+    if (data_user?.role === "ADMIN" && status == 'succeed' && (location.includes("/Auth") || location.includes("/Shop") || location.includes("/User")))
         return <Navigate to="/Admin/Dashboard" />
 
     //Direct user to homepage
     //1. Role is user
     //2. Access restricted path (Login or Admin)
-    if (data_user?.role === "USER" && (location.includes("/Auth") || location.includes("/Admin")))
+    if (data_user?.role === "USER" && status == 'succeed' && (location.includes("/Auth") || location.includes("/Admin")))
         return <Navigate to="/Shop/Homepage" />
 
     return (

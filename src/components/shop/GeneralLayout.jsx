@@ -6,7 +6,7 @@ import { useEffect } from "react";
 
 import { fetchProducts, fetchImageProduct } from "../../features/productSlice";
 import { fetchAddress } from "../../features/addressSlice";
-import { fetchWishlistId, fetchWishlist_item } from "../../features/wishlistSlice";
+import { fetchWishlistId, readUserWishlists } from "../../features/wishlistSlice";
 import { fetchCartId, fetchCart_item } from "../../features/cartsSlice";
 import { fetchOrder } from "../../features/orderedSlice";
 
@@ -48,10 +48,10 @@ const GeneralLayout = memo(({data_user}) => {
 
         if (wishlist_id == null)
             dispatch(fetchWishlistId(data_user.uid))
-                .then(() => dispatch(fetchWishlist_item(data_user.uid)));
+                .then(() => dispatch(readUserWishlists(data_user.uid)));
 
         if (wishlist_id != null && wishlists.length === 0)
-            dispatch(fetchWishlist_item(data_user.uid));
+            dispatch(readUserWishlists(data_user.uid));
 
         if (order.length == 0)
             dispatch(fetchOrder(data_user.uid));

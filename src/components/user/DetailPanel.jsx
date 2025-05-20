@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "../ui";
 
-import { removeUser, updateUser, updateUser_Image } from "../../features/usersSlice";
+import { deleteDBUser, updateUserDetail, updateUserPicture } from "../../features/usersSlice";
 import { getAuth, deleteUser } from "firebase/auth";
 import { useDispatch } from "react-redux";
 
@@ -55,7 +55,7 @@ const DetailPanel = ({authUser, dataUser, imageUrl, loading}) => {
         if (name.trim().length == 0 || phone.trim().length == 0 || birthDate.trim().length == 0)
             return;
 
-        dispatch(updateUser({
+        dispatch(updateUserDetail({
             uid: authUser.uid,
             username: name,
             phone: phone,
@@ -64,7 +64,7 @@ const DetailPanel = ({authUser, dataUser, imageUrl, loading}) => {
         }))
 
         if (fileUrl)
-            dispatch(updateUser_Image({
+            dispatch(updateUserPicture({
                 uid: authUser.uid,
                 newFile: fileUrl
             }));
@@ -76,7 +76,7 @@ const DetailPanel = ({authUser, dataUser, imageUrl, loading}) => {
         try {
             await deleteUser(authUser);
             await auth.signOut();
-            dispatch(removeUser(authUser));
+            dispatch(deleteDBUser(authUser));
         } catch (err) {
             console.log("Critical Error by Detail Panel: ", err);
         }

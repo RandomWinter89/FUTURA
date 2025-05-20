@@ -6,7 +6,7 @@ import { Category } from "../../database/category";
 import { useContext } from "react";
 import { AuthContext } from "../../Context/AuthProvider";
 import { useDispatch, useSelector } from "react-redux";
-import { addWishlist_item } from "../../features/wishlistSlice";
+import { addToUserWishlists } from "../../features/wishlistSlice";
 
 import heart from '../../assets/svg/heart_outline.svg';
 import heart_filled from '../../assets/svg/heart_filled.svg'
@@ -26,8 +26,9 @@ const ProductCard = ({data, showToast, showFeedback}) => {
         if (wishlist_id == null)
             return;
 
+        console.log("Called from Product");
         if (!wishlists.length || !wishlists.some((info) => info.product_id == data.id)) {
-            dispatch(addWishlist_item({
+            dispatch(addToUserWishlists({
                 uid: currentUser.uid, 
                 wishlist_id: wishlist_id, 
                 product_id: data.id

@@ -3,7 +3,7 @@ import { AuthContext } from "../../Context/AuthProvider";
 import { useState, useEffect, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { fetchWishlistId, fetchWishlist_item, removeWishlist_item, resetWishlist } from "../../features/wishlistSlice";
+import { fetchWishlistId, readUserWishlists, removeFromUserWishlists, resetWishlist } from "../../features/wishlistSlice";
 import star_filled from "../../assets/svg/star_filled.svg";
 import framer from "../../assets/svg/Frame.svg";
 import { useNavigate } from "react-router-dom";
@@ -29,13 +29,13 @@ const WishlistPage = () => {
 
     useEffect(() => {
         if (wishlist_id != null && wishlists.length === 0)
-            dispatch(fetchWishlist_item(currentUser.uid));
+            dispatch(readUserWishlists(currentUser.uid));
     }, [dispatch, wishlist_id])
 
     // ==== Function ===================>
 
     const onRemove_WishlistItem = (product_id) => {
-        dispatch(removeWishlist_item({uid: currentUser.uid, product_id, wishlist_id}))
+        dispatch(removeFromUserWishlists({uid: currentUser.uid, product_id, wishlist_id}))
     }
 
     // const removeButton = () => {

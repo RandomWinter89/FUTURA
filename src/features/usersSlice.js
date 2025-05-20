@@ -9,52 +9,12 @@ const VITE_FUTURA_API = import.meta.env.VITE_FUTURA_API;
 
 // ---------------------------------------------------------
 
-
-// Fetch users (all)(() => name && age)
-export const fetchAllUser = createAsyncThunk(
-    'users/fetchAllUser',
-    async () => {
-        const response = await axios.get(`${VITE_FUTURA_API}/users`);
-        return response.data;
-    }
-);
-
-// Fetch personal (data)
-export const fetchProfile = createAsyncThunk(
-    'users/fetchProfile',
-    async (uid) => {
-        const response = await axios.get(`${VITE_FUTURA_API}/users/${uid}`);
-        return response.data;
-    }
-);
-
-// Fetch personal (image)
-export const fetchUser_Image = createAsyncThunk(
-    'users/fetchUser_Image',
-    async () => {
-        try {
-            const usersRef = collection(db, "users");
-            const querySnapshot = await getDocs(usersRef);
-
-            const docs = querySnapshot.docs.map((doc) => 
-                ({id:doc.id, ...doc.data()})
-            );
-
-            return docs;
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
-    }
-)
+// == CREATE SECTION ======================>
 
 
-// == CREATE/UPLOAD ===================
-
-
-// Create personal (data)
-export const createUser = createAsyncThunk(
-    'users/createUser',
+// Create user (signup flow)
+export const registerUser = createAsyncThunk(
+    'users/registerUser',
     async ({uid, email}) => {
         const body = {
             uid: uid,
@@ -62,13 +22,14 @@ export const createUser = createAsyncThunk(
             email: email,
         };
 
-        const response = await axios.post(`${VITE_FUTURA_API}/users/signup`, body);
+        const response = await axios.post(`${VITE_FUTURA_API}/users/authSignup`, body);
         return response.data;
     }
 );
 
-export const createUser_Full = createAsyncThunk(
-    'users/createUser_Full',
+// Create user (auth flow)
+export const createUserProfile = createAsyncThunk(
+    'users/createUserProfile',
     async ({uid, username, email, phone, gender, birth}) => {
         const body = {
             uid,
@@ -79,14 +40,14 @@ export const createUser_Full = createAsyncThunk(
             birth
         };
 
-        const response = await axios.post(`${VITE_FUTURA_API}/users/signup_full`, body);
+        const response = await axios.post(`${VITE_FUTURA_API}/users/dbSignup`, body);
         return response.data;
     }
 );
 
-// Upload personal (image)
-export const uploadUser_Image = createAsyncThunk(
-    'users/uploadUser_Image',
+// Create profile picture (firebase file)
+export const uploadUserPicture = createAsyncThunk(
+    'users/uploadUserPicture',
     async ({uid, file}) => {
         try {
             console.log("uid: ", uid, " /file: ", file);
@@ -117,12 +78,46 @@ export const uploadUser_Image = createAsyncThunk(
 )
 
 
-// == UPDATE =========================
+// == READ SECTION ======================>
 
 
-//Update personal (data)
-export const updateUser = createAsyncThunk(
-    'users/updateUser', 
+// Read Profile
+export const readCurrentUserProfile = createAsyncThunk(
+    'users/readCurrentUserProfile',
+    async (uid) => {
+        console.log("Read: ", uid);
+        const response = await axios.get(`${VITE_FUTURA_API}/users/${uid}/readUser`);
+        return response.data;
+    }
+);
+
+// Read Profile's Image
+export const readCurrentUserPicture = createAsyncThunk(
+    'users/readCurrentUserPicture',
+    async () => {
+        try {
+            const usersRef = collection(db, "users");
+            const querySnapshot = await getDocs(usersRef);
+
+            const docs = querySnapshot.docs.map((doc) => 
+                ({id:doc.id, ...doc.data()})
+            );
+
+            return docs;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+)
+
+
+// == UPDATE ======================>
+
+
+//Update user's detail
+export const updateUserDetail = createAsyncThunk(
+    'users/updateUserDetail', 
     async ({uid, username, phone, gender, birth}) => {
         const body = {
             username: username,
@@ -131,18 +126,17 @@ export const updateUser = createAsyncThunk(
             birth: birth
         };
 
-        const response = await axios.put(`${VITE_FUTURA_API}/users/${uid}`, body);
+        const response = await axios.put(`${VITE_FUTURA_API}/users/${uid}/updateUser`, body);
         return response.data;
     }
 );
 
 
-//Update personal (image)
-export const updateUser_Image = createAsyncThunk(
-    'users/updateUser_Image',
+//Update user's profile picture
+export const updateUserPicture = createAsyncThunk(
+    'users/updateUserPicture',
     async ({ uid, newFile }) => {
         try {
-            console.log("Receive Update: ", newFile);
             let newImageUrl;
 
             if (newFile != null) {
@@ -177,105 +171,128 @@ export const updateUser_Image = createAsyncThunk(
 )
 
 
-// == REMOVE =========================
+// == DELETE ======================>
 
 
-// Delete user database
-export const removeUser = createAsyncThunk(
-    'users/removeUser',
+// Delete user
+export const deleteDBUser = createAsyncThunk(
+    'users/deleteDBUser',
     async (uid) => {
-        const response = await axios.delete(`${VITE_FUTURA_API}/users/${uid}`);
+        const response = await axios.delete(`${VITE_FUTURA_API}/users/${uid}/deleteUser`);
         return response.data;
     }
 );
 
 
 // -------------------------------------------------
-
+// Loading can replaced to status
 const usersSlice = createSlice({
     name: "usersSlice",
     initialState: {
-        users: [],
-        personal: {},
-        personalImage: {},
-        users_loading: true,
-        personal_loading: true
+        currentDBUser: null,
+        currentDBUserPicture: null,
+        currentDBUserStatus: "idle", // 'idle' | 'loading' | 'succeed' | 'failed'
+        isLoadingCurrentDBUser: true
     },
     reducers: {
         userCheckout: (state) => {
-            state.personal = null;
-            state.personal_loading = false;
+            state.currentDBUser = null;
+            state.currentDBUserStatus = 'idle';
+            state.isLoadingCurrentDBUser = false;
         },
     },
     extraReducers: (builder) => {
-        // Fetch all users =============>
         builder
-            .addCase(fetchAllUser.fulfilled, (state, action) => {
-                state.users = action.payload;
-                state.users_loading = false;
+            // --- CREATE ----
+            .addCase(registerUser.pending, (state) => {
+                state.isLoadingCurrentDBUser = true;
+                state.currentDBUserStatus = "loading";
             })
-            .addCase(fetchAllUser.pending, (state) => {
-                state.users_loading = true;
-            });
-        
-        // Fetch personal user =============>
-        builder
-            .addCase(fetchProfile.fulfilled, (state, action) => {
-                console.log("He: ", action.payload);
-                state.personal = action.payload;
-                state.personal_loading = false;
-            })
-            .addCase(fetchProfile.pending, (state) => {
-                state.personal_loading = true;
+            .addCase(registerUser.fulfilled, (state, action) => {
+                state.currentDBUser = action.payload.data;
+                state.currentDBUserStatus = "succeed";
+
+                state.isLoadingCurrentDBUser = false;
             })
 
-        builder
-            .addCase(uploadUser_Image.fulfilled, (state, action) => {
-                console.log("Action from Upload Image: ", action.payload);
-                state.personalImage = action.payload;
+            .addCase(createUserProfile.pending, (state) => {
+                state.isLoadingCurrentDBUser = true;
+                state.currentDBUserStatus = "loading";
+            })
+            .addCase(createUserProfile.fulfilled, (state, action) => {
+                state.currentDBUser = action.payload.data;
+                state.currentDBUserStatus = "succeed";
+                state.isLoadingCurrentDBUser = false;
+            })
+            
+            .addCase(uploadUserPicture.pending, (state) => {
+                state.currentDBUserPicture = null;
+                state.currentDBUserStatus = "failed";
+            })
+            .addCase(uploadUserPicture.fulfilled, (state, action) => {
+                state.currentDBUserPicture = action.payload;
+                state.currentDBUserStatus = "succeed";
             })
 
-        // Create User =============>
-        builder
-            .addCase(createUser.fulfilled, (state, action) => {
-                state.personal = action.payload.data;
-                state.personal_loading = false;
+            // --- READ -----
+            .addCase(readCurrentUserProfile.pending, (state) => {
+                state.currentDBUser = null;
+                state.isLoadingCurrentDBUser = true; //Remove
+                state.currentDBUserStatus = 'loading';
+
+                console.log("Loading");
             })
-            .addCase(createUser.pending, (state) => {
-                state.personal_loading = true;
+            .addCase(readCurrentUserProfile.fulfilled, (state, action) => {
+                state.currentDBUser = action.payload;
+                state.isLoadingCurrentDBUser = false;
+                state.currentDBUserStatus = 'succeed'
+
+                console.log("Succeed");
+            })
+            .addCase(readCurrentUserProfile.rejected, (state) => {
+                state.currentDBUserStatus = 'failed';
+
+                console.log("Failed");
             })
 
-        builder
-            .addCase(createUser_Full.fulfilled, (state, action) => {
-                state.personal = action.payload.data;
-                state.personal_loading = false;
+            .addCase(readCurrentUserPicture.pending, (state) => {
+                state.currentDBUserPicture = null;
+                state.currentDBUserStatus = 'loading'
             })
-            .addCase(createUser_Full.pending, (state) => {
-                state.personal_loading = true;
+            .addCase(readCurrentUserPicture.fulfilled, (state, action) => {
+                state.currentDBUserPicture = action.payload;
+                state.currentDBUserStatus = 'succeed'
             })
-
-        // Update User =============>
-        builder
-            .addCase(updateUser.fulfilled, (state, action) => {
-                state.personal = action.payload.updatedData;
-                state.personal_loading = false;
-            })
-            .addCase(updateUser.pending, (state) => {
-                state.personal_loading = true;
+            .addCase(readCurrentUserPicture.rejected, (state) => {
+                state.currentDBUserStatus = 'failed'
             })
 
-        builder
-            .addCase(updateUser_Image.fulfilled, (state, action) => {
-                state.personalImage = action.payload;
+            // --- UPDATE -----
+            .addCase(updateUserDetail.pending, (state) => {
+                state.isLoadingCurrentDBUser = true;
+                state.currentDBUserStatus = "loading";
+            })
+            .addCase(updateUserDetail.fulfilled, (state, action) => {
+                state.currentDBUser = action.payload.updatedData;
+                state.isLoadingCurrentDBUser = false;
+                state.currentDBUserStatus = "succeed";
+            })
+            
+            
+            .addCase(updateUserPicture.fulfilled, (state, action) => {
+                state.currentDBUserPicture = action.payload;
             })
 
-        // Delete User =============>
-        builder
-            .addCase(removeUser.fulfilled, (state) => {
-                state.personal = null;
-                state.personal_loading = true;
+
+            // --- DELETE -----
+            .addCase(deleteDBUser.fulfilled, (state) => {
+                state.currentDBUser = null;
+                state.currentDBUserPicture = null;
+                state.currentDBUserStatus = 'idle';
+                state.isLoadingCurrentDBUser = true;
             })
-        
+
+            
     },
 });
 

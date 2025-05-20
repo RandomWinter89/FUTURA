@@ -1,5 +1,5 @@
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
-import { createUser } from "../../features/usersSlice";
+import { registerUser } from "../../features/usersSlice";
 
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -47,7 +47,7 @@ const SignupPage = () => {
             const feedback = await createUserWithEmailAndPassword(auth, email, password);
             const uid = feedback.user.uid;
 
-            dispatch(createUser({uid, email}));
+            dispatch(registerUser({uid, email}));
             setFeedback("");
         } catch (error) {
             console.log(error);

@@ -3,7 +3,6 @@ import { AuthContext } from "../../Context/AuthProvider";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect, useContext } from "react";
 
-// import { fetchProfile } from "../../features/usersSlice";
 // import { fetchAddress } from "../../features/addressSlice";
 
 import { fetchOrder, getAllItem } from "../../features/orderedSlice";
@@ -14,7 +13,7 @@ import { DetailPanel, AddressPanel, OrderPanel } from "../../components/user"
 // ====================>
 
 const ProfilePage = () => {
-    const { personal, personal_loading, personalImage} = useSelector((state) => state.users);
+    const { currentDBUser, isLoadingCurrentDBUser, currentDBUserPicture} = useSelector((state) => state.users);
     const { address, address_loading } = useSelector((state) => state.address);
     const { order, orderItem } = useSelector((state) => state.orders);
     const { currentUser } = useContext(AuthContext) || null;
@@ -75,9 +74,9 @@ const ProfilePage = () => {
                     {(mode == "PROFILE") && 
                         <DetailPanel 
                             authUser={currentUser} 
-                            dataUser={personal} 
-                            imageUrl={personalImage?.imageUrl}
-                            loading={personal_loading}
+                            dataUser={currentDBUser} 
+                            imageUrl={currentDBUserPicture?.imageUrl}
+                            loading={isLoadingCurrentDBUser}
                         />
                     }
                     {(mode == "ADDRESS") && 

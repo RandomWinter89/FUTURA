@@ -22,18 +22,18 @@ import AuthChecker from "./components/common/AuthChecker";
 
 //Redux 
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProfile } from "./features/usersSlice";
+import { readCurrentUserProfile } from "./features/usersSlice";
 
 
 function App() {
   const { currentUser } = useContext(AuthContext) || null;
-  const { personal, personal_loading } = useSelector((state) => state.users);
+  const { currentDBUser, currentDBUserStatus } = useSelector((state) => state.users);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (currentUser && !personal?.uid)
-      dispatch(fetchProfile(currentUser.uid))
-  }, [dispatch, currentUser, personal]);
+    if (currentUser && !currentDBUser?.uid)
+      dispatch(readCurrentUserProfile(currentUser.uid))
+  }, [dispatch]);
 
   return (
     < >
@@ -41,8 +41,8 @@ function App() {
         <Route path="/" element={<AuthChecker />}/>
 
         <Route path="/Shop" element={
-            <AuthChecker auth_user={currentUser} data_user={personal} loading={personal_loading}>
-              <GeneralLayout data_user={personal} />
+            <AuthChecker auth_user={currentUser} data_user={currentDBUser} status={currentDBUserStatus}>
+              <GeneralLayout data_user={currentDBUser} />
             </AuthChecker>
           }
         >
@@ -52,7 +52,7 @@ function App() {
         </Route>
 
         <Route path="/Auth" element={
-            <AuthChecker auth_user={currentUser} data_user={personal} loading={personal_loading}>
+            <AuthChecker auth_user={currentUser} data_user={currentDBUser} status={currentDBUserStatus}>
               <AuthLayout />
             </AuthChecker>
           }
@@ -63,8 +63,8 @@ function App() {
         </Route>
         
         <Route path="/User" element={
-            <AuthChecker auth_user={currentUser} data_user={personal} loading={personal_loading}>
-              <GeneralLayout data_user={personal}/>
+            <AuthChecker auth_user={currentUser} data_user={currentDBUser} status={currentDBUserStatus}>
+              <GeneralLayout data_user={currentDBUser}/>
             </AuthChecker>
           }
         >
@@ -77,7 +77,7 @@ function App() {
         </Route>
 
         <Route path="/Admin" element={
-            <AuthChecker auth_user={currentUser} data_user={personal} loading={personal_loading}>
+            <AuthChecker auth_user={currentUser} data_user={currentDBUser} status={currentDBUserStatus}>
               <AdminLayout />
             </AuthChecker>
           }

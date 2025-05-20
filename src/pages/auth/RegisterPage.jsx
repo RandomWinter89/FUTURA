@@ -1,6 +1,6 @@
 import { AuthContext } from "../../Context/AuthProvider";
 
-import { createUser_Full, uploadUser_Image } from "../../features/usersSlice";
+import { createUserProfile, uploadUserPicture } from "../../features/usersSlice";
 import { useDispatch } from "react-redux";
 import { useState, useContext } from "react";
 
@@ -28,7 +28,7 @@ const RegisterPage = () => {
             return setFeedback("Please fill-up the empty form");
 
         setFeedback("");
-        dispatch(createUser_Full({
+        dispatch(createUserProfile({
             uid: currentUser.uid, 
             username, 
             email, 
@@ -36,7 +36,7 @@ const RegisterPage = () => {
             gender, 
             birth
         })).then(() => {
-            dispatch(uploadUser_Image({uid: currentUser.uid, file:imageUrl}));
+            dispatch(uploadUserPicture({uid: currentUser.uid, file:imageUrl}));
         })
     }
 

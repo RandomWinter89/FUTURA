@@ -9,7 +9,7 @@ import { createReview, fetch_productReviews } from "../../features/reviewSlice";
 import { addCart_item, updateItem_quantity } from "../../features/cartsSlice";
 
 import { AuthContext } from "../../Context/AuthProvider";
-import { addWishlist_item } from "../../features/wishlistSlice";
+import { addToUserWishlists } from "../../features/wishlistSlice";
 
 import { ToastOverlay } from "../../components/ui";
 import { Grid } from "../../components/shop";
@@ -156,8 +156,9 @@ const ProductPage  = () => {
         if (wishlist_id == null)
             return;
 
+        console.log("Called from here");
         if (!wishlists.length || !wishlists.some((data) => data.product_id == prodId)) {
-            dispatch(addWishlist_item({
+            dispatch(addToUserWishlists({
                 uid: currentUser.uid, 
                 wishlist_id: wishlist_id, 
                 product_id: prodId
