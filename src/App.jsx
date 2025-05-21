@@ -38,7 +38,9 @@ function App() {
   return (
     < >
       <Routes>
-        <Route path="/" element={<AuthChecker />}/>
+        <Route path="/" element={
+          <AuthChecker auth_user={currentUser} data_user={currentDBUser} status={currentDBUserStatus}/>}
+        />
 
         <Route path="/Shop" element={
             <AuthChecker auth_user={currentUser} data_user={currentDBUser} status={currentDBUserStatus}>

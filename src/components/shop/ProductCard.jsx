@@ -58,23 +58,23 @@ const ProductCard = ({data, showToast, showFeedback}) => {
             }
 
             <div className="flex-1 flex flex-col gap-2 p-2 bg-white">
-                <p>{productCat}</p>
+                <p className="body2">{productCat}</p>
                 <div className="flex justify-between gap-4 items-start">
-                    <p className="text-xl font-bold">{data.name}</p>
-                    <button onClick={addToWishlist}>
+                    <p className="subtitle1">{data.name}</p>
+                    <button onClick={addToWishlist} className="flex-shrink-0 size-6">
                         {wishlists.find((prev) => prev.product_id == data.id) 
                         ? <img src={heart_filled}/> 
                         : <img src={heart}/>}
                     </button>
                 </div>
 
-                <p className="text-lg font-semibold">RM {data.base_price}</p>
+                <p className="subtitle2">RM {data.base_price}</p>
                 {data.average_rating != null && (
                     <div className="flex items-end gap-2 font-medium">
                         <img src={star} className="size-6"/>
                         <div className="flex items-end gap-1">
-                            <p>{parseFloat(data.average_rating)} </p>
-                            <p className="text-sm ">({data.number_of_reviews})</p>
+                            <p className="body2">{parseFloat(data.average_rating)} </p>
+                            <p className="text-sm max-md:text-xs">({data.number_of_reviews})</p>
                         </div>
                     </div>
                 )}

@@ -51,12 +51,12 @@ const CategoryPage = () => {
 
     return (
         < >            
-            <section className="flex justify-between gap-20">
+            <section className="flex justify-between gap-20 max-md:gap-10">
                 <div className="flex flex-col gap-6">
-                    <p className="mt-[2rem] text-xl leading-5 font-bold">Filter</p>
+                    <p className="subtitle1">Filter</p>
                     <ul className="w-fit flex flex-col gap-2">
                         {/* Select All */}
-                        <label className="flex gap-2 text-gray-500">
+                        <label className="body2 flex gap-2 text-gray-500">
                             <input 
                                 type="checkbox" 
                                 checked={selectedCategories.length == categories.length} 
@@ -72,13 +72,13 @@ const CategoryPage = () => {
                                 <li key={parent.id} className="border-b py-1 border-gray-300">
                                     <button 
                                         onClick={() => toggleActiveCat(parent.id)}
-                                        className="w-full flex justify-between gap-4 items-center text-left font-medium text-lg leading-9"
+                                        className="w-full flex justify-between gap-4 items-center text-left body1"
                                     >
                                         {parent.category_name}
                                         <p>{activeCategories.includes(parent.id) ? "-" : "+"}</p>
                                     </button>
                                     
-                                    <ul className={`overflow-hidden ${activeCategories.includes(parent.id) ? "pb-3 h-fit" : "h-0"}`}>
+                                    <ul className={`overflow-hidden flex flex-col max-md:gap-2 ${activeCategories.includes(parent.id) ? "pb-3 h-fit" : "h-0"}`}>
                                         {categories
                                             .filter(child => child.parent_category_id === parent.id)
                                             .map((child) => (
@@ -88,7 +88,7 @@ const CategoryPage = () => {
                                                         checked={selectedCategories.includes(child.id)} 
                                                         onChange={() => toggleSelectedCat(child.id)}
                                                     />
-                                                    <label className="text-gray-500">{child.category_name}</label>
+                                                    <label className="body2 text-gray-500">{child.category_name}</label>
                                                 </li>
                                             ))
                                         }

@@ -67,7 +67,7 @@ const Grid = ({collection, isLoading, header, enableMore=true, variant, classNam
         < >
             {header &&
                 <div className="flex justify-between">
-                    <h2 className="text-4xl leading-[2.875rem] font-bold">{header}</h2>
+                    <h2>{header}</h2>
                     {enableMore && 
                         <button 
                             onClick={() => navigate("/Shop/Category")} 
