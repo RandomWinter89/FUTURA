@@ -27,9 +27,7 @@ export const createAddress = createAsyncThunk(
 export const fetchAddress = createAsyncThunk(
     'users/fetchAddress',
     async (uid) => {
-        console.log("Requesting Address, ", uid);
         const response = await axios.get(`${VITE_FUTURA_API}/users/${uid}/address`);
-        console.log("Result Address", response.data);
         return response.data;
     }
 );

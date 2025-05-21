@@ -78,9 +78,7 @@ export const get_OrderItem = createAsyncThunk(
 export const getAllItem = createAsyncThunk(
     'users/getAllItem',
     async (uid) => {
-        console.log("Fetch data");
         const response = await axios.get(`${VITE_FUTURA_API}/user/${uid}/order/items`);
-        console.log("Info from All: ", response.data);
         return response.data;
     }
 )

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 import { readCurrentUserProfile } from "../../features/usersSlice";
-import { useState } from "react";
+import { useState, useEffect} from "react";
 
 import AuthShowcase from "../../assets/AuthShowcase.png";
 
@@ -45,6 +45,10 @@ const LoginPage = () => {
     const onNavigate_Signup = () => {
         navigate("/Auth/Signup");
     }
+
+    useEffect(() => {
+        console.log("Hello");
+    }, [])
 
     return (
         < >

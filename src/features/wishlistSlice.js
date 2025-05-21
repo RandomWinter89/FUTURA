@@ -60,9 +60,14 @@ const wishlistsSlice = createSlice({
                 state.wishlists = state.wishlists.filter(
                     (item) => item.product_id !== action.payload.product_id
                 );
+
+                if (state.wishlists.length == 0 || state.wishlists == null) {
+                    state.wishlistStatus = "failed";
+                }
             }
             else {
                 state.wishlists.push(action.payload);
+                state.wishlistStatus = "succeed";
             }
         },
         resetWishlist: (state) => {

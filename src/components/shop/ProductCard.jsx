@@ -12,6 +12,8 @@ import heart from '../../assets/svg/heart_outline.svg';
 import heart_filled from '../../assets/svg/heart_filled.svg'
 import star from '../../assets/svg/star_filled.svg';
 
+import { IconHeart, IconStar } from "../../components/icon";
+
 const ProductCard = ({data, showToast, showFeedback}) => {
     const { wishlists, wishlistActionStatus } = useSelector((state) => state.wishlists);
     const { currentUser } = useContext(AuthContext) || null;
@@ -58,23 +60,21 @@ const ProductCard = ({data, showToast, showFeedback}) => {
             }
 
             <div className="flex-1 flex flex-col gap-2 p-2 bg-white">
-                <p className="body2">{productCat}</p>
+                <p className="body2 opacity-60">{productCat}</p>
                 <div className="flex justify-between gap-4 items-start">
                     <p className="subtitle1">{data.name}</p>
                     <button onClick={addToWishlist} className="flex-shrink-0 size-6">
-                        {wishlists.find((prev) => prev.product_id == data.id) 
-                        ? <img src={heart_filled}/> 
-                        : <img src={heart}/>}
+                        <IconHeart filled={wishlists.find((prev) => prev.product_id == data.id)} />
                     </button>
                 </div>
 
                 <p className="subtitle2">RM {data.base_price}</p>
                 {data.average_rating != null && (
-                    <div className="flex items-end gap-2 font-medium">
-                        <img src={star} className="size-6"/>
-                        <div className="flex items-end gap-1">
-                            <p className="body2">{parseFloat(data.average_rating)} </p>
-                            <p className="text-sm max-md:text-xs">({data.number_of_reviews})</p>
+                    <div className="flex items-end gap-2 max-sm:gap-1 max-sm:items-center">
+                        <IconStar filled={true} className="max-sm:size-4" />
+                        <div className="flex items-end gap-1 max-sm:gap-0.5">
+                            <p className="body2">{parseFloat(data.average_rating).toFixed(1)} </p>
+                            <p className="body2">({data.number_of_reviews})</p>
                         </div>
                     </div>
                 )}

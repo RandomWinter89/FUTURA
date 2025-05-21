@@ -14,8 +14,6 @@ export const createReview = createAsyncThunk(
             rating_value: rating_value
         }
 
-        console.log("Creating Review");
-
         const response = await axios.post(`${VITE_FUTURA_API}/users/${uid}/review`, body);
         return response.data;
     }

@@ -34,10 +34,6 @@ const Admin_ProductPage = () => {
         setProdQuantity(productItem);
     }
 
-    useEffect(() => {
-        console.log("Item Variation: ",  itemVariation);
-    }, [])
-
 
     //Change Quantity
     const onUpdateQuantity = ({id, value}) => {

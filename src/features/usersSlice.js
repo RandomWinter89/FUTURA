@@ -50,7 +50,6 @@ export const uploadUserPicture = createAsyncThunk(
     'users/uploadUserPicture',
     async ({uid, file}) => {
         try {
-            console.log("uid: ", uid, " /file: ", file);
             let imageUrl = "";
 
             if (file != null) {
@@ -66,8 +65,6 @@ export const uploadUserPicture = createAsyncThunk(
                 id: uid,
                 imageUrl: imageUrl
             };
-
-            console.log("User profile data: ", user);
 
             return user;
         } catch (error) {
@@ -85,7 +82,6 @@ export const uploadUserPicture = createAsyncThunk(
 export const readCurrentUserProfile = createAsyncThunk(
     'users/readCurrentUserProfile',
     async (uid) => {
-        console.log("Read: ", uid);
         const response = await axios.get(`${VITE_FUTURA_API}/users/${uid}/readUser`);
         return response.data;
     }
@@ -94,16 +90,22 @@ export const readCurrentUserProfile = createAsyncThunk(
 // Read Profile's Image
 export const readCurrentUserPicture = createAsyncThunk(
     'users/readCurrentUserPicture',
-    async () => {
+    async (id) => {
         try {
-            const usersRef = collection(db, "users");
-            const querySnapshot = await getDocs(usersRef);
+            console.log("ID: ", id);
+            const usersRef = doc(db, "users", id);
+            const querySnapshot = await getDoc(usersRef);
 
-            const docs = querySnapshot.docs.map((doc) => 
-                ({id:doc.id, ...doc.data()})
-            );
-
-            return docs;
+            if (querySnapshot.exists()) {
+                const userData = querySnapshot.data();
+                return {
+                    id: querySnapshot.id,
+                    imageUrl: userData.imageUrl, // Adjust based on your field name
+                };
+            } else {
+                throw new Error("User not found");
+            }
+            
         } catch (error) {
             console.error(error);
             throw error;
@@ -239,20 +241,15 @@ const usersSlice = createSlice({
                 state.currentDBUser = null;
                 state.isLoadingCurrentDBUser = true; //Remove
                 state.currentDBUserStatus = 'loading';
-
-                console.log("Loading");
             })
             .addCase(readCurrentUserProfile.fulfilled, (state, action) => {
                 state.currentDBUser = action.payload;
                 state.isLoadingCurrentDBUser = false;
                 state.currentDBUserStatus = 'succeed'
 
-                console.log("Succeed");
             })
             .addCase(readCurrentUserProfile.rejected, (state) => {
                 state.currentDBUserStatus = 'failed';
-
-                console.log("Failed");
             })
 
             .addCase(readCurrentUserPicture.pending, (state) => {

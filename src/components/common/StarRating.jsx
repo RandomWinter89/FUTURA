@@ -1,20 +1,34 @@
-import { useState } from "react";
-import { FaStar } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { IconStar } from "../icon";
 
-export default function StarRating({ rate, setRate }) {
-  const [rating, setRating] = useState(rate);
+const StarRating = ({ preview = true, rate, setRate }) => {
+  const [rating, setRating] = useState(parseInt(rate));
   const [hover, setHover] = useState(0);
 
-  function handleClick(getCurrentIndex) {
+  useEffect(() => {
+    setRating(parseInt(rate));
+  }, [rate])
+
+  const handleClick = (getCurrentIndex) => {
+    if (preview) 
+      return;
+
+    console.log("Condition: ", preview);
     setRating(getCurrentIndex);
     setRate(getCurrentIndex);
   }
 
-  function handleMouseEnter(getCurrentIndex) {
+  const handleMouseEnter = (getCurrentIndex) => {
+    if (preview) 
+      return;
+
     setHover(getCurrentIndex);
   }
 
-  function handleMouseLeave() {
+  const handleMouseLeave = () => {
+    if (preview) 
+      return;
+    
     setHover(rating);
   }
 
@@ -24,16 +38,20 @@ export default function StarRating({ rate, setRate }) {
         index += 1;
 
         return (
-          <FaStar
+          <IconStar
             key={index}
-            className={`cursor-pointer ${index <= (hover || rating) ? "text-black" : "text-gray-300"}`}
+            className={`text-black ${preview ? "cursor-default" : "cursor-pointer"}`}
+            filled={index <= (hover || rating)}
             onClick={() => handleClick(index)}
             onMouseMove={() => handleMouseEnter(index)}
             onMouseLeave={() => handleMouseLeave()}
-            size={18}
           />
         );
       })}
     </div>
   );
-}
+
+
+};
+
+export default StarRating;

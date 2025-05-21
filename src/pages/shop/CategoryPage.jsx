@@ -51,10 +51,11 @@ const CategoryPage = () => {
 
     return (
         < >            
-            <section className="flex justify-between gap-20 max-md:gap-10">
+            <section className="flex justify-between gap-20 max-md:gap-10 max-sm:flex-col">
+                {/* Filter */}
                 <div className="flex flex-col gap-6">
                     <p className="subtitle1">Filter</p>
-                    <ul className="w-fit flex flex-col gap-2">
+                    <ul className="w-fit flex flex-col gap-2 max-sm:w-full">
                         {/* Select All */}
                         <label className="body2 flex gap-2 text-gray-500">
                             <input 

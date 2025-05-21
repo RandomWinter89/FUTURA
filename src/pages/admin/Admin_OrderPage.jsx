@@ -59,10 +59,6 @@ const Admin_OrderPage = () => {
         }
     }
 
-    useEffect(() => {
-        console.log("Order: ", order);
-    }, [])
-
     const onUpdateState = ({order_id, status}) => {
         dispatch(updateOrderStatus({order_id, status}))
     }

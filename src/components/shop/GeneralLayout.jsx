@@ -8,6 +8,7 @@ import { fetchAddress } from "../../features/addressSlice";
 import { fetchWishlistId, readUserWishlists } from "../../features/wishlistSlice";
 import { fetchCartId, fetchCart_item } from "../../features/cartsSlice";
 import { fetchOrder } from "../../features/orderedSlice";
+import { readCurrentUserPicture } from "../../features/usersSlice";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -18,7 +19,7 @@ const GeneralLayout = ({auth_user}) => {
     const { cart_id, carts } = useSelector((state) => state.carts);
     const { wishlists, wishlist_id } = useSelector((state) => state.wishlists);
     const { order } = useSelector((state) => state.orders);
-
+    const { currentDBUserPicture } = useSelector((state) => state );
 
 
     const dispatch = useDispatch();
@@ -56,6 +57,9 @@ const GeneralLayout = ({auth_user}) => {
 
         if (order.length == 0)
             dispatch(fetchOrder(auth_user.uid));
+
+        if (currentDBUserPicture == null && auth_user)
+            dispatch(readCurrentUserPicture(auth_user.uid));
 
     }, [dispatch, auth_user])
     

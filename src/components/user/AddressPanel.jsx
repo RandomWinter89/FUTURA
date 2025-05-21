@@ -197,7 +197,7 @@ const AddressPanel = ({authUser, userAddress, loading}) => {
             )}
 
             {(editMode || submitMode) && (
-                <div className="flex gap-3 w-[50%] max-md:w-[80%]">
+                <div className="flex gap-3 w-[50%] max-md:w-[80%] max-sm:w-full">
                     <Button onClick={submitAddress}>
                         Confirm New Address
                     </Button>

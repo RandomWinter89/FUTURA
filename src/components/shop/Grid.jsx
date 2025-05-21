@@ -13,7 +13,7 @@ const GridVariants = cva(
         variants: {
             variant: {
                 showcase: "grid-cols-5 max-lg:grid-cols-3 max-sm:grid-cols-2",
-                detail: "grid-cols-4 max-lg:grid-cols2",
+                detail: "grid-cols-4 max-lg:grid-cols-2 max-sm:grid-cols-1",
                 category: "grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-1"
             }
         },

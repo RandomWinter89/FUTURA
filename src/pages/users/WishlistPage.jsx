@@ -1,12 +1,11 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { AuthContext } from "../../Context/AuthProvider";
-import { useMemo, useEffect, useContext } from "react";
+import { useMemo, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { fetchWishlistId, readUserWishlists, toggleWishlist, updateWishlistToggle } from "../../features/wishlistSlice";
-import star_filled from "../../assets/svg/star_filled.svg";
-import framer from "../../assets/svg/Frame.svg";
+import { toggleWishlist, updateWishlistToggle } from "../../features/wishlistSlice";
 import { useNavigate } from "react-router-dom";
+
+import { IconFramer, IconStar } from "../../components/icon";
 
 const WishlistCard = ({data, onCallNavigate, onCallToggle}) => {
 
@@ -26,9 +25,8 @@ const WishlistCard = ({data, onCallNavigate, onCallToggle}) => {
                         <p className="subtitle2">RM{parseFloat(data.base_price)}</p>
                     </div>
 
-                    {/* () => onRemove_WishlistItem(data.id */}
                     <button onClick={onCallAction} className="w-6 aspect-square">
-                        <img src={star_filled} />
+                        <IconStar filled={true} className={"text-black"}/>
                     </button>
                 </div>
             </div>
@@ -37,7 +35,7 @@ const WishlistCard = ({data, onCallNavigate, onCallToggle}) => {
 }
 
 const WishlistPage = () => {
-    const { wishlist_id, wishlists, wishlistStatus } = useSelector((state) => state.wishlists);
+    const { wishlists, wishlistStatus } = useSelector((state) => state.wishlists);
     const { products } = useSelector((state) => state.products);
     const { currentUser } = useContext(AuthContext) || null;
     const navigate = useNavigate();
@@ -46,19 +44,6 @@ const WishlistPage = () => {
     const wishlist_item = useMemo(() => {
         return products.filter(product => wishlists.find(data => data.product_id === product.id))
     }, [products, wishlists]);
-
-    useEffect(() => {
-        if (wishlist_id == null){
-            const uid = currentUser.uid;
-            dispatch(fetchWishlistId(uid));
-        }
-        
-    }, [dispatch])
-
-    useEffect(() => {
-        if (wishlist_id != null && wishlists.length === 0)
-            dispatch(readUserWishlists(currentUser.uid));
-    }, [dispatch, wishlist_id])
 
     // ==== Function ===================>
 
@@ -71,12 +56,12 @@ const WishlistPage = () => {
     return (
         < >
             <section className="flex flex-col gap-11">
-                <div className="body2 w-fit flex gap-2">
+                <div className="body2 w-fit flex items-center gap-2">
                     <span onClick={() => navigate("/Shop/Homepage")} className="text-gray-500 cursor-pointer">
                         Home
                     </span>
 
-                    <img src={framer} className="flex-1 aspect-square"/>
+                    <IconFramer className={"max-md:size-4 text-gray-400"} />
 
                     <span>Wishlist</span>
                 </div>

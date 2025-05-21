@@ -14,22 +14,29 @@ import { toggleWishlist, updateWishlistToggle } from "../../features/wishlistSli
 import { ToastOverlay } from "../../components/ui";
 import { Grid } from "../../components/shop";
 
-import heart from "../../assets/svg/heart_outline.svg";
 import arrow_left from "../../assets/svg/arrow-left.svg";
 import arrow_right from "../../assets/svg/arrow-right.svg";
-import star_outline from "../../assets/svg/star_outline.svg";
-import star_filled from "../../assets/svg/star_filled.svg";
 import framer from "../../assets/svg/Frame.svg";
 
 import dash from "../../assets/svg/dash.svg";
 import plus from "../../assets/svg/plus.svg";
 
+import { Button } from "../../components/ui";
 
-import StarRating from "../../components/common/StarRating";
+
+import { StarRating } from "../../components/common";
+import { IconArrowLeft, IconArrowRight, IconHeart, IconFramer } from "../../components/icon";
 
 //==============================
 
 const ITEMS_PER_PAGE = 4;
+
+// PRODUCT HAS 3 STUFF
+// 1. Product itself
+// 2. Product Variation
+// 3. Product Reviews 
+
+// 4. Product Wishlist and Cart
 
 const ProductPage  = () => {
     const { products, productItem, products_loading } = useSelector((state) => state.products);
@@ -47,6 +54,10 @@ const ProductPage  = () => {
     const { id } = useParams();
 
     const finalPrice = parseFloat(selectCharge) + parseFloat(product?.base_price);
+
+    const isWishlist = useMemo(() => {
+        return wishlists.find(info => info.product_id == id)
+    }, [wishlists, id])
 
     const dispatch = useDispatch();
 
@@ -111,7 +122,6 @@ const ProductPage  = () => {
     }
     
     //USE EFFECT
-
     useEffect(() => {
         dispatch(fetchProductItem(parseInt(id)));
         dispatch(fetch_ProductVariation());
@@ -156,15 +166,15 @@ const ProductPage  = () => {
         if (wishlistActionStatus == "loading")
             return;
 
-        dispatch(toggleWishlist({product_id: prodId}));
-        dispatch(updateWishlistToggle({uid: currentUser.uid, product_id: prodId}));
-
-        if (wishlists.find(data => data.product_id == data.id)) {
+        if (!wishlists.find(data => data.product_id == data.id)) {
             setDesc("Added to wishlist");
         } else {
             setDesc("This item is in wishlist already");
         }
         setOpen(true);
+
+        dispatch(toggleWishlist({product_id: prodId}));
+        dispatch(updateWishlistToggle({uid: currentUser.uid, product_id: prodId}));
     }
 
     //REVIEW
@@ -172,8 +182,7 @@ const ProductPage  = () => {
     const [review, setReview] = useState(""); 
     const [rating, setRating] = useState(0);
     const onAddComment = () => {
-        if (!productReviews.some(rev => rev.created_by_userid == currentUser.uid)) { 
-            console.log("Rating: ", rating)
+        if (!productReviews.find(rev => rev.created_by_userid == currentUser.uid)) { 
             dispatch(createReview({
                 uid: currentUser.uid, 
                 product_id: parseInt(id), 
@@ -188,6 +197,11 @@ const ProductPage  = () => {
             setOpen(true);
         }
     }
+
+
+    const productRate = useMemo(() => {
+        return Math.round(product.average_rating);
+    }, [product])
 
     //Optimized Category
     const sameCategoryProducts = useMemo(() => {
@@ -300,7 +314,7 @@ const ProductPage  = () => {
                             </button>
 
                             <button onClick={() => onAddWishlist(id)} className="aspect-square flex justify-center items-center border border-black py-2">
-                                <img src={heart} className="w-fit"/>
+                                <IconHeart filled={isWishlist} className={"text-black"} />
                             </button>
                         </div>
                     </div>
@@ -312,40 +326,31 @@ const ProductPage  = () => {
             {/* REVIEW */}
             <section className="flex flex-col gap-8">
                 {/* HEADER */}
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center max-sm:flex-col max-sm:gap-4">
                     {/* TITLE */}
-                    <div className="flex gap-6">
+                    <div className="flex gap-6 max-sm:flex-col max-sm:gap-2 max-sm:w-full">
                         <h2>Reviews</h2>
                         {/* Star Rating */}
                         <div className="flex gap-4 items-center">
                             {/* ICON */}
-                            <div className="flex gap-1">
-                                <img src={star_filled} />
-                                <img src={star_filled} />
-                                <img src={star_filled} />
-                                <img src={star_filled} />
-                                <img src={star_filled} />
-                            </div>
+                            <StarRating rate={productRate} />
 
                             {/* VALUE */}
                             <p className="body2">
-                                {parseFloat(product.average_rating)} ({product.number_of_reviews})
+                                {parseFloat(product.average_rating).toFixed(1)} ({product.number_of_reviews})
                             </p>
                         </div>
                     </div>
                     
                     {/* ACTION BUTTON */}
-                    <div className="flex gap-3">
+                    <div className="flex gap-3 max-sm:w-full">
                         {reviewMode &&
-                            <button 
-                                onClick={() => setReviewMode(false)}
-                                className="border border-black px-9 py-4"
-                            >
+                            <Button onClick={() => setReviewMode(false)} size={"sm"}>
                                 Cancel Review
-                            </button>
+                            </Button>
                         }
 
-                        <button 
+                        <Button 
                             onClick={() => {
                                 if (reviewMode) {
                                     onAddComment()
@@ -353,24 +358,25 @@ const ProductPage  = () => {
                                     setReviewMode(true);
                                 }  
                             }}
-                            className="bg-black text-white px-9 py-4"
+                            variant={"primary_outline"}
+                            size={"sm"}
                         >
                            {!reviewMode ? "Write a Review" : "Submit Review"}
-                        </button>
+                        </Button>
                     </div>
                 </div>
 
                 {/* FORM */}
                 {reviewMode && 
-                    <div className="flex flex-col gap-6">
-                        <label className="flex gap-4 body2">
+                    <div className="flex flex-col gap-6 max-sm:gap-3">
+                        <label className="flex gap-4 body2 max-sm:items-center">
                             Rating: 
                             <div className="flex gap-1">
-                                <StarRating rate={rating} setRate={(value) => setRating(value)} />
+                                <StarRating preview={false} rate={rating} setRate={(value) => setRating(value)} />
                             </div>
                         </label>
 
-                        <label className="flex flex-col gap-5 body2">
+                        <label className="flex flex-col gap-5 body2 max-sm:gap-3">
                             Comments
                             <textarea 
                                 placeholder={"I absolutely love this t-shirt! The design is unique and the fabric feels so comfortable. As a fellow designer, I appreciate the attention to detail. It's become my favorite go-to shirt."}
@@ -384,20 +390,13 @@ const ProductPage  = () => {
                 <hr className="border-gray-300" />
 
                 {/* REVIEW */}
-                <div className="flex flex-col gap-8 items-center">
+                {/* <div className="flex flex-col gap-8 items-center">
                     <div className="w-full grid grid-cols-2 gap-6 max-sm:grid-cols-1">
                         {(!productReviews_loading) && 
                             currentItem.map((data, index) => 
                                 <div key={index} className="border border-black p-9 flex flex-col gap-6">
                                     <div className="flex flex-col gap-4">
-                                        {/* <p>Rating: {data.rating_value}</p> */}
-                                        <div className="w-fit flex gap-1">
-                                            <img src={star_filled} />
-                                            <img src={star_filled} />
-                                            <img src={star_filled} />
-                                            <img src={star_filled} />
-                                            <img src={star_filled} />
-                                        </div>
+                                        <StarRating rate={Math.round(data.rating_value)} />
                                         <p className="subtitle1">{data.username} : {data.rating_value}</p>
                                         <p className="body2 opacity-60">"{data.comment}"</p>
                                     </div>
@@ -407,10 +406,10 @@ const ProductPage  = () => {
                                 </div>
                             )
                         }
-                    </div>
+                    </div> */}
 
                     {/* Arrow Head */}
-                    <div className="flex gap-4">
+                    {/* <div className="flex gap-4">
                         <button onClick={handlePrev} disabled={page === 0}>
                             <img src={arrow_left} />
                         </button>
@@ -421,7 +420,7 @@ const ProductPage  = () => {
                             <img src={arrow_right} />
                         </button>
                     </div>
-                </div>
+                </div> */}
             </section>
             
             {/* MORE PRODUCT */}

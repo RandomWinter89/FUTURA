@@ -11,7 +11,7 @@ const LinkVariation = cva (
         variants: {
             variant: {
                 homepage: "p-4 text-6xl font-bold max-lg:text-4xl max-sm:text-xl",
-                icon: "flex gap-1 ",
+                icon: "hover:text-star",
                 base: "",
                 auth: "px-4 py-1 border border-black",
             },

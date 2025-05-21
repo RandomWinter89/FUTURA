@@ -76,7 +76,7 @@ const DetailPanel = ({authUser, dataUser, imageUrl, loading}) => {
             await deleteUser(authUser);
             await auth.signOut();
             dispatch(deleteDBUser(authUser));
-            dispatch(resetWishlist());
+            // dispatch(resetWishlist());
         } catch (err) {
             console.log("Critical Error by Detail Panel: ", err);
         }
@@ -148,7 +148,7 @@ const DetailPanel = ({authUser, dataUser, imageUrl, loading}) => {
                 </>)
             }
 
-            <div className="flex gap-3 w-96">
+            <div className="flex gap-3 w-96 max-sm:w-full">
                 {editMode && 
                     <Button 
                         variant={"primary_filled"} 

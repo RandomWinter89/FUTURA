@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { IconTheme } from '../icon';
 import { Button } from '../ui'
 
 const ToggleMode = () => {
@@ -17,13 +18,9 @@ const ToggleMode = () => {
     };
 
     return (
-        < >
-            <Button onClick={toggleDarkMode}>
-                Enable Dark Mode
-            </Button>
-
-            <h2 className='text-black dark:text-white dark:bg-black'>LIGHTER</h2>
-        </>
+        <div onClick={toggleDarkMode} className='group cursor-pointer transition-all duration-300'>
+            <IconTheme darkMode={isDarkMode} className={`stroke-black dark:stroke-white group-hover:scale-125`} />
+        </div>
     )
 }
 

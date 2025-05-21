@@ -1,19 +1,14 @@
-import { useEffect, useState, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { fetchCart_item, fetchCartId, removeCartItem, updateItem_quantity } from "../../features/cartsSlice";
+import { removeCartItem, updateItem_quantity } from "../../features/cartsSlice";
 
-import { AuthContext } from "../../Context/AuthProvider";
+import { IconFramer, IconBin} from "../../components/icon";
+import { Button, InputForm } from "../../components/ui";
 
-import framer from "../../assets/svg/Frame.svg";
-import dash from "../../assets/svg/dash.svg";
-import plus from "../../assets/svg/plus.svg";
-import bin from "../../assets/svg/deleteBin.svg";
-
-
-const CartItem = ({data, product, quantity, onCallUpdate, onCallRemoval,}) => {
-    const [qty, setQty] = useState(1);
+const CartItem = ({data, product, quantity, onCallUpdate, onCallRemoval}) => {
+    const [qty, setQty] = useState(quantity);
 
     const incrementQuantity = () => {
         setQty(prev => {
@@ -40,46 +35,30 @@ const CartItem = ({data, product, quantity, onCallUpdate, onCallRemoval,}) => {
     const subtotal = ((parseFloat(data.base_price) + parseFloat(data.extra_charge)) * data.quantity);
 
     return (
-        <div className="flex gap-2 p-4 max-md:flex-col">
-            <img src={product.imageUrl} className="w-32 aspect-square object-cover max-md:w-full"/>
+        <div className="flex-1 flex gap-2 p-4 max-md:flex-col max-md:gap-4 max-md:p-0">
+            <img src={product.imageUrl} className="w-32 border border-gray-400 border-opacity-40 aspect-square object-cover max-md:w-full"/>
 
-            <div className="flex-1 flex justify-between max-md:flex-col">
-                <div className="flex flex-col justify-between">
-                    <p className="subtitle1">{data.name}</p>
-                    {data.name1 != null && <p>Color: {data.value1}</p>}
-                    {data.name2 != null && <p>Size: {data.value2}</p>}
+            <div className="flex-1 flex justify-between max-md:flex-col max-md:gap-2">
+                <div className="flex flex-col max-lg:gap-1">
+                    <p className="subtitle1 mb-2">{data.name}</p>
+                    {data.name1 != null && <p className="body2 opacity-60">Color: {data.value1}</p>}
+                    {data.name2 != null && <p className="body2 opacity-60">Size: {data.value2}</p>}
 
                     <h3 className="mt-auto">MYR{subtotal}</h3>
                 </div>
 
                 
-                <div className="flex flex-col justify-between items-end">
+                <div className="flex flex-col justify-between items-end max-md:flex-row-reverse max-md:items-center">
                     <button onClick={onCallRemoval} >
-                        <img src={bin} />
+                        <IconBin className={"stroke-red-600 hover:scale-150 hover:stroke-red-900 transition-all duration-300"} />
                     </button>
 
-                    <div className="w-fit max-h-12 flex gap-2 border border-black">
-                        <button onClick={decrementQuantity} className="p-2">
-                            <img src={dash} />
-                        </button>
-                        <input 
-                            type="number" 
-                            value={quantity}
-                            onChange={(e) => {
-                                if (e.target.value >= 100)
-                                    return setQty(99)
-
-                                if (e.target.value <= 0)
-                                    return setQty(1)
-
-                                setQty(e.target.value);
-                            }}
-                            className="border-none text-center w-16"
-                        />
-                        <button onClick={incrementQuantity} className="p-2">
-                            <img src={plus} />
-                        </button>
-                    </div>
+                    <InputForm.Number 
+                        onDecrement={decrementQuantity}
+                        onIncrement={incrementQuantity}
+                        quantity={qty}
+                        setQuantity={({value}) => setQty(value)}
+                    />
                 </div>
             </div>
         </div>
@@ -92,22 +71,10 @@ const CartPage = () => {
 
     // User Authentication
     const { cart_id, carts, cartStatus } = useSelector((state) => state.carts);
-    const { products } = useSelector((state) => state.products);
-    const { currentUser } = useContext(AuthContext) || null;
+    const { products, productStatus } = useSelector((state) => state.products);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
-    useEffect(() => {
-        if (cart_id == null)
-            dispatch(fetchCartId(currentUser.uid));
-    }, [dispatch]);
-    
-    useEffect(() => {
-        if (cart_id != null)
-            dispatch(fetchCart_item(cart_id));
-
-    }, [dispatch, cart_id]);
 
     useEffect(() => {
         if (carts.length != 0) {
@@ -128,6 +95,8 @@ const CartPage = () => {
             });
             setCartQuantities(initialQuantities);
         }
+        
+        
     }, [carts]);
 
     const onReceiveCall = (itemIndex, quantity, product_id, product_variation_id) => {
@@ -153,42 +122,41 @@ const CartPage = () => {
     }
 
     return (
-        <section className="flex flex-col gap-11">
+        <section className="flex flex-col gap-11 max-md:gap-6 max-sm:gap-3">
             {/* Breadcrumb */}
-            <div className="body2 w-fit flex gap-2">
-                <span onClick={() => navigate("/Shop/Homepage")} className="text-gray-500 cursor-pointer">
+            <div className="body2 w-fit flex gap-2 items-center">
+                <span onClick={() => navigate("/Shop/Homepage")} className="text-gray-500 cursor-pointer hover:scale-125 hover:text-orange-600 transition-all duration-300">
                     Home
                 </span>
-                <img src={framer} className="flex-1 aspect-square"/>
+                
+                <IconFramer className={"max-md:w-4"}/>
 
-                <span className="cursor-pointer">
-                    Carts
-                </span>
+                <span>Carts</span>
             </div>
 
-            <div className="flex flex-col gap-11">
+            <div className="flex flex-col gap-11 max-md:gap-3">
                 <h2>Your Cart</h2>
 
-                <div className="flex gap-16">
+                <div className="flex gap-16 max-md:flex-col">
                     {/* Cart List */}
-                    <div className="flex-1 flex flex-col gap-6">
+                    <div className="flex-1 flex flex-col gap-6 max-md:grid max-md:grid-cols-2 max-sm:grid-cols-1">
                         {cartStatus == "loading" && 
                             <h3>Fetching Cart Item</h3>
                         }
                         
-                        {cartStatus ==  "succeed" && carts.map((item, index) =>
-                            < >
+                        {(cartStatus ==  "succeed" && productStatus == "succeed") && carts.map((item, index) =>
+                            <div key={index}>
                                 <CartItem 
                                     key={index}
                                     data={item}
                                     product={products.find((prev) => prev.id == item.product_id)}
-                                    quantity={cartQuantities[item.id]}
+                                    quantity={cartQuantities[item.id] || item.quantity}
                                     onCallUpdate={({quantity}) => onReceiveCall(item.id, quantity, item.product_id, item.product_variation_id)}
                                     onCallRemoval={() => onReceiveCall_Remove(item.product_id, item.product_variation_id)}
                                 /> 
 
-                                {index != carts.length - 1 && <hr key={index} className="border-gray-400"/>}
-                            </>
+                                {index != carts.length - 1 && <hr key={index + 1} className="border-gray-400"/>}
+                            </div>
                         )}
                     </div>
 
@@ -215,12 +183,11 @@ const CartPage = () => {
                             </span>
                         </div>
 
-                        <button 
+                        <Button 
                             onClick={() => navigate("/User/Checkout")} 
-                            className="bg-black text-white py-4"
                         >
                             Proceed Checkout
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>
