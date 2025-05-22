@@ -21,13 +21,21 @@ const Header = () => {
 
     return (
         <div className="w-full h-26 py-6 px-9 bg-[#E6E6E6] font-sans flex justify-between">
-            <nav className="flex gap-6 max-md:gap-4 max-md:flex-col max-sm:gap-2">
-                <NavLink path={"/Admin/Dashboard"} name={"Admin Dashboard"} variant={"homepage"} type={"base"}/>
-                <NavLink path={"/Admin/Products"} name={"Products"}/>
-                <NavLink path={"/Admin/Orders"} name={"Orders"}/>
+            <nav className="flex items-center gap-6 max-md:gap-4 max-md:flex-col max-sm:gap-2">
+                <NavLink path={"/Admin/Dashboard"} variant={"homepage"} type={"base"}>
+                    Admin Dashboard
+                </NavLink>
+
+                <NavLink path={"/Admin/Products"}>
+                    Products
+                </NavLink>
+
+                <NavLink path={"/Admin/Orders"}>
+                    Orders
+                </NavLink>
             </nav>
 
-            <nav className="flex gap-2 max-md:flex-col max-md:gap-1">
+            <nav className="flex items-center gap-2 max-md:flex-col max-md:gap-1">
                 {!currentUser 
                     ?   <div className="flex gap-3">
                             <NavLink path={"/Auth/Login"} name={"Login"} variant={"auth"} type={"positive"} />

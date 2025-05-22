@@ -2,7 +2,8 @@
 const Footer = () => {
     return (
         <div className="
-            bg-black text-white dark:bg-white dark:text-black 
+            bg-white text-black dark:bg-black dark:text-white
+            border-t border-gray-300
             flex justify-between px-28 py-16 
             max-md:px-6 max-md:flex-col max-md:gap-4 max-md:text-center
             max-sm:px-4

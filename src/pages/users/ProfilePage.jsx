@@ -1,7 +1,7 @@
 import { AuthContext } from "../../Context/AuthProvider";
 
 import { useDispatch, useSelector } from "react-redux";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useMemo } from "react";
 
 import { fetchOrder, getAllItem } from "../../features/orderedSlice";
 
@@ -12,8 +12,10 @@ import { DetailPanel, AddressPanel, OrderPanel } from "../../components/user"
 
 const ProfilePage = () => {
     const { currentDBUser, isLoadingCurrentDBUser, currentDBUserPicture} = useSelector((state) => state.users);
-    const { address, address_loading } = useSelector((state) => state.address);
+    const { products, productStatus } = useSelector((state) => state.products);
+    const { address, addressStatus } = useSelector((state) => state.address);
     const { order, orderItem } = useSelector((state) => state.orders);
+    
     const { currentUser } = useContext(AuthContext) || null;
 
     const [mode, setMode] = useState("PROFILE");
@@ -27,6 +29,14 @@ const ProfilePage = () => {
         if (orderItem.length == 0)
             dispatch(getAllItem(currentUser.uid));
     }, [dispatch]);
+
+    const filteredProductImage = useMemo(() => {
+        if (productStatus == "succeed") {
+            return products.map((item) => ({id: item.id, imageUrl: item?.imageUrl}));
+        }
+
+        return null;
+    }, [productStatus, products])
 
 
     return (
@@ -81,13 +91,14 @@ const ProfilePage = () => {
                         <AddressPanel
                             authUser={currentUser}
                             userAddress={address}
-                            loading={address_loading}
+                            loading={(addressStatus == "loading")}
                         />
                     }
                     {(mode == "ORDER") && 
                         <OrderPanel 
                             userOrder={order}
                             userOrderItem={orderItem} 
+                            productImage={filteredProductImage}
                             loading={false}
                         />
                     }

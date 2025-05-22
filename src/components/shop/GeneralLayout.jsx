@@ -19,8 +19,7 @@ const GeneralLayout = ({auth_user}) => {
     const { cart_id, carts } = useSelector((state) => state.carts);
     const { wishlists, wishlist_id } = useSelector((state) => state.wishlists);
     const { order } = useSelector((state) => state.orders);
-    const { currentDBUserPicture } = useSelector((state) => state );
-
+    const { currentDBUserPicture } = useSelector((state) => state.users);
 
     const dispatch = useDispatch();
 
@@ -64,14 +63,14 @@ const GeneralLayout = ({auth_user}) => {
     }, [dispatch, auth_user])
     
     return (
-        < >
+        <div className="flex flex-col min-h-svh">
             <Header />
             {/*  gap-16 my-10 */}
-            <main className="flex flex-col min-h-svh">
+            <main className="flex flex-col flex-1 bg-white dark:bg-black">
                 <Outlet />
             </main>
             <Footer />
-        </>
+        </div>
     )
 };
 

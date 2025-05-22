@@ -1,110 +1,65 @@
-import { useDispatch, useSelector } from "react-redux";
-import { useState, useEffect, useContext} from "react";
+import { useState, useEffect, useMemo} from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { fetchCart_item, fetchCartId } from "../../features/cartsSlice";
-import { AuthContext } from "../../Context/AuthProvider";
-import { fetchAddress } from "../../features/addressSlice";
+import { IconFramer } from "../../components/icon"
 
 const VITE_FUTURA_API = import.meta.env.VITE_FUTURA_API;
 
 //Payment
 import axios from "axios";
+import { Button } from "../../components/ui";
 
-const CartItem = ({
-    name, 
-    color, 
-    size, 
-    quantity, 
-    price,
-    image,
-    extraCharge
-}) => {
-
-    const subtotal = ((parseFloat(price) + parseFloat(extraCharge)) * quantity);
+// Extractable Component
+const CartItem = ({data, image}) => {
+    const subtotal = ((parseFloat(data?.base_price) + parseFloat(data?.extra_charge)) * data.quantity);
 
     return (
-        <div className="w-fit h-40 flex gap-2 border border-black p-4">
-            <img src={image} className="flex-1 bg-orange-300 w-64 h-full"/>
+        <div className="flex-1 flex gap-6 max-md:flex-col max-md:gap-4 max-sm:gap-2">
+            <img src={image} className="w-32 skeleton aspect-square object-cover border border-gray-300 bg-opacity-30 max-md:w-full"/>
 
-            <div className="flex flex-col my-auto">
-                <p>Product Name: {name}</p>
-                {color != null && <p>Color: {color}</p>}
-                {size != null && <p>Size: {size}</p>}
+            <div className="flex-1 flex flex-col max-lg:gap-1">
+                <p className="subtitle1 mb-2">{data.name}</p>
+                {data.value1 != null && <p className="body2 opacity-60">Color: {data.value1}</p>}
+                {data.value2 != null && <p className="body2 opacity-60">Size: {data.value2}</p>}
+                <p className="body2 opacity-60">Quantity: {data.quantity}</p>
 
-                <hr className="border-black"/>
-                <p>Quantity: {quantity}</p>
-                <p>Subtotal price: MYR{subtotal}</p>
+                <h3 className="mt-auto">MYR{subtotal}</h3>
             </div>
         </div>
     )
 }
 
-const SummaryPayment = ({total, address, setAddressID}) => {
-    return (
-        < >
-            <div className="py-4 px-2 flex flex-col border border-black">
-                <h2>Order Summary</h2>
-                <hr className="border-black mb-2"/>
-                <p>Subtotal: MYR {total}</p>
-                <p>Order total: MYR {total}</p>
-            </div>
-
-            <div className="flex flex-col gap-2">
-                <select onChange={(e) => setAddressID({value: e.target.value})} className="border border-black p-2">
-                    <option value={null}>No Address</option>
-                    {address.map((data, index) => 
-                        <option key={index} value={data.id}>{data.address_line1} / {data.city} / {data.region} / {data.postal_code}</option>
-                    )}
-                </select>
-            </div>
-        </>
-    )
-}
-
 const CheckoutPage = () => {
-    const { cart_id, carts } = useSelector((state) => state.carts);
+    const { products, productStatus } = useSelector((state) => state.products);
+    const { carts } = useSelector((state) => state.carts);
     const { address } = useSelector((state) => state.address);
-    const { currentUser } = useContext(AuthContext) || null;
 
     const [addressID, setAddressID] = useState(0);
     const [items, setItems] = useState([]);
-    const [total, setTotal] = useState(0);
+    const [subTotal, setSubTotal] = useState(0);
 
-    // const [paymentMode, setPaymentMode] = useState(false);
-
-    const dispatch = useDispatch();
     const navigate = useNavigate();
-
-    useEffect(() => {
-        if (cart_id == null)
-            dispatch(fetchCartId(currentUser.uid));
-
-        if (address.length == 0)
-            dispatch(fetchAddress(currentUser.uid));
-    }, [dispatch])
-
-    useEffect(() => {
-        if (cart_id != null && carts.length == 0)
-            dispatch(fetchCart_item(cart_id));
-
-    }, [dispatch, cart_id])
 
     useEffect(() => {
         if (carts.length != 0) {
             const price = carts.reduce((total, item) => 
                 total + ((parseFloat(item.base_price) + parseFloat(item.extra_charge)) * item.quantity)
             , 0)
-            setTotal(price);
+            setSubTotal(price);
 
             setItems(carts.map((data) => ({
                     name: data.name, 
                     quantity: data.quantity, 
                     price: data.base_price
                 })
-            ))
+            ));
         }
     }, [carts])
+
+    const TotalPrice = useMemo(() => {
+        return subTotal + 15;
+    }, [subTotal])
 
     const onSubmitPayment = async () => {
         if (items.length == 0 || addressID == 0)
@@ -119,43 +74,71 @@ const CheckoutPage = () => {
     };
 
     return (
-        < >
-            <section>
-            <button 
-                onClick={() => navigate(-1)}
-                className="py-2 px-4 w-fit text-gray-800 hover:-translate-x-3 transition-transform"
-            >{`<--`} Back to Home</button>
+        <section className="flex flex-col gap-11 max-md:gap-6 max-sm:gap-3">
+            <div className="body2 w-fit flex gap-2 items-center">
+                <span onClick={() => navigate("/Shop/Homepage")} className="text-gray-500 cursor-pointer hover:scale-125 hover:text-orange-600 transition-all duration-300">
+                    Home
+                </span>
 
-            <div className="flex gap-2">
-                <section className="flex flex-col gap-4">
-                    {carts.map((item, index) => 
-                        <CartItem key={index}
-                            name={item.name}
-                            color={item.value1}
-                            size={item.value2}
-                            quantity={item.quantity}
-                            price = {item.base_price}
-                            image = {item.thumbnail_url}
-                            extraCharge = {item.extra_charge}
-                        />
-                    )}
-                </section>
+                <IconFramer className={"h-fit"}/>
 
-                <section className="flex flex-col gap-1 p-2 ">
-                    <SummaryPayment 
-                        total = {total}
-                        address = {address}
-                        setAddressID = {({value}) => setAddressID(value)}
-                    />
+                <span>Cart</span>
+                
+                <IconFramer className={"h-fit"}/>
 
-                    <button onClick={onSubmitPayment} className="border border-black py-2">
-                        Proceed Payment
-                    </button>
-                    <p>**You're required to enter the payment by yourself. Stripe forbidden pre-set</p>
-                </section>
+                <span>Checkout</span>
             </div>
-            </section>
-        </>
+
+            <div className="flex flex-col gap-11 max-md:gap-2">
+                <h2>Checkout</h2>
+
+                <div className="flex gap-16 max-md:flex-col">
+                    <div className="h-fit flex-1 flex flex-col gap-6 max-md:grid max-md:grid-cols-2 max-sm:grid-cols-1">
+                        {(productStatus == "succeed") && carts.map((item, index) => {
+                                const imageUrl = products.find((data) => data.id == item.product_id)?.imageUrl;
+                                return <CartItem key={index} data={item} image={imageUrl}/>
+                            })
+                        }
+                    </div>
+
+                    <div className="flex-[0.6] flex flex-col gap-6">
+                        <h3>Order Summary</h3>
+
+                        <div className="flex flex-col gap-5"> 
+                            <span className="flex gap-2 justify-between items-center">
+                                <p className="subtitle1 font-normal opacity-60">Subtotal</p>
+                                <p className="subtitle1">MYR{subTotal}</p>
+                            </span>
+
+                            <span className="flex gap-2 justify-between items-center">
+                                <p className="subtitle1 font-normal opacity-60">Delivery</p>
+                                <p className="subtitle1">RM15</p>
+                            </span>
+
+                            <hr className="border-gray-400" />
+
+                            <span className="flex justify-between items-center gap-2">
+                                <p className="subtitle1 font-normal opacity-60">Total</p>
+                                <h3>RM{TotalPrice}</h3>
+                            </span>
+                        </div>
+
+                        <select onChange={(e) => setAddressID(e.target.value)} >
+                            <option value={null}>No Address</option>
+                            {address.map((data, index) => 
+                                <option key={index} value={data.id}>
+                                    {data.address_line1} / {data.city} / {data.region} / {data.postal_code}
+                                </option>
+                            )}
+                        </select>
+
+                        <Button onClick={onSubmitPayment}>
+                            Proceed Payment
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        </section>
     )
 }
 

@@ -8,24 +8,27 @@ import {
     fetch_ProductVariation,
     update_ProdStock
 } from "../../features/productSlice";
+import { Button } from "../../components/ui";
 
 
 const Admin_ProductPage = () => {
-    const { products, productItem, itemVariation, products_loading } = useSelector((state) => state.products);
+    const { products, productItem, itemVariation, productStatus } = useSelector((state) => state.products);
     const [prodQuantity, setProdQuantity] = useState({});
-    const [onLoad, setOnLoad] = useState(false);
     const dispatch = useDispatch();
 
     useEffect(() => {
         if (products.length == 0)
             dispatch(fetchProducts()).then(() => {
                 dispatch(fetchImageProduct());
-                setOnLoad(true);
             })
 
         if (itemVariation.length === 0)
             dispatch(fetch_ProductVariation());
     }, [dispatch]);
+
+    useEffect(() => {
+        console.log(products);
+    }, []);
 
     
     //Fetch Product Item (variation)
@@ -33,7 +36,6 @@ const Admin_ProductPage = () => {
         dispatch(fetchProductItem(id));
         setProdQuantity(productItem);
     }
-
 
     //Change Quantity
     const onUpdateQuantity = ({id, value}) => {
@@ -54,72 +56,91 @@ const Admin_ProductPage = () => {
 
 
 
-    // 1. All Product are shown (With Variation been shown)
-    // 2. Select one product create 3 options.
-    // 3. 1 is Edit Product itself (only name, image, price and description)
-    // 5. 3 is create new variation option (exclude if one of variation option is matched)
     return (
         < >
-            <section className="mt-20 flex flex-col gap-2">
-                <h2>Edit Quantity</h2>
-                <hr />
-                {/* Product Item */}
-                <div className="grid grid-cols-4 gap-2">
-                    <button className="p-4 border border-black items-center gap-2">
-                        Create New Variation
-                    </button>
+            <section className="flex flex-col gap-6">
+                {/* Only selected fill can have size */}
+                <h2>Modified Product Detail</h2>
 
-                    {productItem.map((prod) => 
-                        <div key={prod.id} className="p-4 border border-black flex flex-col gap-2">
-                            <p>{prod.name1}: {prod.value1}</p>
-                            <p>{prod.name2}: {prod.value2}</p>
-                            <input 
-                                type="number" 
-                                value={prod.quantity}
-                                onChange={(e) => onUpdateQuantity({id: prod.id, value: e.target.value})}
-                                className="border border-black w-auto"
-                            />
-                            <button 
-                                onClick={() => onSubmitQuantity({id: prod.id})}
-                                className="border border-black p-4 rounded-xl"
-                            >
-                                Update Quantity
-                            </button>
-                        </div>
-                    )}
+                <div className="flex gap-2">
+
                 </div>
 
-                {/* Only selected fill can have size */}
-                <form className="flex flex-col gap-2 p-4 border border-black">
-                    <label>COLOR</label>
-                    <select>
-                        {itemVariation
-                            .filter((prev) => prev.name == "Color")
-                            .map((data, index) => 
-                                <option key={index} value={data.value}>{data.value}</option>
-                            )}
-                    </select>
-                    
-                    <label>SIZE</label>
-                    <select>
-                        {itemVariation
-                            .filter((prev) => prev.name == "Size")
-                            .map((data, index) => 
-                                <option key={index} value={data.value}>{data.value}</option>
-                            )}
-                    </select>
+                <hr />
 
-                    <input type="number" defaultValue={0} />
-                    <input type="number" defaultValue={0.00} />
-                </form>
+                <div className="flex gap-11 max-lg:flex-col">
+                    <div className="flex flex-col gap-4">
+                        <Button>
+                            Create New Variation
+                        </Button>
+
+                        <form className="flex flex-col gap-6 p-4 border border-black">
+                            <label className="flex flex-col gap-2">
+                                COLOR
+                                <select>
+                                    {itemVariation
+                                        .filter((prev) => prev.name == "Color")
+                                        .map((data, index) => 
+                                            <option key={index} value={data.value}>{data.value}</option>
+                                        )}
+                                </select>
+                            </label>
+                            
+                            <label className="flex flex-col gap-2">
+                                Size
+                                <select>
+                                    <option value="none">None</option>
+                                    {itemVariation
+                                        .filter((prev) => prev.name == "Size")
+                                        .map((data, index) => 
+                                            <option key={index} value={data.value}>{data.value}</option>
+                                        )
+                                    }
+                                </select>
+                            </label>
+
+                            <label className="flex flex-col gap-2">
+                                Quantity
+                                <input type="number" min={1} max={1000} defaultValue={0} />
+                            </label>
+
+                            <label className="flex flex-col gap-2">
+                                Extra Charge
+                                <input type="number" min={"1.00"} defaultValue={"1.00"} />
+                            </label>
+                        </form>
+                    </div>
+
+                    <hr className="hidden max-lg:inline-block" />
+
+                    <div className="h-fit flex-1 grid grid-cols-3 gap-2 max-md:grid-cols-2">
+                        {productItem.map((prod) => 
+                            <div key={prod.id} className="flex-1 flex flex-col gap-2 p-4 border border-black">
+                                <p>{prod.name1}: {prod.value1}</p>
+                                <p>{prod.name2}: {prod.value2}</p>
+                                <input 
+                                    type="number" 
+                                    value={prod.quantity}
+                                    onChange={(e) => onUpdateQuantity({id: prod.id, value: e.target.value})}
+                                    className="border border-black w-auto"
+                                />
+                                <button 
+                                    onClick={() => onSubmitQuantity({id: prod.id})}
+                                    className="border border-black p-4 rounded-xl"
+                                >
+                                    Update Quantity
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
             </section>
-
             
-            {!products_loading && (
-                <section className="my-20 grid grid-cols-5 gap-4">
+            {(productStatus == "succeed") && (
+                <section className="grid grid-cols-4 gap-10">
                     {products.map((prod) => 
-                        <div onClick={() => onFetch(prod.id)} className="flex-1 hover:scale-110">
-                            <img src={`${prod.imageUrl}`} />
+                        <div onClick={() => onFetch(prod.id)} className="group flex-1 flex flex-col gap-2">
+                            <img src={`${prod.imageUrl}`} className="aspect-square object-cover group-hover:scale-110" />
                             <p>{prod.name}</p>
                         </div>
                     )}

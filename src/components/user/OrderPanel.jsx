@@ -1,6 +1,6 @@
-import { useState, memo, useMemo, useEffect } from "react";
+import { useState, memo, useMemo } from "react";
 
-const OrderCard = ({item, date="", address=""}) => {
+const OrderCard = ({item, image, date="", address=""}) => {
     const [shown, setShown] = useState(false);
 
     const price = useMemo(() => {
@@ -11,7 +11,7 @@ const OrderCard = ({item, date="", address=""}) => {
         <div className="flex flex-col">
             <div className="flex flex-col gap-6 px-8 py-7 border border-gray-500">
                 <div className="flex gap-6 max-sm:gap-3 max-sm:flex-col">
-                    <img className="w-32 aspect-square bg-slate-400 max-sm:w-full"/>
+                    <img src={image} className="w-32 aspect-square bg-slate-400 max-sm:w-full"/>
 
                     <div className="flex-1 flex flex-col gap-2 my-auto">
                         <p className="subtitle2">{item.name}</p>
@@ -53,7 +53,7 @@ const OrderCard = ({item, date="", address=""}) => {
 }
 
 
-const OrderPanel = memo(({userOrder, userOrderItem, loading}) => {
+const OrderPanel = memo(({userOrder, userOrderItem, productImage, loading}) => {
     const [state, setState] = useState("Pending");
 
     const newestOrder = useMemo(() => {
@@ -64,13 +64,13 @@ const OrderPanel = memo(({userOrder, userOrderItem, loading}) => {
         return newestOrder.slice().filter((info) => info.order_status == "Prepping");
     }, [newestOrder])
 
+    const sortedOutOfDelivery = useMemo(() => {
+        return newestOrder.slice().filter((info) => info.order_status == "Out of Delivery");
+    }, [newestOrder])
+
     const sortedDelivered = useMemo(() => {
         return newestOrder.slice().filter((info) => info.order_status == "Delivered");
     }, [newestOrder])
-
-    useEffect(() => {
-        console.log("ORDER RESULT: ", userOrder);
-    }, [])
 
     if (loading) return (
         < >
@@ -105,9 +105,27 @@ const OrderPanel = memo(({userOrder, userOrderItem, loading}) => {
                         Order #{data.id} | Placed on {data.order_date.split("T")[0]}
                     </p>
 
-                    {userOrderItem.slice().filter((prev) => prev.id == data.id).map((data, index) => 
-                        <OrderCard key={index} item={data} />
-                    )}
+                    {userOrderItem.slice()
+                        .filter(prev => prev.id == data.id)
+                        .map((data, index) => 
+                            <OrderCard key={index} item={data} image={productImage.find(prev => prev.id == data.id)?.imageUrl}/>
+                        )
+                    }
+                </div>
+            )}
+
+            {state == "OutDelivery" && sortedOutOfDelivery.map((data, index) => 
+                <div key={index} className="flex flex-col gap-6 mb-10">
+                    <p className="subtitle2">
+                        Order #{data.id} | Placed on {data.order_date.split("T")[0]}
+                    </p>
+
+                    {userOrderItem.slice()
+                        .filter(prev => prev.id == data.id)
+                        .map((data, index) => 
+                            <OrderCard key={index} item={data} image={productImage.find(prev => prev.id == data.id)?.imageUrl}/>
+                        )
+                    }
                 </div>
             )}
 
@@ -118,11 +136,7 @@ const OrderPanel = memo(({userOrder, userOrderItem, loading}) => {
                     </p>
 
                     {userOrderItem.slice().filter((prev) => prev.id == data.id).map((info, index) => 
-                        <OrderCard 
-                            key={index} 
-                            item={info} 
-                            address={`${data.address_line1} ${data.address_line2}, ${data.city} ${data.region} ${data.postal_code}`}  
-                        />
+                        <OrderCard key={index} item={info} image={productImage.find(prev => prev.id == data.id)?.imageUrl}/>
                     )}
                 </div>
             )}
@@ -130,4 +144,5 @@ const OrderPanel = memo(({userOrder, userOrderItem, loading}) => {
     )
 });
 
+// address={`${data.address_line1} ${data.address_line2}, ${data.city} ${data.region} ${data.postal_code}`}
 export default OrderPanel;

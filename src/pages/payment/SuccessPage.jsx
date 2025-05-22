@@ -5,6 +5,7 @@ import { AuthContext } from "../../Context/AuthProvider";
 
 import { createOrder, create_OrderItem, reset_OrderReceipt } from "../../features/orderedSlice";
 import { clearCart } from "../../features/cartsSlice";
+import { Button } from "../../components/ui";
 
 const SuccessPage = () => {
   const { cart_id, carts } = useSelector((state) => state.carts);
@@ -60,16 +61,14 @@ const SuccessPage = () => {
 
 
   return (
-    <main className="m-4 h-[85svh] flex flex-col justify-center items-center gap-6">
+    <main className="flex-1 flex flex-col justify-center items-center gap-6">
       <h1>Payment Successful!</h1>
+
       {orderItem_loading && <p>Processing the cart to order</p>}
       {!orderItem_loading && 
-        <button 
-          onClick={() => navigate("/Shop/Homepage")}
-          className="border border-black py-2 px-8 rounded-xl hover:bg-black hover:text-white"
-        >
+        <Button onClick={() => navigate("/Shop/Homepage")} state={"fit"}>
           Return homepage
-        </button>
+        </Button>
       }
     </main>
   );

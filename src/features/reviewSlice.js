@@ -65,6 +65,9 @@ const reviewsSlice = createSlice({
         productReviews: [],
         ownReviews_loading: false,
         productReviews_loading: false,
+
+        reviewStatus: "idle",
+        productReviewStatus: "idle",
     },
     reducers: {},
     extraReducers: (builder) => {

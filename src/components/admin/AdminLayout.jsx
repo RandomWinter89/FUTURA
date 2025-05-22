@@ -4,12 +4,12 @@ import { Header } from "../admin";
 const AdminLayout = () => {
 
     return (
-        < >
+        <div className="flex flex-col min-h-svh ">
             <Header/>
-            <main className="flex flex-col gap-20 my-10">
+            <main className="flex-1 flex flex-col">
                 <Outlet />
             </main>
-        </>
+        </div>
     )
 }
 

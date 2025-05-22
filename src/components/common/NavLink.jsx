@@ -37,7 +37,7 @@ const NavLink = (({path, children, variant, type, className, ...props}) => {
                 twMerge(
                     LinkVariation({variant, type}), 
                     className,
-                    isActive ? 'pointer-events-none' : ''
+                    isActive ? 'pointer-events-none opacity-50' : ''
                 )
             }
             end

@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { useState } from "react";
 
 import AuthShowcase from "../../assets/AuthShowcase.png";
+import { Button } from "../../components/ui";
 
 const SignupPage = () => {
     // Email & Password
@@ -70,23 +71,22 @@ const SignupPage = () => {
         setHideB(!hideB);
     }
 
-    const onNavigate_Login = () => navigate("/Auth/Signup")
+    const onNavigate_Login = () => navigate("/Auth/Login")
 
     return (
         < >
-            <div className="flex-1 flex flex-col justify-center items-center">
+            <div className="flex-1 flex flex-col justify-center items-center max-md:px-10">
                 <div className="flex flex-col gap-2 mb-8 text-center">
                     <h1>Welcome Back!</h1>
-                    <p className="font-medium text-lg leading-9">Log In to continue</p>
+                    <p>Log In to continue</p>
                 </div>
                 
-                <form onSubmit={onRegisterAccount} className="flex flex-col gap-3 w-[30rem]">
+                <form onSubmit={onRegisterAccount} className="flex flex-col gap-3 w-[30rem] max-md:w-full">
                     <input 
                         type="email" 
                         value={email}
                         placeholder="Email" 
                         onChange={(e) => setEmail(e.target.value)}
-                        className="min-h-14 px-4 py-2 border border-gray-400"
                     />
 
                     <div className="flex relative">
@@ -121,21 +121,22 @@ const SignupPage = () => {
                         />
                     </div>
 
-                    <button 
-                        type="submit" 
-                        className="bg-black text-white text-sm font-semibold h-14 px-4 py-4 mt-5"
-                    >
+                    <Button type="submit">
                         Confirm
-                    </button>
+                    </Button>
 
                     {feedback.trim().length != 0 && <p className="text-xl text-red-400">{feedback}</p>}
                 </form>
 
-                {/* <p>Forget password? <a className="text-red-400">Reset Password</a></p> */}
-                <p className="mt-4 flex gap-2">Have Account? <a className="underline font-bold" onClick={onNavigate_Login}>Login</a></p>
+                <p className="mt-4 flex items-center gap-2">
+                    Have Account? 
+                    <span className="underline font-bold cursor-pointer" onClick={onNavigate_Login}>
+                        Login
+                    </span>
+                </p>
             </div>
 
-            <img src={AuthShowcase} className="flex-[0.5] object-cover" />
+            <img src={AuthShowcase} className="flex-[0.5] object-cover max-md:hidden" />
         </>
     )
 }

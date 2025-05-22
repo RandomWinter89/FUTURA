@@ -5,12 +5,12 @@ import { memo } from "react";
 const GeneralLayout = memo(() => {
     
     return (
-        < >
+        <div className="flex flex-col min-h-svh ">
             <Header />
-            <main className="min-h-[88svh] flex">
+            <main className="flex-1 flex">
                 <Outlet />
             </main>
-        </>
+        </div>
     )
 });
 

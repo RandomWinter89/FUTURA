@@ -6,6 +6,7 @@ import { readCurrentUserProfile } from "../../features/usersSlice";
 import { useState, useEffect} from "react";
 
 import AuthShowcase from "../../assets/AuthShowcase.png";
+import { Button } from "../../components/ui";
 
 
 const LoginPage = () => {
@@ -52,19 +53,18 @@ const LoginPage = () => {
 
     return (
         < >
-            <div className="flex-1 flex flex-col justify-center items-center">
+            <div className="flex-1 flex flex-col justify-center items-center max-md:px-10">
                 <div className="flex flex-col gap-2 mb-8 text-center">
                     <h1>Welcome Back!</h1>
-                    <p className="font-medium text-lg leading-9">Log In to continue</p>
+                    <p>Log In to continue</p>
                 </div>
                 
-                <form onSubmit={handleLogin} className="flex flex-col gap-3 w-[30rem]">
+                <form onSubmit={handleLogin} className="flex flex-col gap-3 w-[30rem] max-md:w-full">
                     <input 
                         type="email" 
                         value={email}
                         placeholder="Email"
                         onChange={(e) => setEmail(e.target.value.toLowerCase())} 
-                        className="min-h-14 px-4 py-2 border border-gray-400"
                     />
 
                     <div className="flex relative">
@@ -74,6 +74,7 @@ const LoginPage = () => {
                             onChange={(e) => setPassword(e.target.value)}
                             className="flex-1 pl-4 pr-12 py-4 border border-gray-400"
                         />
+
                         <input 
                             type="checkbox" 
                             value={!hide}
@@ -81,21 +82,23 @@ const LoginPage = () => {
                             className="size-5 absolute top-[50%] right-2 translate-x-[-50%] translate-y-[-50%]"
                         />
                     </div>
-
-                    <button 
-                        type="submit" 
-                        className="bg-black text-white text-sm font-semibold h-14 px-4 py-4 mt-5"
-                    >
+                    
+                    <Button type="submit" >
                         Login
-                    </button>
+                    </Button>
                     {error.trim().length != 0 && <p className="text-xl text-red-400">{error}</p>}
                 </form>
 
                 {/* <p>Forget password? <a className="text-red-400">Reset Password</a></p> */}
-                <p className="mt-4 flex gap-2">No Account yet? <a className="underline font-bold" onClick={onNavigate_Signup}>Signup</a></p>
+                <p className="mt-4 flex items-center gap-2">
+                    No Account yet? 
+                    <span className="underline font-bold cursor-pointer" onClick={onNavigate_Signup}>
+                        Signup
+                    </span>
+                </p>
             </div>
 
-            <img src={AuthShowcase} className="flex-[0.5] object-cover" />
+            <img src={AuthShowcase} className="flex-[0.5] object-cover max-md:hidden" />
         </>
     )
 }

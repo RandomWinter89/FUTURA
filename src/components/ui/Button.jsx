@@ -12,7 +12,7 @@ const buttonVariants = cva(
                 secondary_filled: "border-red-500 bg-red-500 text-white",
             },
             state: {
-                fit: "w-fit",
+                fit: "w-fit h-fit",
                 full: "w-full flex-1 h-fit"
             },
             size: {

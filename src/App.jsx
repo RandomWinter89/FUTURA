@@ -27,7 +27,9 @@ import { readCurrentUserProfile } from "./features/usersSlice";
 
 function App() {
   const { currentUser } = useContext(AuthContext) || null;
-  const { currentDBUser, currentDBUserStatus } = useSelector((state) => state.users);
+  const currentDBUserStatus = useSelector((state) => state.users.currentDBUserStatus);
+  const currentDBUser = useSelector((state) => state.users.currentDBUser);
+
   const dispatch = useDispatch();
 
   useEffect(() => {

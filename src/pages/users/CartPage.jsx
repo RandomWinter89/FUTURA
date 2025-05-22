@@ -35,8 +35,8 @@ const CartItem = ({data, product, quantity, onCallUpdate, onCallRemoval}) => {
     const subtotal = ((parseFloat(data.base_price) + parseFloat(data.extra_charge)) * data.quantity);
 
     return (
-        <div className="flex-1 flex gap-2 p-4 max-md:flex-col max-md:gap-4 max-md:p-0">
-            <img src={product.imageUrl} className="w-32 border border-gray-400 border-opacity-40 aspect-square object-cover max-md:w-full"/>
+        <div className="flex-1 flex gap-2 max-md:flex-col max-md:gap-4">
+            <img src={product.imageUrl} className="w-32 skeleton aspect-square object-cover border border-gray-300 bg-opacity-30 max-md:w-full"/>
 
             <div className="flex-1 flex justify-between max-md:flex-col max-md:gap-2">
                 <div className="flex flex-col max-lg:gap-1">
@@ -134,7 +134,7 @@ const CartPage = () => {
                 <span>Carts</span>
             </div>
 
-            <div className="flex flex-col gap-11 max-md:gap-3">
+            <div className="flex flex-col gap-11 max-md:gap-4">
                 <h2>Your Cart</h2>
 
                 <div className="flex gap-16 max-md:flex-col">

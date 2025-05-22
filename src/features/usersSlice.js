@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import { collection, updateDoc, doc, setDoc, getDoc, getDocs } from "firebase/firestore";
+import { updateDoc, doc, setDoc, getDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import { db, storage } from "../firebase";
 

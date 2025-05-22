@@ -69,21 +69,20 @@ const addressSlice = createSlice({
     initialState: {
         address: [],
         addressStatus: "idle",
-        address_loading: false,
     },
     reducers: {
 
     },
     extraReducers: (builder) => {
         builder
+            .addCase(createAddress.pending, (state) => {
+                state.addressStatus = "loading";
+            })
             .addCase(createAddress.fulfilled, (state, action) => {
                 state.address = [...state.address, action.payload.data];
                 state.addressStatus = "succeed";
             })
-            .addCase(createAddress.pending, (state) => {
-                state.address_loading = true;
-                state.addressStatus = "loading";
-            })
+
 
             .addCase(fetchAddress.pending, (state) => {
                 state.addressStatus = "loading";

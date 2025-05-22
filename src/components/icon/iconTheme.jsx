@@ -7,6 +7,7 @@ const IconTheme = ({darkMode, className, ...props}) => {
             className={twMerge("size-6", className)}
             viewBox="0 0 26 26" 
             stroke="currentColor"
+            fill="none"
             xmlns="http://www.w3.org/2000/svg"
             {...props} 
         >
