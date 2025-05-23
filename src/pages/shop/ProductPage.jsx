@@ -390,7 +390,7 @@ const ProductPage  = () => {
                 <hr className="border-gray-300" />
 
                 {/* REVIEW */}
-                {/* <div className="flex flex-col gap-8 items-center">
+                <div className="flex flex-col gap-8 items-center">
                     <div className="w-full grid grid-cols-2 gap-6 max-sm:grid-cols-1">
                         {(!productReviews_loading) && 
                             currentItem.map((data, index) => 
@@ -406,10 +406,10 @@ const ProductPage  = () => {
                                 </div>
                             )
                         }
-                    </div> */}
+                    </div>
 
                     {/* Arrow Head */}
-                    {/* <div className="flex gap-4">
+                    <div className="flex gap-4">
                         <button onClick={handlePrev} disabled={page === 0}>
                             <img src={arrow_left} />
                         </button>
@@ -420,7 +420,7 @@ const ProductPage  = () => {
                             <img src={arrow_right} />
                         </button>
                     </div>
-                </div> */}
+                </div>
             </section>
             
             {/* MORE PRODUCT */}

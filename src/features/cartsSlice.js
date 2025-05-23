@@ -116,13 +116,16 @@ const cartsSlice = createSlice({
 
             //CREATE ITEM TO CART
             .addCase(addCart_item.pending, (state) => {
+                state.cartStatus = "loading";
                 state.cartActionStatus = "loading";
             })
             .addCase(addCart_item.fulfilled, (state, action) => {
                 state.carts = [...state.carts, action.payload.data];
-                state.cartActionStatus = "succeed"
+                state.cartStatus = "succeed";
+                state.cartActionStatus = "succeed";
             })
             .addCase(addCart_item.rejected, (state) => {
+                state.cartStatus = "failed";
                 state.cartActionStatus = "failed";
             })
 
@@ -166,7 +169,7 @@ const cartsSlice = createSlice({
             //CLEAR CART
             .addCase(clearCart.fulfilled, (state) => {
                 state.carts = [];
-                state.cartStatus = "failed";
+                state.cartStatus = "idle";
             })
             .addCase(clearCart.pending, (state) => {
                 state.cartStatus = "loading";

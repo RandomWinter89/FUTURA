@@ -1,19 +1,20 @@
 import { AuthContext } from "../../Context/AuthProvider";
 
 import { createUserProfile, uploadUserPicture } from "../../features/usersSlice";
-import { useDispatch } from "react-redux";
 import { useState, useContext } from "react";
+import { useDispatch } from "react-redux";
+
+import AuthShowcase from "../../assets/AuthShowcase.png";
+import { Button } from "../../components/ui";
 
 const RegisterPage = () => {
     const { currentUser } = useContext(AuthContext) || null;
-    
     const [username, setUsername] = useState("");
-    const [email] = useState(currentUser.email);
+    const [email] = useState("");
     const [phone, setPhone] = useState("");
     const [gender, setGender] = useState("Male");
     const [birth, setBirth] = useState("");
     const [imageUrl, setImageUrl] = useState();
-    
     
     const dispatch = useDispatch();
 
@@ -23,7 +24,6 @@ const RegisterPage = () => {
     const onSubmit_PersonalInfo = (e) => {
         e.preventDefault();
 
-        // const phonePattern =  /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
         if (username.trim().length === 0 || phone.trim().length === 0 || birth.trim().length === 0)
             return setFeedback("Please fill-up the empty form");
 
@@ -42,76 +42,77 @@ const RegisterPage = () => {
 
     return (
         < >
-            <section>
-                <h2>HELLO</h2>
-            </section>
-        </>
-    )
+            
+            <div className="flex-1 flex flex-col justify-center items-center max-md:px-10">
+                <div className="flex flex-col gap-2 mb-8 text-center">
+                    <h1>We don't have your data info!</h1>
+                    <p>Please re-register or create your detail</p>
+                </div>
 
-    // return (
-    //     < >
-    //         <h2>Create Profile Form</h2>
-    //         <section className="bg-green-200">
-    //             <form onSubmit={onSubmit_PersonalInfo} className="flex flex-col gap-6">
-    //                 <div className="flex flex-col gap-2">
-    //                     <label>Username</label>
-    //                     <input 
-    //                         type="text" 
-    //                         onChange={(e) => setUsername(e.target.value)}
-    //                         className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
-    //                     />
-    //                 </div>
+                <form onSubmit={onSubmit_PersonalInfo} className="flex flex-col gap-6">
+                    <div className="flex flex-col gap-2">
+                        <label>Username</label>
+                        <input 
+                            type="text" 
+                            onChange={(e) => setUsername(e.target.value)}
+                            className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
+                        />
+                    </div>
 
-    //                 <div className="flex gap-4">
-    //                     <div className="flex-[0.4] flex flex-col gap-2">
-    //                         <label>Birth Date</label>
-    //                         <input 
-    //                             type="date"
-    //                             onChange={(e) => setBirth(e.target.value)}
-    //                             className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
-    //                         />
-    //                     </div>
+                    <div className="flex gap-4">
+                        <div className="flex-[0.4] flex flex-col gap-2">
+                            <label>Birth Date</label>
+                            <input 
+                                type="date"
+                                onChange={(e) => setBirth(e.target.value)}
+                                className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
+                            />
+                        </div>
 
-    //                     <div className="flex-[0.2] flex flex-col gap-2">
-    //                         <label>Gender</label>
-    //                         <select 
-    //                             name="gender" 
-    //                             value={gender}
-    //                             onChange={(e) => setGender(e.target.value)}
-    //                             className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
-    //                         >
-    //                             <option value="Male">Male</option>
-    //                             <option value="Female">Female</option>
-    //                         </select>
-    //                     </div>
+                        <div className="flex-[0.2] flex flex-col gap-2">
+                            <label>Gender</label>
+                            <select 
+                                name="gender" 
+                                value={gender}
+                                onChange={(e) => setGender(e.target.value)}
+                                className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
+                            >
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
 
-    //                     <div className="flex-1 flex flex-col gap-2">
-    //                         <label>Phone Number</label>
-    //                         <input 
-    //                             type="tel" 
-    //                             onChange={(e) => setPhone(e.target.value)}
-    //                             className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
-    //                         />
-    //                     </div>
+                        <div className="flex-1 flex flex-col gap-2">
+                            <label>Phone Number</label>
+                            <input 
+                                type="tel" 
+                                onChange={(e) => setPhone(e.target.value)}
+                                className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
+                            />
+                        </div>
 
-    //                     <div className="flex flex-col gap-2">
-    //                         <label className="font-medium px-4">File</label>
-    //                         <input 
-    //                             type="file"
-    //                             onChange={(e) => setImageUrl(e.target.files[0])}
-    //                             className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
-    //                         />
-    //                     </div>
-    //                 </div>
+                        <div className="flex flex-col gap-2">
+                            <label className="font-medium px-4">File</label>
+                            <input 
+                                type="file"
+                                onChange={(e) => setImageUrl(e.target.files[0])}
+                                className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
+                            />
+                        </div>
+                    </div>
                     
 
-    //                 <button type="submit" className="text-white text-xl font-semibold bg-blue-400 h-14 px-4 py-3 rounded-lg">Update</button>
-    //             </form>
+                    <Button type="submit" >
+                        Confirm Update
+                    </Button>
 
-    //             {feedback.trim().length != 0 && <p className="text-xl text-red-400">{feedback}</p>}
-    //         </section>
-    //     </>
-    // )
+                    {feedback.trim().length != 0 && <p className="text-xl text-red-400">{feedback}</p>}
+                </form>
+            </div>
+
+            <img src={AuthShowcase} className="flex-[0.5] object-cover max-md:hidden" />
+        </>
+    )
 }
 
 export default RegisterPage;

@@ -16,7 +16,9 @@ const Header = () => {
 
     const handleLogout = () => {
         auth.signOut()
-            .then(() => {dispatch(userCheckout())});
+            .then(() => {
+                dispatch(userCheckout())
+            });
     };
 
     return (

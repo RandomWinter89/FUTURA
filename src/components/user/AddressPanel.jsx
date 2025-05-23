@@ -84,9 +84,11 @@ const AddressPanel = ({authUser, userAddress, loading}) => {
             }));
         }
         
+        // REQUIRE ID
         if (editMode) {
             dispatch(updateAddress({
-                uid: authUser.uid, 
+                uid: authUser.uid,
+                address_id: selectedAddress, 
                 address_line1, 
                 address_line2, 
                 city, 
@@ -199,11 +201,11 @@ const AddressPanel = ({authUser, userAddress, loading}) => {
             {(editMode || submitMode) && (
                 <div className="flex gap-3 w-[50%] max-md:w-[80%] max-sm:w-full">
                     <Button onClick={submitAddress}>
-                        Confirm New Address
+                        Confirm
                     </Button>
 
                     <Button onClick={() => {setSubmitMode(false); setEditMode(false); setSelectedAddress(null) }}>
-                        Cancel Create
+                        Cancel
                     </Button>
                 </div>
             )}

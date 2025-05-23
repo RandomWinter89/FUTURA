@@ -95,8 +95,6 @@ const CartPage = () => {
             });
             setCartQuantities(initialQuantities);
         }
-        
-        
     }, [carts]);
 
     const onReceiveCall = (itemIndex, quantity, product_id, product_variation_id) => {
@@ -120,6 +118,18 @@ const CartPage = () => {
             product_variation_id: product_variation_id
         }))
     }
+
+    useEffect(() => {
+        const sorted = carts.map(data => ({
+            product_id: data.product_id,
+            quantity: data.quantity,
+            price: parseFloat(data.base_price) + parseFloat(data.extra_charge),
+            product_variation_id: data.product_variation_id
+          })
+        );
+
+        console.log("Cart Page: ", cartStatus, Array.isArray(sorted));
+    }, [])
 
     return (
         <section className="flex flex-col gap-11 max-md:gap-6 max-sm:gap-3">

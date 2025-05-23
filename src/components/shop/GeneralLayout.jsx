@@ -35,7 +35,10 @@ const GeneralLayout = ({auth_user}) => {
     // Order
 
     useEffect(() => {
-        if (!auth_user) return;
+        if (!auth_user) 
+            return;
+
+        console.log("We meet again")
 
         if (addressStatus == "idle")
             dispatch(fetchAddress(auth_user.uid));
@@ -44,6 +47,7 @@ const GeneralLayout = ({auth_user}) => {
             dispatch(fetchCartId(auth_user.uid))
                 .then(() => dispatch(fetchCart_item(cart_id)));
 
+        console.log("cart status: ", cart_id, carts.length)
         if (cart_id != null && carts.length === 0)
             dispatch(fetchCart_item(cart_id));
 

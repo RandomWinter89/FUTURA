@@ -66,6 +66,14 @@ export const create_OrderItem = createAsyncThunk(
     }
 );
 
+export const createOrderItems = createAsyncThunk(
+    'users/createOrderItems',
+    async ({order_id, items}) => {
+        const response = await axios.post(`${VITE_FUTURA_API}/order/${order_id}`, items);
+        return response.data;
+    }
+)
+
 // Order -> Get item
 export const get_OrderItem = createAsyncThunk(
     'users/get_OrderItem',
@@ -129,6 +137,14 @@ const ordersSlice = createSlice({
                 state.orderItem_loading = false;
             })
             .addCase(create_OrderItem.pending, (state) => {
+                state.orderItem_loading = true;
+            });
+
+        builder
+            .addCase(createOrderItems.fulfilled, (state) => {
+                state.orderItem_loading = false;
+            })
+            .addCase(createOrderItems.pending, (state) => {
                 state.orderItem_loading = true;
             });
 
