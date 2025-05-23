@@ -9,7 +9,7 @@ const VITE_FUTURA_API = import.meta.env.VITE_FUTURA_API;
 
 // ---------------------------------------------------------
 
-//FETCH PRODUCTS (DATA)
+//READ PRODUCTS (DATA)
 export const fetchProducts = createAsyncThunk(
     'products/fetchProducts',
     async () => {
@@ -18,7 +18,7 @@ export const fetchProducts = createAsyncThunk(
     }
 );
 
-//FETCH PRODUCT (IMAGE)
+//READ PRODUCT (IMAGE)
 export const fetchImageProduct = createAsyncThunk(
     'products/fetchImageProduct',
     async () => {
@@ -51,7 +51,7 @@ export const uploadProduct = createAsyncThunk(
     }
 )
 
-//CREATE PRODUCT (IMAGE)
+//UPLOAD PRODUCT (IMAGE)
 export const uploadProductImage = createAsyncThunk(
     'admin/uploadProductImage',
     async ({sku, prodImg}) => {
@@ -142,7 +142,7 @@ export const updateProduct_Image = createAsyncThunk(
     }
 )
 
-//GET PRODUCT'S VARIATION
+//READ PRODUCT'S VARIATION
 export const fetchProductItem = createAsyncThunk(
     'products/fetchProductItem',
     async (id) => {
@@ -151,7 +151,7 @@ export const fetchProductItem = createAsyncThunk(
     }
 );
 
-//GET PRODUCT VARIATION
+//READ PRODUCT VARIATION
 export const fetch_ProductVariation = createAsyncThunk(
     'products/fetch_ProductVariation',
     async () => {

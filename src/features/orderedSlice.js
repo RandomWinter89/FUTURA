@@ -53,15 +53,15 @@ export const updateOrderStatus = createAsyncThunk(
 // Order -> Create item inside
 export const create_OrderItem = createAsyncThunk(
     'users/create_OrderItem',
-    async ({order_id, product_id, quantity, price, product_variation_id}) => {
-        const body = {
-            product_id: product_id,
-            quantity: quantity, 
-            price: price,
-            product_variation_id: product_variation_id
-        }
+    async ({order_id, items}) => {
+        // const body = {
+        //     product_id: product_id,
+        //     quantity: quantity, 
+        //     price: price,
+        //     product_variation_id: product_variation_id
+        // }
 
-        const response = await axios.post(`${VITE_FUTURA_API}/order/${order_id}`, body);
+        const response = await axios.post(`${VITE_FUTURA_API}/order/${order_id}`, items);
         return response.data;
     }
 );

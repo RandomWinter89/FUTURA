@@ -33,7 +33,7 @@ const UpdateOrderPanel = ({data, onCall_Update, onCallCancel}) => {
                 </select>
             </label>
 
-            <div className="flex gap-4">
+            <div className="flex gap-4 max-md:flex-col max-md:gap-2">
                 <Button onClick={submitUpdate}>
                     Update Status
                 </Button>
@@ -89,10 +89,6 @@ const Admin_OrderPage = () => {
             setSelectOrder(id);
         }
     }
-
-    useEffect(() => {
-        console.log("Order: ", order);
-    }, [])
 
     const onUpdateState = ({order_id, status}) => {
         dispatch(updateOrderStatus({order_id, status}))
