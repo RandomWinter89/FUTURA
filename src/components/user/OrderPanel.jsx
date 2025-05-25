@@ -108,7 +108,7 @@ const OrderPanel = memo(({userOrder, userOrderItem, productImage, loading}) => {
                     {userOrderItem.slice()
                         .filter(prev => prev.id == data.id)
                         .map((data, index) => 
-                            <OrderCard key={index} item={data} image={productImage.find(prev => prev.id == data.id)?.imageUrl}/>
+                            <OrderCard key={index} item={data} image={productImage.find(prev => prev.id == data.product_id)?.imageUrl}/>
                         )
                     }
                 </div>
@@ -123,7 +123,7 @@ const OrderPanel = memo(({userOrder, userOrderItem, productImage, loading}) => {
                     {userOrderItem.slice()
                         .filter(prev => prev.id == data.id)
                         .map((data, index) => 
-                            <OrderCard key={index} item={data} image={productImage.find(prev => prev.id == data.id)?.imageUrl}/>
+                            <OrderCard key={index} item={data} image={productImage.find(prev => prev.id == data.product_id)?.imageUrl}/>
                         )
                     }
                 </div>
@@ -135,9 +135,12 @@ const OrderPanel = memo(({userOrder, userOrderItem, productImage, loading}) => {
                         Order #{data.id} | Placed on {data.order_date.split("T")[0]}
                     </p>
 
-                    {userOrderItem.slice().filter((prev) => prev.id == data.id).map((info, index) => 
-                        <OrderCard key={index} item={info} image={productImage.find(prev => prev.id == data.id)?.imageUrl}/>
-                    )}
+                    {userOrderItem.slice()
+                        .filter((prev) => prev.id == data.id)
+                        .map((data, index) => 
+                            <OrderCard key={index} item={data} image={productImage.find(prev => prev.id == data.product_id)?.imageUrl}/>
+                        )
+                    }
                 </div>
             )}
         </>

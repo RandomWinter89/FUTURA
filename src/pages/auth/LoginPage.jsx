@@ -47,10 +47,6 @@ const LoginPage = () => {
         navigate("/Auth/Signup");
     }
 
-    useEffect(() => {
-        console.log("Hello");
-    }, [])
-
     return (
         < >
             <div className="flex-1 flex flex-col justify-center items-center max-md:px-10">

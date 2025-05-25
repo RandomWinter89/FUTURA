@@ -8,7 +8,7 @@ import { Grid } from "../components/shop";
 import SHOWCASE02 from "../assets/SHOWCASE02.png";
 
 const Homepage = () => {
-    const { products, products_loading } = useSelector((state) => state.products);
+    const { products, productStatus } = useSelector((state) => state.products);
 
     const sortedNewProducts = useMemo(() => {
         return products.slice()
@@ -43,7 +43,7 @@ const Homepage = () => {
             <section className="flex flex-col gap-6">
                 <Grid 
                     collection={sortedNewProducts} 
-                    isLoading={products_loading} 
+                    status={productStatus} 
                     header={"New Products"}
                 />
             </section>
@@ -51,7 +51,7 @@ const Homepage = () => {
             <section className="flex flex-col gap-6">
                 <Grid 
                     collection={randomizedProducts} 
-                    isLoading={products_loading} 
+                    status={productStatus} 
                     header={"Recommend"}
                 />
             </section>

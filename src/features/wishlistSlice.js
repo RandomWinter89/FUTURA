@@ -70,7 +70,7 @@ const wishlistsSlice = createSlice({
                 state.wishlistStatus = "succeed";
             }
         },
-        resetWishlist: (state) => {
+        clearWishlistData: (state) => {
             state.wishlist_id = null;
             state.wishlists = [];
             state.wishlistStatus = "idle";
@@ -127,6 +127,6 @@ const wishlistsSlice = createSlice({
     },
 });
 
-export const { resetWishlist, toggleWishlist }  = wishlistsSlice.actions;
+export const { clearWishlistData, toggleWishlist }  = wishlistsSlice.actions;
 
 export default wishlistsSlice.reducer;

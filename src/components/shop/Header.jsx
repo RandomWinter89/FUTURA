@@ -1,16 +1,21 @@
 import { AuthContext } from "../../Context/AuthProvider";
 import { getAuth } from "firebase/auth";
 
-import { useContext } from "react";
+import { useState, useContext } from "react";
 import { useDispatch } from "react-redux";
 
 import { userCheckout } from "../../features/usersSlice";
-import { NavLink, ToggleMode } from "../common";
-import { Button } from "../ui";
+import { clearWishlistData } from "../../features/wishlistSlice";
+import { clearCartData } from "../../features/cartsSlice";
+import { clearOrderData  } from "../../features/orderedSlice";
+import { clearAddressData } from "../../features/addressSlice";
+import { clearReviewData } from "../../features/reviewSlice";
 
 import Futura from "../../assets/Futura.png";
-import { IconCartOutline, IconHeart, IconProfile, IconMenu, IconClosed } from "../../components/icon";
-import { useState } from "react";
+
+import { IconCartOutline, IconHeart, IconProfile, IconMenu, IconClosed } from "../icon";
+import { NavLink, ToggleMode } from "../common";
+import { Button } from "../ui";
 
 const Header = () => {
     const { currentUser } = useContext(AuthContext) || null;
@@ -22,7 +27,12 @@ const Header = () => {
     const handleLogout = () => {
         auth.signOut()
             .then(() => { 
-                dispatch(userCheckout()) 
+                dispatch(userCheckout());
+                dispatch(clearWishlistData());
+                dispatch(clearCartData());
+                dispatch(clearOrderData());
+                dispatch(clearAddressData());
+                dispatch(clearReviewData());
             });
     };
 
@@ -84,7 +94,7 @@ const Header = () => {
                                     <IconProfile className={"stroke-black dark:stroke-white hover:stroke-orange-600 hover:scale-150 transition-all duration-300"} />                                
                                 </NavLink>
 
-                                <ToggleMode />
+                                {/* <ToggleMode /> */}
 
                                 <Button onClick={handleLogout} variant={"primary_outline"} state={"fit"}> 
                                     Log out

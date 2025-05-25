@@ -44,22 +44,26 @@ const LoadingCard = () => {
     )
 }
 
-const Grid = ({collection, isLoading, header, enableMore=true, variant, className}) => {
+const Grid = ({collection, status, header, enableMore=true, variant, className}) => {
     const [open, setOpen] = useState(false);
     const [desc, setDesc] = useState("");
     const navigate = useNavigate();
 
-    if (isLoading) return (
+    if (status == "loading" || status == "idle") return (
         < >
             <span className="h-8 w-52 skeleton"/>
 
             <div className={twMerge(GridVariants({variant}), className)}>
-                <LoadingCard />
-                <LoadingCard />
-                <LoadingCard />
-                <LoadingCard />
-                <LoadingCard />
+                {[...Array(5)].map((_, index) =>  
+                    <LoadingCard key={index}/>
+                )}
             </div>
+        </>
+    )
+
+    if (status == "failed") return (
+        < >
+            <h2>Server Failed - Please Refresh or Report to Futura Service</h2>
         </>
     )
 

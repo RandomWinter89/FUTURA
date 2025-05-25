@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 const GeneralLayout = ({auth_user}) => {
     const { products } = useSelector((state) => state.products);
     const { addressStatus } = useSelector((state) => state.address);
-    const { cart_id, carts } = useSelector((state) => state.carts);
+    const { cart_id } = useSelector((state) => state.carts);
     const { wishlists, wishlist_id } = useSelector((state) => state.wishlists);
     const { order } = useSelector((state) => state.orders);
     const { currentDBUserPicture } = useSelector((state) => state.users);
@@ -38,18 +38,12 @@ const GeneralLayout = ({auth_user}) => {
         if (!auth_user) 
             return;
 
-        console.log("We meet again")
-
         if (addressStatus == "idle")
             dispatch(fetchAddress(auth_user.uid));
 
         if (cart_id == null)
             dispatch(fetchCartId(auth_user.uid))
                 .then(() => dispatch(fetchCart_item(cart_id)));
-
-        console.log("cart status: ", cart_id, carts.length)
-        if (cart_id != null && carts.length === 0)
-            dispatch(fetchCart_item(cart_id));
 
         if (wishlist_id == null)
             dispatch(fetchWishlistId(auth_user.uid))

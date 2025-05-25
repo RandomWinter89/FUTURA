@@ -8,7 +8,7 @@ import { Grid } from "../../components/shop";
 import { useMemo } from "react";
 
 const CategoryPage = () => {
-    const { products, products_loading } = useSelector((state) => state.products);
+    const { products, productStatus } = useSelector((state) => state.products);
     const [categories] = useState(Category);
     const [activeCategories, setActiveCategories] = useState([]);
     const [selectedCategories, setSelectedCategories] = useState([]);
@@ -103,7 +103,7 @@ const CategoryPage = () => {
                 <div className="flex-1 flex flex-col gap-6">
                     <Grid 
                         collection={sortedCategoryProduct}
-                        isLoading={products_loading} 
+                        status={productStatus} 
                         header={"Category"}  
                         enableMore={false}
                         variant={"category"}

@@ -21,7 +21,6 @@ export const createAddress = createAsyncThunk(
     }
 );
 
-
 // == READ =======>
 
 export const fetchAddress = createAsyncThunk(
@@ -31,7 +30,6 @@ export const fetchAddress = createAsyncThunk(
         return response.data;
     }
 );
-
 
 // == UPDATE =======>
 
@@ -52,16 +50,6 @@ export const updateAddress = createAsyncThunk(
 );
 
 
-// == DELETE =======>
-
-export const removeAddress = createAsyncThunk(
-    'users/removeAddress',
-    async ({uid, address_id}) => {
-        const response = await axios.delete(`${VITE_FUTURA_API}/users/${uid}/address/${address_id}`);
-        return response.data;
-    }
-);
-
 // ---------------------------------------------
 
 const addressSlice = createSlice({
@@ -71,7 +59,10 @@ const addressSlice = createSlice({
         addressStatus: "idle",
     },
     reducers: {
-
+        clearAddressData: (state) => {
+            state.address = [];
+            state.addressStatus = "idle"
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -104,12 +95,9 @@ const addressSlice = createSlice({
                     return item;
                 });
             })
-
-            .addCase(removeAddress.fulfilled, (state, action) => {
-                const data = action.payload.data;
-                state.address = state.address.filter((item) => item.id !== data.id);
-            })
     },
 });
+
+export const { clearAddressData } = addressSlice.actions;
 
 export default addressSlice.reducer;

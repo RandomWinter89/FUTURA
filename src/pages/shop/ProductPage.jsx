@@ -14,33 +14,21 @@ import { toggleWishlist, updateWishlistToggle } from "../../features/wishlistSli
 import { ToastOverlay } from "../../components/ui";
 import { Grid } from "../../components/shop";
 
-import arrow_left from "../../assets/svg/arrow-left.svg";
-import arrow_right from "../../assets/svg/arrow-right.svg";
-import framer from "../../assets/svg/Frame.svg";
 
+import framer from "../../assets/svg/Frame.svg";
 import dash from "../../assets/svg/dash.svg";
 import plus from "../../assets/svg/plus.svg";
 
-import { Button } from "../../components/ui";
+import { IconHeart } from "../../components/icon";
 
 
-import { StarRating } from "../../components/common";
-import { IconArrowLeft, IconArrowRight, IconHeart, IconFramer } from "../../components/icon";
+import { ReviewContainer } from "../../components/shop";
 
 //==============================
 
-const ITEMS_PER_PAGE = 4;
-
-// PRODUCT HAS 3 STUFF
-// 1. Product itself
-// 2. Product Variation
-// 3. Product Reviews 
-
-// 4. Product Wishlist and Cart
-
 const ProductPage  = () => {
-    const { products, productItem, products_loading } = useSelector((state) => state.products);
-    const { productReviews, productReviews_loading } = useSelector((state) => state.reviews);
+    const { products, productItem, productStatus } = useSelector((state) => state.products);
+    const { productReviews, productReviewStatus } = useSelector((state) => state.reviews);
     const { wishlists, wishlistActionStatus } = useSelector((state) => state.wishlists);
     const { carts, cart_id } = useSelector((state) => state.carts);
 
@@ -66,18 +54,6 @@ const ProductPage  = () => {
 
     const navigate = useNavigate();
 
-    const [page, setPage] = useState(0);
-    const maximumPage = useMemo(() => {
-        if (productReviews.length != 0)
-            return Math.ceil(productReviews.length / ITEMS_PER_PAGE)
-
-        return 0;
-    }, [productReviews]);
-
-    const handleNext = () => setPage((p) => Math.min(p + 1, maximumPage - 1));
-    const handlePrev = () => setPage((p) => Math.max(p - 1, 0));
-
-
     const [selectedColor, setSelectedColor] = useState("");
     const [selectedSize, setSelectedSize] = useState("");
 
@@ -96,11 +72,20 @@ const ProductPage  = () => {
         return []
     }, [selectedColor])
 
-    const currentItem = useMemo(() => {
-        if (productReviews.length != 0)
-            return productReviews.slice(page * ITEMS_PER_PAGE, (page + 1) * ITEMS_PER_PAGE);
-        return [];
-    }, [page, productReviews]);
+    useEffect(() => {
+        const result = productItem.find(item => {
+            if (item.value2) 
+                return item.value1 == selectedColor && item.id == selectedSize;
+
+            return item.value1 == selectedColor;
+        })
+
+        if (result) {
+            setSelectedVariation(result.id);
+            setSelectCharge(parseFloat(result?.extra_charge).toFixed(2) || 0)
+        }
+
+    }, [productItem, selectedColor, selectedSize])
 
     //Modified Number
     const incrementQuantity = () => {
@@ -177,11 +162,7 @@ const ProductPage  = () => {
         dispatch(updateWishlistToggle({uid: currentUser.uid, product_id: prodId}));
     }
 
-    //REVIEW
-    const [reviewMode, setReviewMode] = useState(false);
-    const [review, setReview] = useState(""); 
-    const [rating, setRating] = useState(0);
-    const onAddComment = () => {
+    const onAddComment = ({review, rating}) => {
         if (!productReviews.find(rev => rev.created_by_userid == currentUser.uid)) { 
             dispatch(createReview({
                 uid: currentUser.uid, 
@@ -197,11 +178,6 @@ const ProductPage  = () => {
             setOpen(true);
         }
     }
-
-
-    const productRate = useMemo(() => {
-        return Math.round(product.average_rating);
-    }, [product])
 
     //Optimized Category
     const sameCategoryProducts = useMemo(() => {
@@ -323,110 +299,25 @@ const ProductPage  = () => {
                 </div>
             </section>
 
-            {/* REVIEW */}
-            <section className="flex flex-col gap-8">
-                {/* HEADER */}
-                <div className="flex justify-between items-center max-sm:flex-col max-sm:gap-4">
-                    {/* TITLE */}
-                    <div className="flex gap-6 max-sm:flex-col max-sm:gap-2 max-sm:w-full">
-                        <h2>Reviews</h2>
-                        {/* Star Rating */}
-                        <div className="flex gap-4 items-center">
-                            {/* ICON */}
-                            <StarRating rate={productRate} />
-
-                            {/* VALUE */}
-                            <p className="body2">
-                                {parseFloat(product.average_rating).toFixed(1)} ({product.number_of_reviews})
-                            </p>
-                        </div>
-                    </div>
-                    
-                    {/* ACTION BUTTON */}
-                    <div className="flex gap-3 max-sm:w-full">
-                        {reviewMode &&
-                            <Button onClick={() => setReviewMode(false)} size={"sm"}>
-                                Cancel Review
-                            </Button>
-                        }
-
-                        <Button 
-                            onClick={() => {
-                                if (reviewMode) {
-                                    onAddComment()
-                                } else {
-                                    setReviewMode(true);
-                                }  
-                            }}
-                            variant={"primary_outline"}
-                            size={"sm"}
-                        >
-                           {!reviewMode ? "Write a Review" : "Submit Review"}
-                        </Button>
-                    </div>
-                </div>
-
-                {/* FORM */}
-                {reviewMode && 
-                    <div className="flex flex-col gap-6 max-sm:gap-3">
-                        <label className="flex gap-4 body2 max-sm:items-center">
-                            Rating: 
-                            <div className="flex gap-1">
-                                <StarRating preview={false} rate={rating} setRate={(value) => setRating(value)} />
-                            </div>
-                        </label>
-
-                        <label className="flex flex-col gap-5 body2 max-sm:gap-3">
-                            Comments
-                            <textarea 
-                                placeholder={"I absolutely love this t-shirt! The design is unique and the fabric feels so comfortable. As a fellow designer, I appreciate the attention to detail. It's become my favorite go-to shirt."}
-                                onChange={(e) => setReview(e.target.value)}
-                                className="border border-black min-h-fit p-8"
-                            />
-                        </label>
-                    </div>
+            <ReviewContainer 
+                avgRating={product.average_rating}
+                maxNumReview={product.number_of_reviews}
+                reviewStatus={productReviewStatus}
+                productReviews={productReviews}
+                onUploadReview={({review, rating}) => 
+                    onAddComment({review, rating})
                 }
+            />
 
-                <hr className="border-gray-300" />
-
-                {/* REVIEW */}
-                <div className="flex flex-col gap-8 items-center">
-                    <div className="w-full grid grid-cols-2 gap-6 max-sm:grid-cols-1">
-                        {(!productReviews_loading) && 
-                            currentItem.map((data, index) => 
-                                <div key={index} className="border border-black p-9 flex flex-col gap-6">
-                                    <div className="flex flex-col gap-4">
-                                        <StarRating rate={Math.round(data.rating_value)} />
-                                        <p className="subtitle1">{data.username} : {data.rating_value}</p>
-                                        <p className="body2 opacity-60">"{data.comment}"</p>
-                                    </div>
-                                    
-                                    
-                                    <p className="body2 opacity-60">Posted on: {data.created_datetime.split("T")[0].split("-").join("/")}</p>
-                                </div>
-                            )
-                        }
-                    </div>
-
-                    {/* Arrow Head */}
-                    <div className="flex gap-4">
-                        <button onClick={handlePrev} disabled={page === 0}>
-                            <img src={arrow_left} />
-                        </button>
-
-                        <p className="body2">{page}</p>
-
-                        <button onClick={handleNext} disabled={page >= maximumPage - 1}>
-                            <img src={arrow_right} />
-                        </button>
-                    </div>
-                </div>
-            </section>
             
             {/* MORE PRODUCT */}
             <section className="flex flex-col gap-4">
                 <h2>You May Also Like</h2>
-                <Grid collection={sameCategoryProducts} isLoading={products_loading} variant={"detail"}/>
+                <Grid 
+                    collection={sameCategoryProducts} 
+                    status={productStatus} 
+                    variant={"detail"}
+                />
             </section>
 
             <ToastOverlay show={open} onHide={() => setOpen(false)} desc={desc}/>

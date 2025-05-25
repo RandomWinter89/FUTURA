@@ -120,15 +120,9 @@ const CartPage = () => {
     }
 
     useEffect(() => {
-        const sorted = carts.map(data => ({
-            product_id: data.product_id,
-            quantity: data.quantity,
-            price: parseFloat(data.base_price) + parseFloat(data.extra_charge),
-            product_variation_id: data.product_variation_id
-          })
-        );
+        console.log("--- WELCOME TO CART PAGE ---");
+        console.log("Cart Condition: ", cart_id, carts, cartStatus);
 
-        console.log("Cart Page: ", cartStatus, Array.isArray(sorted));
     }, [])
 
     return (
@@ -152,6 +146,10 @@ const CartPage = () => {
                     <div className="flex-1 flex flex-col gap-6 max-md:grid max-md:grid-cols-2 max-sm:grid-cols-1">
                         {cartStatus == "loading" && 
                             <h3>Fetching Cart Item</h3>
+                        }
+                        
+                        {cartStatus == "failed" && 
+                            <h3>No Item in Cart</h3>
                         }
                         
                         {(cartStatus ==  "succeed" && productStatus == "succeed") && carts.map((item, index) =>

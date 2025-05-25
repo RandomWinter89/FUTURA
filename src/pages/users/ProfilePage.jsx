@@ -11,7 +11,7 @@ import { DetailPanel, AddressPanel, OrderPanel } from "../../components/user"
 // ====================>
 
 const ProfilePage = () => {
-    const { currentDBUser, isLoadingCurrentDBUser, currentDBUserPicture} = useSelector((state) => state.users);
+    const { currentDBUser, currentDBUserPicture, currentDBUserStatus} = useSelector((state) => state.users);
     const { products, productStatus } = useSelector((state) => state.products);
     const { address, addressStatus } = useSelector((state) => state.address);
     const { order, orderItem } = useSelector((state) => state.orders);
@@ -37,7 +37,6 @@ const ProfilePage = () => {
 
         return null;
     }, [productStatus, products])
-
 
     return (
         < >
@@ -84,7 +83,7 @@ const ProfilePage = () => {
                             authUser={currentUser} 
                             dataUser={currentDBUser} 
                             imageUrl={currentDBUserPicture?.imageUrl}
-                            loading={isLoadingCurrentDBUser}
+                            status={currentDBUserStatus}
                         />
                     }
                     {(mode == "ADDRESS") && 

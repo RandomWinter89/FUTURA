@@ -8,10 +8,6 @@ import { AuthContext } from "../../Context/AuthProvider";
 import { useDispatch, useSelector } from "react-redux";
 import { updateWishlistToggle, toggleWishlist } from "../../features/wishlistSlice";
 
-import heart from '../../assets/svg/heart_outline.svg';
-import heart_filled from '../../assets/svg/heart_filled.svg'
-import star from '../../assets/svg/star_filled.svg';
-
 import { IconHeart, IconStar } from "../../components/icon";
 
 const ProductCard = ({data, showToast, showFeedback}) => {
@@ -28,34 +24,30 @@ const ProductCard = ({data, showToast, showFeedback}) => {
         if (wishlistActionStatus == "loading")
             return;
 
-        dispatch(toggleWishlist({product_id: data.id}));
-        dispatch(updateWishlistToggle({uid: currentUser.uid, product_id: data.id}));
-
         if (wishlists.find(data => data.product_id == data.id)) {
-            showFeedback("Added to wishlist");
+            showFeedback("Remove from wishlist");
             showToast();
         } else {
-            showFeedback("This item is in wishlist already");
+            showFeedback("Added to wishlist");
             showToast();
         }
+
+        dispatch(toggleWishlist({product_id: data.id}));
+        dispatch(updateWishlistToggle({uid: currentUser.uid, product_id: data.id}));
     }
 
     const productCat = Category.find(prev => prev.id == data.category_id).category_name;
 
-    //Grid or Row
     return (
         <div 
             onClick={onNavigateProduct} 
-            className="
-                flex-1 flex flex-col 
-                cursor-pointer hover:scale-105 hover:transition-transform
-            "
+            className="flex-1 flex flex-col group cursor-pointer"
         >
             {data.imageUrl != "NONE"
                 ? <img 
                     src={`${data.imageUrl}`} 
-                    className="object-cover w-full aspect-[3/4] rounded-xl skeleton border border-gray-200"
-                    />
+                    className="object-cover w-full bg-white aspect-[3/4] rounded-xl skeleton border border-gray-200 group-hover:scale-105"
+                />
                 : <span className="bg-orange-300 w-full aspect-[3/4]" />
             }
 
@@ -64,7 +56,10 @@ const ProductCard = ({data, showToast, showFeedback}) => {
                 <div className="flex justify-between gap-4 items-start">
                     <p className="subtitle1">{data.name}</p>
                     <button onClick={addToWishlist} className="flex-shrink-0 size-6">
-                        <IconHeart filled={wishlists.find((prev) => prev.product_id == data.id)} />
+                        <IconHeart 
+                            filled={wishlists.find((prev) => prev.product_id == data.id)}
+                            className={"hover:scale-125 hover:text-orange-600"}
+                        />
                     </button>
                 </div>
 

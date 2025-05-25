@@ -37,7 +37,7 @@ const ConfirmationModal = ({show, onCancel, onConfirm}) => {
     )
 }
 
-const DetailPanel = ({authUser, dataUser, imageUrl, loading}) => {
+const DetailPanel = ({authUser, dataUser, imageUrl, status}) => {
     const [fileUrl, setFileUrl] = useState(null);
     const [name, setName] = useState(dataUser?.username || "");
     const [phone, setPhone] = useState(dataUser?.phone || "");
@@ -82,7 +82,7 @@ const DetailPanel = ({authUser, dataUser, imageUrl, loading}) => {
         }
     }
 
-    if (loading) return (
+    if (status == "loading" || status == "idle") return (
         < >
             <h3>Profile: Loading</h3>
             <span className="max-w-32 aspect-square skeleton" />

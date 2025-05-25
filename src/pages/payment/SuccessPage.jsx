@@ -9,7 +9,7 @@ import { Button } from "../../components/ui";
 
 const SuccessPage = () => {
   const { cart_id, carts } = useSelector((state) => state.carts);
-  const { order, orderId, orderItem_loading} = useSelector((state) => state.orders);
+  const { order, orderId, orderItemStatus} = useSelector((state) => state.orders);
   const { address } = useSelector((state) => state.address);
   const { addressID } = useParams();
   const { currentUser } = useContext(AuthContext) || null;
@@ -59,8 +59,8 @@ const SuccessPage = () => {
     <main className="flex-1 flex flex-col justify-center items-center gap-6">
       <h1>Payment Successful!</h1>
 
-      {orderItem_loading && <p>Processing the cart to order</p>}
-      {!orderItem_loading && 
+      {orderItemStatus == "loading" && <p>Processing the cart to order</p>}
+      {orderItemStatus == "succeed" && 
         <Button onClick={() => navigate("/Shop/Homepage")} state={"fit"}>
           Return homepage
         </Button>

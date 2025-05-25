@@ -12,6 +12,10 @@ const AuthChecker = ({auth_user, data_user, status, children}) => {
             dispatch(userCheckout());
         }
     }, [dispatch, auth_user, data_user, status]);
+
+    console.log("---WE ARE THE AUTH CHECKER---");
+    console.log("CURRENT PATH: ", location);
+    console.log("Auth User: ", !!auth_user, " / Data User: ", !!data_user, " / User Status: ", status);
     
     // ==========================
 

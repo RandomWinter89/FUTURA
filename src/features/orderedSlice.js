@@ -50,22 +50,6 @@ export const updateOrderStatus = createAsyncThunk(
     }
 )
 
-// Order -> Create item inside
-export const create_OrderItem = createAsyncThunk(
-    'users/create_OrderItem',
-    async ({order_id, items}) => {
-        // const body = {
-        //     product_id: product_id,
-        //     quantity: quantity, 
-        //     price: price,
-        //     product_variation_id: product_variation_id
-        // }
-
-        const response = await axios.post(`${VITE_FUTURA_API}/order/${order_id}`, items);
-        return response.data;
-    }
-);
-
 export const createOrderItems = createAsyncThunk(
     'users/createOrderItems',
     async ({order_id, items}) => {
@@ -94,11 +78,9 @@ export const getAllItem = createAsyncThunk(
 const ordersSlice = createSlice({
     name: "ordersSlice",
     initialState: {
+        orderId: null,
         order: [],
         orderItem: [],
-        orderId: null,
-        order_loading: false,
-        orderItem_loading: false,
 
         orderStatus: "idle",
         orderItemStatus: "idle",
@@ -106,50 +88,63 @@ const ordersSlice = createSlice({
     reducers: {
         reset_OrderReceipt: (state) => {
             state.orderItem = [];
-            state.orderItem_loading = false;
+            state.orderItemStatus = "idle";
         }, 
-        reset_orderId: (state) => {
+        clearOrderData: (state) => {
             state.orderId = null;
+            state.order = [],
+            state.orderItem = [],
+            state.orderStatus = "idle",
+            state.orderItemStatus = "idle"
         }
     },
     extraReducers: (builder) => {
         builder
+            // CREATE
             .addCase(createOrder.fulfilled, (state, action) => {
                 state.orderId = action.payload.data?.id;
                 state.order = [...state.order, action.payload.data];
             })
+
+            .addCase(createOrderItems.pending, (state) => {
+                state.orderItemStatus = "loading";
+            })
+            .addCase(createOrderItems.fulfilled, (state) => {
+                state.orderItemStatus = "succeed";
+            })
+            
+
             .addCase(getAllItem.fulfilled, (state, action) => {
                 state.orderItem = action.payload.data;
             })
 
-        builder
+            // READ
+            .addCase(fetchOrder.pending, (state) => {
+                state.orderStatus = "loading";
+            })
             .addCase(fetchOrder.fulfilled, (state, action) => {
                 state.order = action.payload.data;
-                state.users_loading = false;
+                state.orderStatus = "failed";
             })
-            .addCase(fetchOrder.pending, (state) => {
-                state.users_loading = true;
-            });
-
-        builder
-            .addCase(create_OrderItem.fulfilled, (state, action) => {
-                state.orderItem = [...state.orderItem, action.payload.data];
-                state.orderItem_loading = false;
+            
+            .addCase(fetchAllOrder.pending, (state, action) => {
+                state.order = action.payload.data;
+                state.orderStatus = "loading";
             })
-            .addCase(create_OrderItem.pending, (state) => {
-                state.orderItem_loading = true;
-            });
-
-        builder
-            .addCase(createOrderItems.fulfilled, (state) => {
-                state.orderItem_loading = false;
+            .addCase(fetchAllOrder.fulfilled, (state, action) => {
+                state.order = action.payload.data;
+                state.orderStatus = "failed";
             })
-            .addCase(createOrderItems.pending, (state) => {
-                state.orderItem_loading = true;
-            });
 
-        //UPDATE ORDER STATUS
-        builder
+            .addCase(get_OrderItem.fulfilled, (state, action) => {
+                state.orderItem = action.payload.data;
+                state.orderItemStatus = "succeed";
+            })
+            .addCase(get_OrderItem.pending, (state) => {
+                state.orderItemStatus = "loading";
+            })
+
+            //UPDATE
             .addCase(updateOrderStatus.fulfilled, (state, action) => {
                 const data = action.payload.data;
                 state.order = state.order.map((item) => {
@@ -158,24 +153,10 @@ const ordersSlice = createSlice({
 
                     return item;
                 })
-            })
-
-        builder
-            .addCase(fetchAllOrder.fulfilled, (state, action) => {
-                state.order = action.payload.data;
-            })
-
-        builder
-            .addCase(get_OrderItem.fulfilled, (state, action) => {
-                state.orderItem = action.payload.data;
-                state.orderItem_loading = false;
-            })
-            .addCase(get_OrderItem.pending, (state) => {
-                state.orderItem_loading = true;
             });
     },
 });
 
-export const { reset_OrderReceipt } = ordersSlice.actions;
+export const { reset_OrderReceipt, clearOrderData } = ordersSlice.actions;
 
 export default ordersSlice.reducer;

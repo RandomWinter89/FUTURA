@@ -13,7 +13,6 @@ const StarRating = ({ preview = true, rate, setRate }) => {
     if (preview) 
       return;
 
-    console.log("Condition: ", preview);
     setRating(getCurrentIndex);
     setRate(getCurrentIndex);
   }

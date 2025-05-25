@@ -63,46 +63,50 @@ const reviewsSlice = createSlice({
     initialState: {
         ownReviews: [],
         productReviews: [],
-        ownReviews_loading: false,
-        productReviews_loading: false,
 
-        reviewStatus: "idle",
+        currentUserReviewStatus: "idle",
         productReviewStatus: "idle",
     },
-    reducers: {},
+    reducers: {
+        clearReviewData: (state) => {
+            state.ownReviews = [],
+            state.currentUserReviewStatus = "idle"
+        }
+    },
     extraReducers: (builder) => {
         // Fetch all users
         builder
+            // CREATE REVIEWS
             .addCase(createReview.fulfilled, (state, action) => {
                 state.ownReviews = [...state.ownReviews, action.payload.data];
                 state.productReviews = [...state.productReviews, action.payload.data];
             })
-        
-        builder
+            
+            // READ OWN REVIEWS
+            .addCase(fetch_ownReviews.pending, (state) => {
+                state.currentUserReviewStatus = "loading";
+            })
             .addCase(fetch_ownReviews.fulfilled, (state, action) => {
                 state.ownReviews = action.payload.data;
-                state.ownReviews_loading = false;
+                state.currentUserReviewStatus = "succeed";
             })
-            .addCase(fetch_ownReviews.pending, (state) => {
-                state.ownReviews_loading = true;
-            });
+            .addCase(fetch_ownReviews.rejected, (state) => {
+                state.currentUserReviewStatus = "failed";
+            })
     
-        builder
+            // READ PRODUCT REVIEWS
+            .addCase(fetch_productReviews.pending, (state) => {
+                state.productReviewStatus = "loading";
+            })
             .addCase(fetch_productReviews.fulfilled, (state, action) => {
                 state.productReviews = action.payload.data;
-                state.productReviews_loading = false;
+                state.productReviewStatus = "succeed";
             })
-            .addCase(fetch_productReviews.pending, (state) => {
-                state.productReviews_loading = true;
-            });
+            .addCase(fetch_productReviews.rejected, (state) => {
+                state.productReviewStatus = "failed";
+            })
 
-        builder
-            .addCase(deleteReview.fulfilled, (state, action) => {
-                state.ownReviews = state.ownReviews.filter(review => review.id !== action.payload.data.id);
-                state.productReviews = state.productReviews.filter(review => review.id !== action.payload.data.id);
-            })
-    
-        builder
+            // UPDATE REVIEW
             .addCase(updateReview.fulfilled, (state, action) => {
                 const data = action.payload.data;
                 const index = state.ownReviews.findIndex(review => review.id === data.id);
@@ -116,7 +120,13 @@ const reviewsSlice = createSlice({
                 }
             })
 
+            // DELETE REVIEW
+            .addCase(deleteReview.fulfilled, (state, action) => {
+                state.ownReviews = state.ownReviews.filter(review => review.id !== action.payload.data.id);
+                state.productReviews = state.productReviews.filter(review => review.id !== action.payload.data.id);
+            })
     },
 });
 
+export const { clearReviewData } = reviewsSlice.actions;
 export default reviewsSlice.reducer;

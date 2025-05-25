@@ -98,20 +98,22 @@ const cartsSlice = createSlice({
     },
     reducers: {
         clearCartData: (state) => {
+            state.cart_id = null;
             state.carts = [];
+            state.cartStatus = "idle",
+            state.cartActionStatus = "idle"
         },
+        
     },
     extraReducers: (builder) => {
         // Create CartID
         builder
             .addCase(createCart.fulfilled, (state, action) => {
                 state.cart_id = action.payload.data;
-                state.cartStatus = "succeed";
             })
         
             .addCase(fetchCartId.fulfilled, (state, action) => {
                 state.cart_id = action.payload.data.id;
-                state.cartStatus = "succeed";
             })
 
             //CREATE ITEM TO CART
@@ -135,6 +137,10 @@ const cartsSlice = createSlice({
             })
             .addCase(fetchCart_item.fulfilled, (state, action) => {
                 state.carts = action.payload.data;
+                
+                if (state.carts.length == 0)
+                    return state.cartStatus = "failed";
+
                 state.cartStatus = "succeed";
             })
             .addCase(fetchCart_item.rejected, (state) => {
@@ -160,6 +166,10 @@ const cartsSlice = createSlice({
             .addCase(removeCartItem.fulfilled, (state, action) => {
                 const data = action.payload.data;
                 state.carts = state.carts.filter((item) => item.id !== data.id);
+
+                if (state.carts.length == 0)
+                    state.cartStatus = "failed";
+
                 state.cartActionStatus = "succeed"
             })
             .addCase(removeCartItem.rejected, (state) => {

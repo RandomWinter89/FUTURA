@@ -92,7 +92,6 @@ export const readCurrentUserPicture = createAsyncThunk(
     'users/readCurrentUserPicture',
     async (id) => {
         try {
-            console.log("ID: ", id);
             const usersRef = doc(db, "users", id);
             const querySnapshot = await getDoc(usersRef);
 
@@ -194,37 +193,30 @@ const usersSlice = createSlice({
         currentDBUser: null,
         currentDBUserPicture: null,
         currentDBUserStatus: "idle", // 'idle' | 'loading' | 'succeed' | 'failed'
-        isLoadingCurrentDBUser: true
     },
     reducers: {
         userCheckout: (state) => {
             state.currentDBUser = null;
             state.currentDBUserStatus = 'idle';
-            state.isLoadingCurrentDBUser = false;
         },
     },
     extraReducers: (builder) => {
         builder
             // --- CREATE ----
             .addCase(registerUser.pending, (state) => {
-                state.isLoadingCurrentDBUser = true;
                 state.currentDBUserStatus = "loading";
             })
             .addCase(registerUser.fulfilled, (state, action) => {
                 state.currentDBUser = action.payload.data;
                 state.currentDBUserStatus = "succeed";
-
-                state.isLoadingCurrentDBUser = false;
             })
 
             .addCase(createUserProfile.pending, (state) => {
-                state.isLoadingCurrentDBUser = true;
                 state.currentDBUserStatus = "loading";
             })
             .addCase(createUserProfile.fulfilled, (state, action) => {
                 state.currentDBUser = action.payload.data;
                 state.currentDBUserStatus = "succeed";
-                state.isLoadingCurrentDBUser = false;
             })
             
             .addCase(uploadUserPicture.pending, (state) => {
@@ -239,12 +231,10 @@ const usersSlice = createSlice({
             // --- READ -----
             .addCase(readCurrentUserProfile.pending, (state) => {
                 state.currentDBUser = null;
-                state.isLoadingCurrentDBUser = true; //Remove
                 state.currentDBUserStatus = 'loading';
             })
             .addCase(readCurrentUserProfile.fulfilled, (state, action) => {
                 state.currentDBUser = action.payload;
-                state.isLoadingCurrentDBUser = false;
                 state.currentDBUserStatus = 'succeed'
 
             })
@@ -266,12 +256,10 @@ const usersSlice = createSlice({
 
             // --- UPDATE -----
             .addCase(updateUserDetail.pending, (state) => {
-                state.isLoadingCurrentDBUser = true;
                 state.currentDBUserStatus = "loading";
             })
             .addCase(updateUserDetail.fulfilled, (state, action) => {
                 state.currentDBUser = action.payload.updatedData;
-                state.isLoadingCurrentDBUser = false;
                 state.currentDBUserStatus = "succeed";
             })
             
@@ -286,7 +274,6 @@ const usersSlice = createSlice({
                 state.currentDBUser = null;
                 state.currentDBUserPicture = null;
                 state.currentDBUserStatus = 'idle';
-                state.isLoadingCurrentDBUser = true;
             })
 
             

@@ -171,10 +171,6 @@ const productsSlice = createSlice({
         productItem: [],
         itemVariation: [],
 
-        categories: [],
-        products_loading: false,
-        productItem_loading: false,
-
         productStatus: "idle",
         productVariationStatus: "idle"
     },
@@ -183,19 +179,24 @@ const productsSlice = createSlice({
     extraReducers: (builder) => {
         // Fetch all users
         builder
-            .addCase(fetchProducts.fulfilled, (state, action) => {
-                state.products = action.payload;
-                state.products_loading = false;
-
-                state.productStatus = "succeed";
-            })
+            //CREATE
             .addCase(fetchProducts.pending, (state) => {
-                state.products_loading = true;
-
                 state.productStatus = "loading";
             })
+            .addCase(fetchProducts.fulfilled, (state, action) => {
+                state.products = action.payload;
+                state.productStatus = "succeed";
+            })
 
+            .addCase(create_ProdVariation.fulfilled, (state, action) => {
+                state.productItem = [...state.productItem, action.payload.data];
+            })
 
+            .addCase(uploadProduct.fulfilled, (state, action) => {
+                state.products = [...state.products, action.payload.data];
+            })
+
+            //READ
             .addCase(fetchImageProduct.fulfilled, (state, action) => {
                 state.products = state.products.map(item => {
                     const found = action.payload.find(d => d.id == item.sku )
@@ -206,17 +207,29 @@ const productsSlice = createSlice({
                 });
             })
 
-
-            .addCase(uploadProduct.fulfilled, (state, action) => {
-                state.products = [...state.products, action.payload.data];
+            .addCase(fetch_ProductVariation.pending, (state) => {
+                state.productVariationStatus = "loading";
+            })
+            .addCase(fetch_ProductVariation.fulfilled, (state, action) => {
+                state.itemVariation = action.payload;
+                state.productVariationStatus = "succeed";
             })
 
-
-            .addCase(create_ProdVariation.fulfilled, (state, action) => {
-                state.productItem = [...state.productItem, action.payload.data];
+            .addCase(fetchProductItem.pending, (state) => {
+                state.productItem_loading = true;
+                state.productVariationStatus = "loading";
             })
+            .addCase(fetchProductItem.fulfilled, (state, action) => {
+                state.productItem = action.payload;
+                state.productVariationStatus = "succeed";
+            })
+            .addCase(fetchProductItem.rejected, (state) => {
+                state.productItem = [];
+                state.productVariationStatus = "failed";
+            })
+            
 
-
+            //UPDATE
             .addCase(update_ProdStock.fulfilled, (state, action) => {
                 state.productItem = state.productItem.map((prev) => {
                     if (prev.id == action.payload.id)
@@ -225,32 +238,6 @@ const productsSlice = createSlice({
                     return prev;
                 })
             })
-
-        
-            .addCase(fetchProductItem.fulfilled, (state, action) => {
-                state.productItem = action.payload;
-                state.productVariationStatus = "succeed";
-            })
-            .addCase(fetchProductItem.pending, (state) => {
-                state.productItem_loading = true;
-                state.productVariationStatus = "loading";
-            })
-            .addCase(fetchProductItem.rejected, (state) => {
-                state.productItem = [];
-                state.productVariationStatus = "failed";
-            })
-
-
-            .addCase(fetch_ProductVariation.fulfilled, (state, action) => {
-                state.itemVariation = action.payload;
-                state.productItem_loading = false;
-                state.productVariationStatus = "succeed";
-            })
-            .addCase(fetch_ProductVariation.pending, (state) => {
-                state.productItem_loading = true;
-                state.productVariationStatus = "loading";
-            });
-
     },
 });
 
