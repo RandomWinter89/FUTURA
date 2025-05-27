@@ -53,7 +53,7 @@ const OrderCard = ({item, image, date="", address=""}) => {
 }
 
 
-const OrderPanel = memo(({userOrder, userOrderItem, productImage, loading}) => {
+const OrderPanel = memo(({userOrder, userOrderItem, userAddress, productImage, loading}) => {
     const [state, setState] = useState("Pending");
 
     const newestOrder = useMemo(() => {
@@ -99,20 +99,29 @@ const OrderPanel = memo(({userOrder, userOrderItem, productImage, loading}) => {
                 >Delivered {state == "Delivered" && `(${sortedDelivered.length})`}</button>
             </nav>
 
-            {state == "Pending" && sortedPending.map((data, index) => 
-                <div key={index} className="flex flex-col gap-6 mb-10">
-                    <p className="subtitle2">
-                        Order #{data.id} | Placed on {data.order_date.split("T")[0]}
-                    </p>
+            {state == "Pending" && sortedPending.map((parentData, index) => {
+                const addressInfo = userAddress.find(prev => prev.id == parentData.shipping_address_id);
+            
+                return (
+                    <div key={index} className="flex flex-col gap-6 mb-10">
+                        <p className="subtitle2">
+                            Order #{parentData.id} | Placed on {parentData.order_date.split("T")[0]}
+                        </p>
 
-                    {userOrderItem.slice()
-                        .filter(prev => prev.id == data.id)
-                        .map((data, index) => 
-                            <OrderCard key={index} item={data} image={productImage.find(prev => prev.id == data.product_id)?.imageUrl}/>
-                        )
-                    }
-                </div>
-            )}
+                        {userOrderItem.slice()
+                            .filter(prev => prev.id == parentData.id)
+                            .map((data, index) => 
+                                <OrderCard 
+                                    key={index} 
+                                    item={data} 
+                                    address={`${addressInfo.address_line1} ${addressInfo.address_line2}, ${addressInfo.city} ${addressInfo.region} ${addressInfo.postal_code}`}
+                                    image={productImage.find(prev => prev.id == data.product_id)?.imageUrl}
+                                />
+                            )
+                        }
+                    </div>
+                )
+            })}
 
             {state == "OutDelivery" && sortedOutOfDelivery.map((data, index) => 
                 <div key={index} className="flex flex-col gap-6 mb-10">
@@ -122,9 +131,15 @@ const OrderPanel = memo(({userOrder, userOrderItem, productImage, loading}) => {
 
                     {userOrderItem.slice()
                         .filter(prev => prev.id == data.id)
-                        .map((data, index) => 
-                            <OrderCard key={index} item={data} image={productImage.find(prev => prev.id == data.product_id)?.imageUrl}/>
-                        )
+                        .map((data, index) => {
+                            const addressInfo = userAddress.find(prev => prev.id == data.address_id).join(" ");
+                            console.log(addressInfo);
+                            return <OrderCard 
+                                key={index} 
+                                item={data}
+                                image={productImage.find(prev => prev.id == data.product_id)?.imageUrl}
+                            />
+                        })
                     }
                 </div>
             )}
@@ -147,5 +162,4 @@ const OrderPanel = memo(({userOrder, userOrderItem, productImage, loading}) => {
     )
 });
 
-// address={`${data.address_line1} ${data.address_line2}, ${data.city} ${data.region} ${data.postal_code}`}
 export default OrderPanel;

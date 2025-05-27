@@ -36,7 +36,8 @@ const ProfilePage = () => {
         }
 
         return null;
-    }, [productStatus, products])
+    }, [productStatus, products]);
+
 
     return (
         < >
@@ -97,6 +98,7 @@ const ProfilePage = () => {
                         <OrderPanel 
                             userOrder={order}
                             userOrderItem={orderItem} 
+                            userAddress={address}
                             productImage={filteredProductImage}
                             loading={false}
                         />

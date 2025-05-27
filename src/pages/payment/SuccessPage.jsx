@@ -27,7 +27,7 @@ const SuccessPage = () => {
           uid: currentUser.uid,
           shipping_address_id: addressID, 
           shipping_method: "Deliver", 
-          order_total: price, 
+          order_total: price + 15, 
           order_status: "Prepping"
         })
       )

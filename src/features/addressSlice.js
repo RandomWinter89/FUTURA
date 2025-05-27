@@ -88,12 +88,15 @@ const addressSlice = createSlice({
 
             .addCase(updateAddress.fulfilled, (state, action) => {
                 const data = action.payload.data;
+                
                 state.address = state.address.map((item) => {
                     if (item.id === data.id) {
                         return data;
                     }
                     return item;
                 });
+
+                console.log(state.address);
             })
     },
 });

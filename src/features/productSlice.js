@@ -69,7 +69,7 @@ export const uploadProductImage = createAsyncThunk(
 
             const product = {
                 id: sku,
-                thumbnail_url: prodImg
+                thumbnail_url: thumbnail_url
             }
 
             return product;
@@ -107,6 +107,7 @@ export const update_ProdStock = createAsyncThunk(
 
 //UPDATE PRODUCT IMAGE
 export const updateProduct_Image = createAsyncThunk(
+    'admin/updateProduct_Image',
     async ({ prodID, newFile }) => {
         try {
             let newImageUrl;
@@ -114,7 +115,7 @@ export const updateProduct_Image = createAsyncThunk(
             if (newFile != null) {
                 const imageRef = ref(storage, `product/${newFile.name}`);
                 const response = await uploadBytes(imageRef, newFile);
-                newImageUrl = await getDownloadURL(response);
+                newImageUrl = await getDownloadURL(response.ref);
             }
 
             const prodRef = doc(db, `products/${prodID}`);
@@ -133,7 +134,14 @@ export const updateProduct_Image = createAsyncThunk(
                 const updProd = { id: prodID, ...updatedData };
                 return updProd;
             } else {
-                throw new Error("Product does not exist");
+                await setDoc(prodRef, {thumbnail_url: newImageUrl});
+
+                const product = {
+                    id: prodID,
+                    thumbnail_url: newImageUrl
+                }
+
+                return product;
             }
         } catch (error) {
             console.error(error);
@@ -141,6 +149,17 @@ export const updateProduct_Image = createAsyncThunk(
         }
     }
 )
+
+//UPDATE PRODUCT INFO
+export const updateProduct = createAsyncThunk(
+    'admin/updateProduct',
+    async ({ id, name, description, base_price }) => {
+        const body = { name, description, base_price };
+
+        const response = await axios.put(`${VITE_FUTURA_API}/products/${id}`, body);
+        return response.data;
+    }
+);
 
 //READ PRODUCT'S VARIATION
 export const fetchProductItem = createAsyncThunk(
@@ -189,11 +208,21 @@ const productsSlice = createSlice({
             })
 
             .addCase(create_ProdVariation.fulfilled, (state, action) => {
+                console.log("Product variation created successfully:", action.payload.data);
                 state.productItem = [...state.productItem, action.payload.data];
             })
 
             .addCase(uploadProduct.fulfilled, (state, action) => {
                 state.products = [...state.products, action.payload.data];
+            })
+
+            .addCase(uploadProductImage.fulfilled, (state, action) => {
+                const updatedImage = action.payload;
+                state.products = state.products.map(item =>
+                    item.sku == updatedImage.id
+                        ? { ...item, imageUrl: updatedImage.thumbnail_url }
+                        : item
+                );
             })
 
             //READ
@@ -238,6 +267,25 @@ const productsSlice = createSlice({
                     return prev;
                 })
             })
+
+            .addCase(updateProduct.fulfilled, (state, action) => {
+                state.products = state.products.map((prev) => {
+                    if (prev.id == action.payload.id)
+                        return {...prev, ...action.payload}
+
+                    return prev;
+                })
+            })
+
+            .addCase(updateProduct_Image.fulfilled, (state, action) => {
+                console.log("Image updated successfully:", action.payload);
+                const updatedImage = action.payload;
+                state.products = state.products.map(item =>
+                    item.sku == updatedImage.id
+                        ? { ...item, imageUrl: updatedImage.thumbnail_url }
+                        : item
+                );
+            });
     },
 });
 

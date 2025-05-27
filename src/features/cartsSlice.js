@@ -46,6 +46,7 @@ export const addCart_item = createAsyncThunk(
 export const fetchCart_item = createAsyncThunk(
     'users/fetchCart_item',
     async (cart_id) => {
+        console.log("Fetch Cart Item: ", cart_id);
         const response = await axios.get(`${VITE_FUTURA_API}/cart/${cart_id}/items`);
         return response.data;
     }
@@ -60,6 +61,8 @@ export const updateItem_quantity = createAsyncThunk(
             product_variation_id: product_variation_id,
             quantity: quantity
         }
+
+        console.log("Update Quantity: ", cart_id, product_id, product_variation_id, quantity);
 
         const response = await axios.put(`${VITE_FUTURA_API}/cart/${cart_id}/updateQuantity`, body);
         return response.data;
@@ -109,7 +112,7 @@ const cartsSlice = createSlice({
         // Create CartID
         builder
             .addCase(createCart.fulfilled, (state, action) => {
-                state.cart_id = action.payload.data;
+                state.cart_id = action.payload.data.id;
             })
         
             .addCase(fetchCartId.fulfilled, (state, action) => {
@@ -150,8 +153,9 @@ const cartsSlice = createSlice({
             //UPDATE ITEM QUANTITY FROM CART
             .addCase(updateItem_quantity.fulfilled, (state, action) => {
                 const data = action.payload.data;
+
                 state.carts = state.carts.map((item) => {
-                    if (item.product_item_id === data.product_item_id) {
+                    if (item.id === data.id) {
                         return {...item, quantity: data.quantity}
                     }
 

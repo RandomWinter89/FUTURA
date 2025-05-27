@@ -53,8 +53,6 @@ const SignupPage = () => {
             dispatch( registerUser({uid, email}) )
                 .then(() => dispatch( createUserWishlistID(uid) ))
                 .then(() => dispatch( createCart(uid) ))
-            
-            
             setFeedback("");
         } catch (error) {
             console.log(error);

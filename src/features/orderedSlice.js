@@ -32,10 +32,11 @@ export const fetchOrder = createAsyncThunk(
 export const fetchAllOrder = createAsyncThunk(
     'admin/fetchAllOrder',
     async () => {
+        console.log("Fetching all orders...");
         const response = await axios.get(`${VITE_FUTURA_API}/orders`);
         return response.data;
     }
-)
+);
 
 // Admin -> Update Order Status
 export const updateOrderStatus = createAsyncThunk(
@@ -127,13 +128,12 @@ const ordersSlice = createSlice({
                 state.orderStatus = "failed";
             })
             
-            .addCase(fetchAllOrder.pending, (state, action) => {
-                state.order = action.payload.data;
+            .addCase(fetchAllOrder.pending, (state) => {
                 state.orderStatus = "loading";
             })
             .addCase(fetchAllOrder.fulfilled, (state, action) => {
                 state.order = action.payload.data;
-                state.orderStatus = "failed";
+                state.orderStatus = "succeed";
             })
 
             .addCase(get_OrderItem.fulfilled, (state, action) => {

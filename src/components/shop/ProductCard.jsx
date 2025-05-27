@@ -26,11 +26,10 @@ const ProductCard = ({data, showToast, showFeedback}) => {
 
         if (wishlists.find(data => data.product_id == data.id)) {
             showFeedback("Remove from wishlist");
-            showToast();
         } else {
             showFeedback("Added to wishlist");
-            showToast();
         }
+        showToast();
 
         dispatch(toggleWishlist({product_id: data.id}));
         dispatch(updateWishlistToggle({uid: currentUser.uid, product_id: data.id}));

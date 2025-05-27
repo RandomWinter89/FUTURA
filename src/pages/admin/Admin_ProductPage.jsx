@@ -2,11 +2,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { memo, useEffect, useMemo, useState } from "react";
 
 import { 
-    fetchProducts, 
-    fetchImageProduct, 
-    fetchProductItem, 
-    fetch_ProductVariation,
-    update_ProdStock
+    create_ProdVariation,
+    fetchProducts, fetchImageProduct, 
+    fetchProductItem, fetch_ProductVariation,
+    update_ProdStock, updateProduct, updateProduct_Image
 } from "../../features/productSlice";
 import { Button } from "../../components/ui";
 
@@ -24,12 +23,12 @@ const EditProductForm = memo(({item, onCallUpdate}) => {
     }, [item])
 
     const ModifiedProductDetail = (e) => {
-        e.stopPropagation();
+        e.preventDefault();
 
         if (name.trim().length == 0 || price <= 0 || description.trim().length == 0) 
             return;
 
-        onCallUpdate({name, price, description, imageUrl});
+        onCallUpdate({id: item.sku, name, price, description, imageUrl});
     }
 
     return (
@@ -84,7 +83,7 @@ const EditProductForm = memo(({item, onCallUpdate}) => {
                         />
                     </label>
 
-                    <Button className={"flex-grow-0"}>
+                    <Button type="submit" className={"flex-grow-0"}>
                         Modified
                     </Button>
                 </form>
@@ -124,6 +123,7 @@ const CreateProductVariationForm = memo(({productItem, colors, sizes, onCallCrea
     }, [colors, sizes, takenItems]);
 
     const CreateProductVariation = (e) => {
+        e.preventDefault();
         e.stopPropagation();
 
         if (selectedColor == null || selectedSize == null)
@@ -222,7 +222,7 @@ const EditVariationQuantity = memo(({item, onCallUpdate}) => {
     }
 
     return (
-        <div key={item.id} className="flex-1 flex flex-col gap-2 p-4 border border-black">
+        <div className="flex-1 flex flex-col gap-2 p-4 border border-black">
             <p>{item.name1}: {item.value1}</p>
             {item.value2 && <p>{item.name2}: {item.value2}</p>}
 
@@ -233,7 +233,7 @@ const EditVariationQuantity = memo(({item, onCallUpdate}) => {
                 className="border border-black w-auto"
             />
 
-            <Button onClick={() => UpdateQuantity()}>
+            <Button onClick={UpdateQuantity}>
                 Update Quantity
             </Button>
         </div>
@@ -276,13 +276,43 @@ const Admin_ProductPage = () => {
         dispatch(fetchProductItem(id));
     }
 
+    //Parent Action - Update Product Variation Quantity
     const onSubmitQuantity = ({id, value}) => {
         dispatch(update_ProdStock({id, quantity: value}));
     }
 
-    const onCreateVariation = ({id, color, size, quantity, extra_charge}) => {
-        console.log("Result: ", id, color, size, quantity, extra_charge);
+    //Parent Action - Create Product Variation
+    const onCreateVariation = ({id, color, size, quantity, extra_charge}) => {  
+        if (color == null || quantity <= 0 || extra_charge < 0)
+            return console.error("Invalid input for creating product variation");
+
+        const selectedColorId = itemVariation.find((v) => v.value === color).variation_option_id;
+        let selectedSizeId = null;
+        if (size != null && size.trim().length != 0)
+            selectedSizeId = itemVariation.find((v) => v.value === size).variation_option_id;
+
+        dispatch(create_ProdVariation({
+            id,
+            optionA_id: selectedColorId, 
+            optionB_id: selectedSizeId, 
+            quantity, 
+            charge: extra_charge
+        }))
     }
+
+    //Parent Action - Update Product
+    const onUpdateProduct = ({id, name, price, description, imageUrl}) => {
+        if (name.trim().length == 0 || price <= 0 || description.trim().length == 0)
+            return console.error("Invalid input for updating product");
+
+        dispatch(updateProduct({id, name, price, description}));
+        if (imageUrl != null)
+            dispatch(updateProduct_Image({prodID: id, newFile: imageUrl}));
+    }
+
+    useEffect(() => {
+        console.log("Selected Product: ", products);
+    }, [])
 
     return (
         < >
@@ -292,7 +322,12 @@ const Admin_ProductPage = () => {
                 <div className="flex flex-col gap-11">
                     {selectedProduct != null 
                         ?   < >
-                                <EditProductForm item={products.find(prev => prev.id == selectedProduct)} />
+                                <EditProductForm 
+                                    item={products.find(prev => prev.id == selectedProduct)}
+                                    onCallUpdate={({id, name, price, description, imageUrl}) => 
+                                        onUpdateProduct({id, name, price, description, imageUrl})
+                                    }
+                                />
                                 <hr className="hidden max-lg:inline-block" />
 
                                 <div className="flex gap-11 max-md:flex-col">
@@ -316,8 +351,8 @@ const Admin_ProductPage = () => {
 
                                     {/* LISTING */}
                                     <div className="h-fit flex-1 grid grid-cols-3 gap-2 max-md:grid-cols-2">
-                                        {(productItem.length != 0) && productItem.map((prod) => 
-                                            <EditVariationQuantity item={prod} onCallUpdate={({value}) => onSubmitQuantity({id: prod.id, value: value})}/>
+                                        {(productItem.length != 0) && productItem.map((prod, index) => 
+                                            <EditVariationQuantity key={index} item={prod} onCallUpdate={({value}) => onSubmitQuantity({id: prod.id, value: value})}/>
                                         )}
                                     </div>
                                 </div>
@@ -333,8 +368,8 @@ const Admin_ProductPage = () => {
             
             {(productStatus == "succeed") && (
                 <section className="grid grid-cols-4 gap-10 max-md:grid-cols-2">
-                    {products.map((prod) => 
-                        <div onClick={() => onFetch(prod.id)} className="group flex-1 flex flex-col gap-2 p-1 border border-gray-200 cursor-pointer">
+                    {products.map((prod, index) => 
+                        <div onClick={() => onFetch(prod.id)} key={index} className="group flex-1 flex flex-col gap-2 p-1 border border-gray-200 cursor-pointer">
                             <img src={`${prod.imageUrl}`} className="aspect-square object-cover group-hover:scale-110" />
                             <p>{prod.name}</p>
                         </div>

@@ -32,8 +32,6 @@ const GeneralLayout = ({auth_user}) => {
 
     }, [dispatch])
 
-    // Order
-
     useEffect(() => {
         if (!auth_user) 
             return;
@@ -43,7 +41,10 @@ const GeneralLayout = ({auth_user}) => {
 
         if (cart_id == null)
             dispatch(fetchCartId(auth_user.uid))
-                .then(() => dispatch(fetchCart_item(cart_id)));
+                .then((value) => dispatch(fetchCart_item(value.payload.data.id)));
+
+        if (cart_id != null && cart_id.length === 0)
+            dispatch(fetchCart_item(cart_id));
 
         if (wishlist_id == null)
             dispatch(fetchWishlistId(auth_user.uid))

@@ -56,9 +56,11 @@ const wishlistsSlice = createSlice({
     },
     reducers: {
         toggleWishlist: (state, action) => {
-            if (state.wishlists.find(prev => prev.product_id == action.payload.product_id)) {
+            const respondID = parseInt(action.payload.product_id);
+
+            if (state.wishlists.find(prev => prev.product_id == respondID)) {
                 state.wishlists = state.wishlists.filter(
-                    (item) => item.product_id !== action.payload.product_id
+                    (item) => item.product_id !== respondID
                 );
 
                 if (state.wishlists.length == 0 || state.wishlists == null) {

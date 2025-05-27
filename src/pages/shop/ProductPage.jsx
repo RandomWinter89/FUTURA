@@ -60,17 +60,20 @@ const ProductPage  = () => {
     const uniqueColors = useMemo(() => {
         if (productItem.length != 0)
             return [...new Set(productItem.map(item => item.value1))];
-        return [];
+        return null;
     }, [productItem])
 
     const availableSizes = useMemo(() => {
-        if (productItem.length != 0 && selectedColor != null)
+        if (selectedColor == null || selectedColor.trim().length == 0)
+            return null;
+
+        if (productItem.length != 0 && productItem.find(item => item.value1 === selectedColor).value2 != null)
             return [...new Set(
                 productItem.filter(item => item.value1 === selectedColor)
             )];
 
-        return []
-    }, [selectedColor])
+        return null;
+    }, [productItem, selectedColor])
 
     useEffect(() => {
         const result = productItem.find(item => {
@@ -126,20 +129,24 @@ const ProductPage  = () => {
     //ACTION
 
     const onAddCart = () => {
+        if (selectedColor == null || selectedSize == null || selectedColor.trim().length == 0 || selectedSize.trim().length == 0) 
+            return;
+
         if (!carts.some((data) => data.product_id == id && data.product_variation_id == selectedVariation)){
             dispatch(addCart_item({
                 cart_id: cart_id, 
                 product_id: id, 
                 product_variation_id: selectedVariation, 
-                quantity: quantity
+                quantity: parseInt(quantity)
             }));
         } else {
             const item = carts.find(data => data.product_id == id && data.product_variation_id == selectedVariation);
+            const newQuantity = parseInt(item.quantity) + parseInt(quantity);
             dispatch(updateItem_quantity({
                 cart_id: cart_id, 
                 product_id: id, 
                 product_variation_id: selectedVariation, 
-                quantity: parseInt(item) + 1
+                quantity: newQuantity
             }))
         }
 
@@ -147,19 +154,21 @@ const ProductPage  = () => {
         setOpen(true);
     }
 
-    const onAddWishlist = (prodId) => {
+    const onAddWishlist = (e) => {
+        e.stopPropagation();
+
         if (wishlistActionStatus == "loading")
             return;
 
-        if (!wishlists.find(data => data.product_id == data.id)) {
-            setDesc("Added to wishlist");
+        if (wishlists.find(data => data.product_id == data.id)) {
+            setDesc("Remove from wishlist");
         } else {
-            setDesc("This item is in wishlist already");
+            setDesc("Added to wishlist");
         }
         setOpen(true);
 
-        dispatch(toggleWishlist({product_id: prodId}));
-        dispatch(updateWishlistToggle({uid: currentUser.uid, product_id: prodId}));
+        dispatch(toggleWishlist({product_id: parseInt(id)}));
+        dispatch(updateWishlistToggle({uid: currentUser.uid, product_id: id}));
     }
 
     const onAddComment = ({review, rating}) => {
@@ -239,25 +248,25 @@ const ProductPage  = () => {
                                     setSelectedSize(null);
                                 }}
                             >
-                                <option value={null}>Select Color</option>
-                                {uniqueColors.map(color => (
+                                <option value={""}>Select Color</option>
+                                {uniqueColors && uniqueColors.map(color => (
                                     <option key={color} value={color}>{color}</option>
                                 ))}
                             </select>
 
-                            {selectedColor && (
+                            {(selectedColor != null && availableSizes != null) &&
                                 <select 
                                     className="bg-white border border-black p-3 body2"
                                     onChange={(e) => {
                                         setSelectedSize(e.target.value);
                                     }}
-                                >
-                                    <option value={null}>Select Size</option>
+                                >   
+                                    <option value={""}>Select Size</option>
                                     {availableSizes.map(data => (
                                         <option key={data.id} value={data.id}>{data.value2}</option>
                                     ))}
                                 </select>
-                            )}
+                            }
 
                             <div className="w-fit flex border border-black">
                                 <button onClick={decrementQuantity} className="px-5 py-4 hover:bg-slate-200">
@@ -289,7 +298,7 @@ const ProductPage  = () => {
                                 Add to Cart
                             </button>
 
-                            <button onClick={() => onAddWishlist(id)} className="aspect-square flex justify-center items-center border border-black py-2">
+                            <button onClick={onAddWishlist} className="aspect-square flex justify-center items-center border border-black py-2">
                                 <IconHeart filled={isWishlist} className={"text-black"} />
                             </button>
                         </div>
@@ -309,7 +318,6 @@ const ProductPage  = () => {
                 }
             />
 
-            
             {/* MORE PRODUCT */}
             <section className="flex flex-col gap-4">
                 <h2>You May Also Like</h2>

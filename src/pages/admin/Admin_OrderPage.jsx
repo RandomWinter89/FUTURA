@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllOrder, updateOrderStatus } from "../../features/orderedSlice.js"
+import { fetchAllOrder, updateOrderStatus } from "../../features/orderedSlice"
 import { memo, useEffect, useMemo, useState } from "react";
 import {Button} from "../../components/ui";
 
@@ -78,9 +78,10 @@ const Admin_OrderPage = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (order.length == 0)
+        if (order.length == 0) { 
             dispatch(fetchAllOrder());
-    }, [dispatch])
+        }
+    }, [dispatch, order])
 
     const onEditOrderStatus = (id) => {
         if (selectOrder == id) {

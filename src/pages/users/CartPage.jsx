@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { removeCartItem, updateItem_quantity } from "../../features/cartsSlice";
@@ -9,6 +9,7 @@ import { Button, InputForm } from "../../components/ui";
 
 const CartItem = ({data, product, quantity, onCallUpdate, onCallRemoval}) => {
     const [qty, setQty] = useState(quantity);
+    const originalQuantity = useRef(quantity);
 
     const incrementQuantity = () => {
         setQty(prev => {
@@ -29,8 +30,13 @@ const CartItem = ({data, product, quantity, onCallUpdate, onCallRemoval}) => {
     }
 
     useEffect(() => {
-        onCallUpdate({quantity: parseInt(qty)});
+        if (qty !== originalQuantity.current)
+            onCallUpdate({quantity: parseInt(qty)});
     }, [qty])
+
+    useEffect(() => {
+        originalQuantity.current = quantity;
+    }, [quantity])
 
     const subtotal = ((parseFloat(data.base_price) + parseFloat(data.extra_charge)) * data.quantity);
 
@@ -119,12 +125,6 @@ const CartPage = () => {
         }))
     }
 
-    useEffect(() => {
-        console.log("--- WELCOME TO CART PAGE ---");
-        console.log("Cart Condition: ", cart_id, carts, cartStatus);
-
-    }, [])
-
     return (
         <section className="flex flex-col gap-11 max-md:gap-6 max-sm:gap-3">
             {/* Breadcrumb */}
@@ -153,7 +153,7 @@ const CartPage = () => {
                         }
                         
                         {(cartStatus ==  "succeed" && productStatus == "succeed") && carts.map((item, index) =>
-                            <div key={index}>
+                            <div className="flex flex-col gap-6" key={index}>
                                 <CartItem 
                                     key={index}
                                     data={item}
@@ -187,12 +187,12 @@ const CartPage = () => {
 
                             <span className="flex gap-2 justify-between items-center">
                                 <p className="subtitle1 font-normal opacity-60">Total</p>
-                                <h3>RM{total}</h3>
+                                <h3>RM{total + 15}</h3>
                             </span>
                         </div>
 
                         <Button 
-                            onClick={() => navigate("/User/Checkout")} 
+                            onClick={() => navigate("/User/Checkout")}
                         >
                             Proceed Checkout
                         </Button>

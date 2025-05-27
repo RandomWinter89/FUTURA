@@ -16,7 +16,7 @@ const Admin_DashboardPage = () => {
     const [ prodDesc, setProdDesc ] = useState("");
     const [ prodPrice, setProdPrice ] = useState(0.0);
     const [ selectedCat, setSelectedCat ] = useState();
-    const [ prodImg, setProdImg ] = useState("");
+    const [ prodImg, setProdImg ] = useState();
 
     const dispatch = useDispatch();
 
@@ -41,6 +41,7 @@ const Admin_DashboardPage = () => {
         const indexProduct = products.filter(prev => prev.category_id == categoryInfo.id).length + 1;
         const skuString = "F-" + `${categoryInfo.sdk}-` + "A" + String(indexProduct).padStart(2, 0);
 
+        console.log("SKU: ", skuString);
         dispatch(uploadProduct({
                 category_id: selectedCat, 
                 name: prodName, 
@@ -56,7 +57,12 @@ const Admin_DashboardPage = () => {
     return (
         < >
             <section className="flex flex-col gap-6">
-                <h1>Admin Page</h1>
+                <div className="flex flex-col gap-2">
+                    <h1>Welcome to Admin</h1>
+                    <p>Here's the create section of the product</p>
+                    <p>You can add variation on products tab</p>
+                    <p>Or you can modified customer order status</p>
+                </div>
 
                 <form onSubmit={onUpload_Product} className="flex flex-col gap-4">
                     <label className="flex flex-col gap-2">

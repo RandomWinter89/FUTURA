@@ -162,7 +162,14 @@ export const updateUserPicture = createAsyncThunk(
                 const updateUser = { id: uid, ...updatedData };
                 return updateUser;
             } else {
-                throw new Error("User does not exist");
+                await setDoc(userRef, {imageUrl: newImageUrl});
+
+                const newUser = { 
+                    id: uid, 
+                    imageUrl: newImageUrl 
+                };
+
+                return newUser;
             }
         } catch (error) {
             console.error(error);
@@ -197,6 +204,7 @@ const usersSlice = createSlice({
     reducers: {
         userCheckout: (state) => {
             state.currentDBUser = null;
+            state.currentDBUserPicture = null;
             state.currentDBUserStatus = 'idle';
         },
     },

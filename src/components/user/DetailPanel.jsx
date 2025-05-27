@@ -1,7 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui";
 
 import { deleteDBUser, updateUserDetail, updateUserPicture } from "../../features/usersSlice";
+import { clearWishlistData } from "../../features/wishlistSlice";
+import { clearCartData } from "../../features/cartsSlice";
+import { clearOrderData  } from "../../features/orderedSlice";
+import { clearAddressData } from "../../features/addressSlice";
+import { clearReviewData } from "../../features/reviewSlice";
 import { getAuth, deleteUser } from "firebase/auth";
 import { useDispatch } from "react-redux";
 
@@ -50,6 +55,21 @@ const DetailPanel = ({authUser, dataUser, imageUrl, status}) => {
     const dispatch = useDispatch();
     const auth = getAuth();
 
+    useEffect(() => {
+        if (dataUser) {
+            setName(dataUser.username);
+            setPhone(dataUser.phone);
+            setGender(dataUser.gender);
+            setBirthDate(dataUser.birth.split("T")[0]);
+        }
+    }, [dataUser])
+
+    useEffect(() => {
+        if (imageUrl) {
+            setFileUrl(imageUrl);
+        }
+    }, [imageUrl])
+
     const updateProfile = () => {
         if (name.trim().length == 0 || phone.trim().length == 0 || birthDate.trim().length == 0)
             return;
@@ -76,7 +96,11 @@ const DetailPanel = ({authUser, dataUser, imageUrl, status}) => {
             await deleteUser(authUser);
             await auth.signOut();
             dispatch(deleteDBUser(authUser));
-            // dispatch(resetWishlist());
+            dispatch(clearWishlistData());
+            dispatch(clearCartData());
+            dispatch(clearOrderData());
+            dispatch(clearAddressData());
+            dispatch(clearReviewData());
         } catch (err) {
             console.log("Critical Error by Detail Panel: ", err);
         }
