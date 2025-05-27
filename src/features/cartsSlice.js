@@ -141,7 +141,7 @@ const cartsSlice = createSlice({
             .addCase(fetchCart_item.fulfilled, (state, action) => {
                 state.carts = action.payload.data;
                 
-                if (state.carts.length == 0)
+                if (action.payload.data.length == 0)
                     return state.cartStatus = "failed";
 
                 state.cartStatus = "succeed";

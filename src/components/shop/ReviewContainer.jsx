@@ -41,6 +41,9 @@ const ReviewContainer = memo(({avgRating, maxNumReview, reviewStatus, productRev
             return;
 
         onUploadReview({review, rating});
+        setReviewMode(false);
+        setReview("");
+        setRating(0);
     }
 
     return (

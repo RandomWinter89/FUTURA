@@ -65,7 +65,7 @@ const OrderPanel = memo(({userOrder, userOrderItem, userAddress, productImage, l
     }, [newestOrder])
 
     const sortedOutOfDelivery = useMemo(() => {
-        return newestOrder.slice().filter((info) => info.order_status == "Out of Delivery");
+        return newestOrder.slice().filter((info) => info.order_status == "Out for Delivery");
     }, [newestOrder])
 
     const sortedDelivered = useMemo(() => {

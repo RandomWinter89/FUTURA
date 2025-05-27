@@ -129,7 +129,7 @@ const ProductPage  = () => {
     //ACTION
 
     const onAddCart = () => {
-        if (selectedColor == null || selectedSize == null || selectedColor.trim().length == 0 || selectedSize.trim().length == 0) 
+        if (selectedColor == null || selectedColor.trim().length == 0 || selectedSize.trim().length == 0) 
             return;
 
         if (!carts.some((data) => data.product_id == id && data.product_variation_id == selectedVariation)){
@@ -319,14 +319,16 @@ const ProductPage  = () => {
             />
 
             {/* MORE PRODUCT */}
-            <section className="flex flex-col gap-4">
-                <h2>You May Also Like</h2>
-                <Grid 
-                    collection={sameCategoryProducts} 
-                    status={productStatus} 
-                    variant={"detail"}
-                />
-            </section>
+            {sameCategoryProducts.length > 0 && 
+                <section className="flex flex-col gap-4">
+                    <h2>You May Also Like</h2>
+                    <Grid 
+                        collection={sameCategoryProducts} 
+                        status={productStatus} 
+                        variant={"detail"}
+                    />
+                </section>
+            }
 
             <ToastOverlay show={open} onHide={() => setOpen(false)} desc={desc}/>
         </>

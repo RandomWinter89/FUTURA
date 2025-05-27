@@ -89,7 +89,6 @@ const ordersSlice = createSlice({
     reducers: {
         reset_OrderReceipt: (state) => {
             state.orderItem = [];
-            state.orderItemStatus = "idle";
         }, 
         clearOrderData: (state) => {
             state.orderId = null;
