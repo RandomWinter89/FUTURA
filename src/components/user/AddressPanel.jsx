@@ -204,7 +204,7 @@ const AddressPanel = ({authUser, userAddress, status}) => {
                         Confirm
                     </Button>
 
-                    <Button onClick={() => {setSubmitMode(false); setEditMode(false); setSelectedAddress(null) }}>
+                    <Button variant={"primary_outline"} onClick={() => {setSubmitMode(false); setEditMode(false); setSelectedAddress(null) }}>
                         Cancel
                     </Button>
                 </div>

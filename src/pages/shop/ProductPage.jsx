@@ -152,6 +152,9 @@ const ProductPage  = () => {
     const onAddWishlist = (e) => {
         e.stopPropagation();
 
+        if (!currentUser)
+            return navigate("/Auth/Login");
+
         if (wishlistActionStatus == "loading")
             return;
 

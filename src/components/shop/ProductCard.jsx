@@ -21,10 +21,12 @@ const ProductCard = ({data, showToast, showFeedback}) => {
     const addToWishlist = (e) => {
         e.stopPropagation();
 
+        if (!currentUser)
+            return navigate('/Auth/Login');
+
         if (wishlistActionStatus == "loading")
             return;
 
-        console.log("Comment: ");
         if (wishlists.find(pre => pre.product_id == data.id)) {
             showFeedback("Remove from wishlist");
         } else {
