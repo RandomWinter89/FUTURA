@@ -125,10 +125,6 @@ const CartPage = () => {
         }))
     }
 
-    useEffect(() => {
-        console.log("Cart Quantities Updated:", cartStatus, carts);
-    }, []);
-
     return (
         <section className="flex flex-col gap-11 max-md:gap-6 max-sm:gap-3">
             {/* Breadcrumb */}

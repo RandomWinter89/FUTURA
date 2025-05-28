@@ -61,8 +61,6 @@ export const updateItem_quantity = createAsyncThunk(
             quantity: quantity
         }
 
-        console.log("Update Quantity: ", cart_id, product_id, product_variation_id, quantity);
-
         const response = await axios.put(`${VITE_FUTURA_API}/cart/${cart_id}/updateQuantity`, body);
         return response.data;
     }

@@ -96,7 +96,6 @@ const addressSlice = createSlice({
                     return item;
                 });
 
-                console.log(state.address);
             })
     },
 });

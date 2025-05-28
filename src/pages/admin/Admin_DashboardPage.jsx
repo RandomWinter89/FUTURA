@@ -41,7 +41,6 @@ const Admin_DashboardPage = () => {
         const indexProduct = products.filter(prev => prev.category_id == categoryInfo.id).length + 1;
         const skuString = "F-" + `${categoryInfo.sdk}-` + "A" + String(indexProduct).padStart(2, 0);
 
-        console.log("SKU: ", skuString);
         dispatch(uploadProduct({
                 category_id: selectedCat, 
                 name: prodName, 

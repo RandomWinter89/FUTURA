@@ -208,7 +208,6 @@ const productsSlice = createSlice({
             })
 
             .addCase(create_ProdVariation.fulfilled, (state, action) => {
-                console.log("Product variation created successfully:", action.payload.data);
                 state.productItem = [...state.productItem, action.payload.data];
             })
 
@@ -278,7 +277,6 @@ const productsSlice = createSlice({
             })
 
             .addCase(updateProduct_Image.fulfilled, (state, action) => {
-                console.log("Image updated successfully:", action.payload);
                 const updatedImage = action.payload;
                 state.products = state.products.map(item =>
                     item.sku == updatedImage.id

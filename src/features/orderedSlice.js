@@ -32,7 +32,6 @@ export const fetchOrder = createAsyncThunk(
 export const fetchAllOrder = createAsyncThunk(
     'admin/fetchAllOrder',
     async () => {
-        console.log("Fetching all orders...");
         const response = await axios.get(`${VITE_FUTURA_API}/orders`);
         return response.data;
     }

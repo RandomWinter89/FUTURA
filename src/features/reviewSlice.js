@@ -108,7 +108,6 @@ const reviewsSlice = createSlice({
 
             // UPDATE REVIEW
             .addCase(updateReview.fulfilled, (state, action) => {
-                console.log("action: ", action.payload.data);
                 const data = action.payload.data;
                 const index = state.ownReviews.findIndex(review => review.id === data.id);
                 if (index !== -1) {

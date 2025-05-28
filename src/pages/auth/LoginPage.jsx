@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 import { readCurrentUserProfile } from "../../features/usersSlice";
-import { useState, useEffect} from "react";
+import { useState } from "react";
 
 import AuthShowcase from "../../assets/AuthShowcase.png";
 import { Button } from "../../components/ui";

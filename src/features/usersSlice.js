@@ -91,6 +91,7 @@ export const readCurrentUserProfile = createAsyncThunk(
 export const readCurrentUserPicture = createAsyncThunk(
     'users/readCurrentUserPicture',
     async (id) => {
+        console.log("User: ", id);
         try {
             const usersRef = doc(db, "users", id);
             const querySnapshot = await getDoc(usersRef);
@@ -250,6 +251,7 @@ const usersSlice = createSlice({
                 state.currentDBUserPicture = null;
             })
             .addCase(readCurrentUserPicture.fulfilled, (state, action) => {
+                console.log("Result", action.payload);
                 state.currentDBUserPicture = action.payload;
             })
 

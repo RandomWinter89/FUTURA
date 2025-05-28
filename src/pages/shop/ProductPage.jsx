@@ -211,14 +211,16 @@ const ProductPage  = () => {
                 </div>
                 
                 {/* DETAIL CONTAINER */}
-                <div className="flex gap-10 max-sm:flex-col">
-                    <img 
-                        src={product.imageUrl} 
-                        className="flex-[0.5] w-full aspect-[3/4] object-cover" 
-                    />
+                <div className="flex gap-10 max-md:flex-col max-md:gap-6">
+                    <div className="basis-1/2 max-lg:w-full">
+                        <img 
+                            src={product.imageUrl} 
+                            className="w-full h-full object-cover aspect-[3/4]" 
+                        />
+                    </div>
 
                     {/* Product Showcase */}
-                    <div className="flex-1 flex flex-col justify-center gap-6">
+                    <div className="max-lg:grow-0 grow w-full flex flex-col justify-center gap-6">
                         {/* R1 - Content */}
                         <div className="flex flex-col gap-6">
                             {/* TITLE AND DESCRIPTION */}
@@ -280,13 +282,13 @@ const ProductPage  = () => {
                                 Add to Cart
                             </button>
 
-                            <button onClick={onAddWishlist} className="aspect-square flex justify-center items-center border border-black py-2">
+                            <button onClick={onAddWishlist} className="size-auto aspect-square flex justify-center items-center border border-black">
                                 <IconHeart filled={isWishlist} className={"text-black"} />
                             </button>
                         </div>
                     </div>
 
-                    <span className="flex-[0.3] max-lg:hidden"/>
+                    <span className="block basis-[30%] max-lg:hidden"/>
                 </div>
             </section>
 

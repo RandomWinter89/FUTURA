@@ -32,7 +32,7 @@ const Homepage = () => {
                 }}
             >
                 <h1 className="w-[20ch] max-lg:w-full text-white">Step Into the Future of Fashion</h1>
-                <p className="w-[54ch] max-lg:w-full body1 text-white">Discover trendsetting styles designed to inspire. Shop the latest looks that match your vibe—bold, fresh, and unmistakably you</p>
+                <p className="w-[54ch] max-lg:w-full body1 text-white">Discover trendsetting styles designed to inspire. Shop the latest looks that match your vibe—bold, fresh, and unmistakably you.</p>
             </div>
 
             <div className="min-h-[50ch] bg-black text-white flex flex-col justify-center gap-6 px-44 max-lg:px-24 max-sm:p-12 max-sm:text-justify max-sm:gap-2">

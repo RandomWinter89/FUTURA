@@ -316,11 +316,7 @@ const Admin_ProductPage = () => {
         if (imageUrl != null)
             dispatch(updateProduct_Image({prodID: sku, newFile: imageUrl}));
     }
-
-    useEffect(() => {
-        console.log("Selected Product: ", products);
-    }, [])
-
+    
     return (
         < >
             <section className="flex flex-col gap-6">
