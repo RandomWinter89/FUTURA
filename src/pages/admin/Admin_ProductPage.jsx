@@ -29,7 +29,7 @@ const EditProductForm = memo(({item, onCallUpdate}) => {
         if (name.trim().length == 0 || price <= 0 || description.trim().length == 0) 
             return;
 
-        onCallUpdate({id: item.id, name, price, description, imageUrl});
+        onCallUpdate({id: item.id, sku: item.sku, name, price, description, imageUrl});
     }
 
     const catName = useMemo(() => {
@@ -307,13 +307,13 @@ const Admin_ProductPage = () => {
     }
 
     //Parent Action - Update Product
-    const onUpdateProduct = ({id, name, price, description, imageUrl}) => {
+    const onUpdateProduct = ({id, sku, name, price, description, imageUrl}) => {
         if (name.trim().length == 0 || price <= 0 || description.trim().length == 0)
             return console.error("Invalid input for updating product");
 
         dispatch(updateProduct({id, name, description, base_price: price}));
         if (imageUrl != null)
-            dispatch(updateProduct_Image({prodID: id, newFile: imageUrl}));
+            dispatch(updateProduct_Image({prodID: sku, newFile: imageUrl}));
     }
 
     useEffect(() => {
