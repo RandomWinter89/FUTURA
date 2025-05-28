@@ -227,11 +227,9 @@ const usersSlice = createSlice({
             
             .addCase(uploadUserPicture.pending, (state) => {
                 state.currentDBUserPicture = null;
-                state.currentDBUserStatus = "failed";
             })
             .addCase(uploadUserPicture.fulfilled, (state, action) => {
                 state.currentDBUserPicture = action.payload;
-                state.currentDBUserStatus = "succeed";
             })
 
             // --- READ -----
@@ -250,14 +248,9 @@ const usersSlice = createSlice({
 
             .addCase(readCurrentUserPicture.pending, (state) => {
                 state.currentDBUserPicture = null;
-                state.currentDBUserStatus = 'loading'
             })
             .addCase(readCurrentUserPicture.fulfilled, (state, action) => {
                 state.currentDBUserPicture = action.payload;
-                state.currentDBUserStatus = 'succeed'
-            })
-            .addCase(readCurrentUserPicture.rejected, (state) => {
-                state.currentDBUserStatus = 'failed'
             })
 
             // --- UPDATE -----
