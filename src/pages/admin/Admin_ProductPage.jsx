@@ -29,7 +29,7 @@ const EditProductForm = memo(({item, onCallUpdate}) => {
         if (name.trim().length == 0 || price <= 0 || description.trim().length == 0) 
             return;
 
-        onCallUpdate({id: item.sku, name, price, description, imageUrl});
+        onCallUpdate({id: item.id, name, price, description, imageUrl});
     }
 
     const catName = useMemo(() => {
