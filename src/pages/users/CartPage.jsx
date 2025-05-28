@@ -50,7 +50,7 @@ const CartItem = ({data, product, quantity, onCallUpdate, onCallRemoval}) => {
                     {data.name1 != null && <p className="body2 opacity-60">Color: {data.value1}</p>}
                     {data.name2 != null && <p className="body2 opacity-60">Size: {data.value2}</p>}
 
-                    <h3 className="mt-auto">MYR{subtotal}</h3>
+                    <h3 className="mt-auto">RM{subtotal}</h3>
                 </div>
 
                 
@@ -124,6 +124,10 @@ const CartPage = () => {
             product_variation_id: product_variation_id
         }))
     }
+
+    useEffect(() => {
+        console.log("Cart Quantities Updated:", cartStatus, carts);
+    }, []);
 
     return (
         <section className="flex flex-col gap-11 max-md:gap-6 max-sm:gap-3">

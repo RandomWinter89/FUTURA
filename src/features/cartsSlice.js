@@ -46,7 +46,6 @@ export const addCart_item = createAsyncThunk(
 export const fetchCart_item = createAsyncThunk(
     'users/fetchCart_item',
     async (cart_id) => {
-        console.log("Fetch Cart Item: ", cart_id);
         const response = await axios.get(`${VITE_FUTURA_API}/cart/${cart_id}/items`);
         return response.data;
     }
@@ -141,10 +140,11 @@ const cartsSlice = createSlice({
             .addCase(fetchCart_item.fulfilled, (state, action) => {
                 state.carts = action.payload.data;
                 
-                if (action.payload.data.length == 0)
-                    return state.cartStatus = "failed";
-
-                state.cartStatus = "succeed";
+                if (action.payload.data.length == 0) {
+                    state.cartStatus = "failed";
+                } else {
+                    state.cartStatus = "succeed";
+                }
             })
             .addCase(fetchCart_item.rejected, (state) => {
                 state.cartStatus = "failed";

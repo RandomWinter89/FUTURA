@@ -24,7 +24,7 @@ const CartItem = ({data, image}) => {
                 {data.value2 != null && <p className="body2 opacity-60">Size: {data.value2}</p>}
                 <p className="body2 opacity-60">Quantity: {data.quantity}</p>
 
-                <h3 className="mt-auto">MYR{subtotal}</h3>
+                <h3 className="mt-auto">RM{subtotal}</h3>
             </div>
         </div>
     )
@@ -107,7 +107,7 @@ const CheckoutPage = () => {
                         <div className="flex flex-col gap-5"> 
                             <span className="flex gap-2 justify-between items-center">
                                 <p className="subtitle1 font-normal opacity-60">Subtotal</p>
-                                <p className="subtitle1">MYR{subTotal}</p>
+                                <p className="subtitle1">RM{subTotal}</p>
                             </span>
 
                             <span className="flex gap-2 justify-between items-center">

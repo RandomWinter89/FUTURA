@@ -1,5 +1,5 @@
 import { Card, Button } from '../ui'
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 const CollectionCard = ({data, image, quantity, onCallUpdate, onCallRemoval}) => {
     
@@ -15,7 +15,7 @@ const CollectionCard = ({data, image, quantity, onCallUpdate, onCallRemoval}) =>
                 <Card.Text>
                     {data.name1 != null && <p>Color: {data.value1}</p>}
                     {data.name2 != null && <p>Size: {data.value2}</p>}
-                    <p>Subtotal price: MYR{sumPrice}</p>
+                    <p>Subtotal price: RM{sumPrice}</p>
                 </Card.Text>
 
                 <input 

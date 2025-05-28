@@ -70,7 +70,7 @@ const Grid = ({collection, status, header, enableMore=true, variant, className})
     return (
         < >
             {header &&
-                <div className="flex justify-between">
+                <div className="flex justify-between max-md:items-center">
                     <h2>{header}</h2>
                     {enableMore && 
                         <button 

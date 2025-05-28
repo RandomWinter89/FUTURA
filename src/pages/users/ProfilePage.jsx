@@ -4,14 +4,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect, useContext, useMemo } from "react";
 
 import { fetchOrder, getAllItem } from "../../features/orderedSlice";
+import { fetch_ownReviews } from "../../features/reviewSlice";
 
 // Panel Component
 import { DetailPanel, AddressPanel, OrderPanel } from "../../components/user"
+import ReviewPanel from "../../components/user/ReviewPanel";
 
 // ====================>
 
 const ProfilePage = () => {
     const { currentDBUser, currentDBUserPicture, currentDBUserStatus} = useSelector((state) => state.users);
+    const { ownReviews, currentUserReviewStatus } = useSelector((state) => state.reviews);
     const { products, productStatus } = useSelector((state) => state.products);
     const { address, addressStatus } = useSelector((state) => state.address);
     const { order, orderItem } = useSelector((state) => state.orders);
@@ -28,6 +31,9 @@ const ProfilePage = () => {
 
         if (orderItem.length == 0)
             dispatch(getAllItem(currentUser.uid));
+
+        if (ownReviews.length == 0)
+            dispatch(fetch_ownReviews(currentUser.uid));
     }, [dispatch]);
 
     const filteredProductImage = useMemo(() => {
@@ -45,11 +51,11 @@ const ProfilePage = () => {
                 <aside className="flex-[0.4] flex flex-col gap-4 max-lg:flex-auto">
                     <h2>Settings</h2>
 
-                    <div className="flex flex-col gap-2 max-lg:flex-row">
+                    <div className="flex flex-col gap-2 max-lg:flex-row max-sm:grid max-sm:grid-cols-2">
                         <button 
                             onClick={() => setMode("PROFILE")} 
                             className={`
-                                subtitle2 py-3 px-4 text-start
+                                subtitle2 py-3 px-4 text-start max-sm:flex-1
                                 ${mode == "PROFILE" ? "bg-black text-white" : "border-b border-black"}
                             `}
                         >
@@ -59,7 +65,7 @@ const ProfilePage = () => {
                         <button 
                             onClick={() => setMode("ADDRESS")} 
                             className={`
-                                subtitle2 py-3 px-4 text-start 
+                                subtitle2 py-3 px-4 text-start max-sm:flex-1
                                 ${mode == "ADDRESS" ? "bg-black text-white" : "border-b border-black"}
                             `}
                         >
@@ -67,9 +73,19 @@ const ProfilePage = () => {
                         </button>
 
                         <button 
+                            onClick={() => setMode("REVIEW")} 
+                            className={`
+                                subtitle2 py-3 px-4 text-start max-sm:flex-1
+                                ${mode == "REVIEW" ? "bg-black text-white" : "border-b border-black"}
+                            `}
+                        >
+                            Your Reviews
+                        </button>
+
+                        <button 
                             onClick={() => setMode("ORDER")} 
                             className={`
-                                subtitle2 py-3 px-4 text-start 
+                                subtitle2 py-3 px-4 text-start max-sm:flex-1
                                 ${mode == "ORDER" ? "bg-black text-white" : "border-b border-black"}
                             `}
                         >
@@ -91,7 +107,14 @@ const ProfilePage = () => {
                         <AddressPanel
                             authUser={currentUser}
                             userAddress={address}
-                            loading={(addressStatus == "loading")}
+                            status={addressStatus}
+                        />
+                    }
+                    {(mode == "REVIEW") &&
+                        <ReviewPanel
+                            authUser={currentUser}
+                            userReviews={ownReviews}
+                            status={currentUserReviewStatus}
                         />
                     }
                     {(mode == "ORDER") && 
@@ -100,7 +123,7 @@ const ProfilePage = () => {
                             userOrderItem={orderItem} 
                             userAddress={address}
                             productImage={filteredProductImage}
-                            loading={false}
+                            status={addressStatus}
                         />
                     }
                 </div>

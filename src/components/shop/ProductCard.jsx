@@ -24,7 +24,8 @@ const ProductCard = ({data, showToast, showFeedback}) => {
         if (wishlistActionStatus == "loading")
             return;
 
-        if (wishlists.find(data => data.product_id == data.id)) {
+        console.log("Comment: ");
+        if (wishlists.find(pre => pre.product_id == data.id)) {
             showFeedback("Remove from wishlist");
         } else {
             showFeedback("Added to wishlist");

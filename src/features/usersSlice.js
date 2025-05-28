@@ -101,8 +101,6 @@ export const readCurrentUserPicture = createAsyncThunk(
                     id: querySnapshot.id,
                     imageUrl: userData.imageUrl, // Adjust based on your field name
                 };
-            } else {
-                throw new Error("User not found");
             }
             
         } catch (error) {

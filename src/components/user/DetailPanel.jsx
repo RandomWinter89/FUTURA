@@ -57,10 +57,10 @@ const DetailPanel = ({authUser, dataUser, imageUrl, status}) => {
 
     useEffect(() => {
         if (dataUser) {
-            setName(dataUser.username);
-            setPhone(dataUser.phone);
-            setGender(dataUser.gender);
-            setBirthDate(dataUser.birth.split("T")[0]);
+            setName(dataUser?.username);
+            setPhone(dataUser?.phone);
+            setGender(dataUser?.gender);
+            setBirthDate(dataUser.birth ? dataUser.birth.split("T")[0] : "");
         }
     }, [dataUser])
 
@@ -94,13 +94,13 @@ const DetailPanel = ({authUser, dataUser, imageUrl, status}) => {
     const removeProfile = async () => {
         try {
             await deleteUser(authUser);
+                dispatch(deleteDBUser(authUser));
+                dispatch(clearWishlistData());
+                dispatch(clearCartData());
+                dispatch(clearOrderData());
+                dispatch(clearAddressData());
+                dispatch(clearReviewData());
             await auth.signOut();
-            dispatch(deleteDBUser(authUser));
-            dispatch(clearWishlistData());
-            dispatch(clearCartData());
-            dispatch(clearOrderData());
-            dispatch(clearAddressData());
-            dispatch(clearReviewData());
         } catch (err) {
             console.log("Critical Error by Detail Panel: ", err);
         }

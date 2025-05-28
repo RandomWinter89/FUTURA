@@ -50,7 +50,7 @@ const AddressCard = ({data, index, requestEdit, skeleton=false}) => {
     )
 }
 
-const AddressPanel = ({authUser, userAddress, loading}) => {
+const AddressPanel = ({authUser, userAddress, status}) => {
     const [address_line1, setAddress_line1] = useState("");
     const [address_line2, setAddress_line2] = useState("");
     const [city, setCity] = useState("");
@@ -139,7 +139,7 @@ const AddressPanel = ({authUser, userAddress, loading}) => {
         }
     }, [userAddress, selectedAddress])
 
-    if (loading) return (
+    if (status == "loading" || status == "idle") return (
         < >
             <h2>Address: Loading</h2>
             <div className="flex flex-col gap-6">

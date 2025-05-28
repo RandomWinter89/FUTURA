@@ -23,9 +23,9 @@ const Header = () => {
 
     return (
         <div className="w-full h-26 py-6 px-9 bg-[#E6E6E6] font-sans flex justify-between">
-            <nav className="flex items-center gap-6 max-md:gap-4 max-md:flex-col max-sm:gap-2">
+            <nav className="flex justify-center items-center gap-6 max-lg:gap-4 max-md:flex-col max-md:items-start max-md:gap-1">
                 <NavLink path={"/Admin/Dashboard"} variant={"homepage"} type={"base"}>
-                    Admin Dashboard
+                    Dashboard
                 </NavLink>
 
                 <NavLink path={"/Admin/Products"}>

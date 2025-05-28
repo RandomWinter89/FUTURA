@@ -13,7 +13,7 @@ const buttonVariants = cva(
             },
             state: {
                 fit: "w-fit h-fit",
-                full: "flex-1 flex-grow-0 w-full"
+                full: "flex-1 w-full"
             },
             size: {
                 sm: "px-6 py-2",

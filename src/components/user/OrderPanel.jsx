@@ -1,4 +1,4 @@
-import { useState, memo, useMemo } from "react";
+import { useState, memo, useMemo, useCallback } from "react";
 
 const OrderCard = ({item, image, date="", address=""}) => {
     const [shown, setShown] = useState(false);
@@ -6,6 +6,8 @@ const OrderCard = ({item, image, date="", address=""}) => {
     const price = useMemo(() => {
         return item.quantity * parseFloat(item.price);
     }, [item])
+
+    const toggleShown = useCallback(() => setShown(prev => ! prev), []);
 
     return (
         <div className="flex flex-col">
@@ -43,7 +45,7 @@ const OrderCard = ({item, image, date="", address=""}) => {
             </div>
 
             <button 
-                onClick={() => setShown(!shown)} 
+                onClick={toggleShown} 
                 className="bg-white border-x border-b border-gray-500 py-3 flex justify-center"
             >
                 {shown ? "View more" : "Hide detail"}
@@ -53,7 +55,7 @@ const OrderCard = ({item, image, date="", address=""}) => {
 }
 
 
-const OrderPanel = memo(({userOrder, userOrderItem, userAddress, productImage, loading}) => {
+const OrderPanel = memo(({userOrder, userOrderItem, userAddress, productImage, status}) => {
     const [state, setState] = useState("Pending");
 
     const newestOrder = useMemo(() => {
@@ -72,10 +74,14 @@ const OrderPanel = memo(({userOrder, userOrderItem, userAddress, productImage, l
         return newestOrder.slice().filter((info) => info.order_status == "Delivered");
     }, [newestOrder])
 
-    if (loading) return (
-        < >
-            
-        </>
+    const formatDate = useCallback((dateString) => {
+        const date = new Date(dateString);
+        date.setDate(date.getDate() + 15);
+        return date.toISOString().split("T")[0];
+    }, []);
+
+    if (status == "loading" || status == "idle") return (
+        < ></>
     )
 
     return (
@@ -86,17 +92,17 @@ const OrderPanel = memo(({userOrder, userOrderItem, userAddress, productImage, l
                 <button 
                     onClick={() => setState("Pending")} 
                     className={`flex-1 body2 pb-4 border-b-2 ${state == "Pending" ? " border-black text-black" : "border-gray-400 text-gray-400"}`}
-                >Pending {state == "Pending" && `(${sortedPending.length})`}</button>
+                >Pending {`(${sortedPending.length})`}</button>
 
                 <button 
                     onClick={() => setState("OutDelivery")} 
                     className={`flex-1 body2 pb-4 border-b-2 ${state == "OutDelivery" ? " border-black text-black" : "border-gray-400 text-gray-400"}`}
-                >Out of Delivery {state == "OutDelivery" && "(0)"}</button>
+                >Out of Delivery {`(${sortedOutOfDelivery.length})`}</button>
 
                 <button 
                     onClick={() => setState("Delivered")} 
                     className={`flex-1 body2 pb-4 border-b-2 ${state == "Delivered" ? " border-black text-black" : "border-gray-400 text-gray-400"}`}
-                >Delivered {state == "Delivered" && `(${sortedDelivered.length})`}</button>
+                >Delivered {`(${sortedDelivered.length})`}</button>
             </nav>
 
             {state == "Pending" && sortedPending.map((parentData, index) => {
@@ -113,51 +119,66 @@ const OrderPanel = memo(({userOrder, userOrderItem, userAddress, productImage, l
                             .map((data, index) => 
                                 <OrderCard 
                                     key={index} 
-                                    item={data} 
+                                    item={data}
+                                    date={formatDate(parentData.order_date)}
                                     address={`${addressInfo.address_line1} ${addressInfo.address_line2}, ${addressInfo.city} ${addressInfo.region} ${addressInfo.postal_code}`}
                                     image={productImage.find(prev => prev.id == data.product_id)?.imageUrl}
                                 />
                             )
                         }
                     </div>
-                )
-            })}
+                )})
+            }
 
-            {state == "OutDelivery" && sortedOutOfDelivery.map((data, index) => 
-                <div key={index} className="flex flex-col gap-6 mb-10">
-                    <p className="subtitle2">
-                        Order #{data.id} | Placed on {data.order_date.split("T")[0]}
-                    </p>
+            {state == "OutDelivery" && sortedOutOfDelivery.map((parentData, index) => {
+                const addressInfo = userAddress.find(prev => prev.id == parentData.shipping_address_id);
+            
+                return (
+                    <div key={index} className="flex flex-col gap-6 mb-10">
+                        <p className="subtitle2">
+                            Order #{parentData.id} | Placed on {parentData.order_date.split("T")[0]}
+                        </p>
 
-                    {userOrderItem.slice()
-                        .filter(prev => prev.id == data.id)
-                        .map((data, index) => {
-                            const addressInfo = userAddress.find(prev => prev.id == data.address_id).join(" ");
-                            console.log(addressInfo);
-                            return <OrderCard 
-                                key={index} 
-                                item={data}
-                                image={productImage.find(prev => prev.id == data.product_id)?.imageUrl}
-                            />
-                        })
-                    }
-                </div>
-            )}
+                        {userOrderItem.slice()
+                            .filter(prev => prev.id == parentData.id)
+                            .map((data, index) => 
+                                <OrderCard 
+                                    key={index} 
+                                    item={data}
+                                    date={formatDate(parentData.order_date)}
+                                    address={`${addressInfo.address_line1} ${addressInfo.address_line2}, ${addressInfo.city} ${addressInfo.region} ${addressInfo.postal_code}`}
+                                    image={productImage.find(prev => prev.id == data.product_id)?.imageUrl}
+                                />
+                            )
+                        }
+                    </div>
+                )})
+            }
 
-            {state == "Delivered" && sortedDelivered.map((data, index) => 
-                <div key={index} className="flex flex-col gap-6 mb-10">
-                    <p className="subtitle2">
-                        Order #{data.id} | Placed on {data.order_date.split("T")[0]}
-                    </p>
+            {state == "Delivered" && sortedDelivered.map((parentData, index) => {
+                const addressInfo = userAddress.find(prev => prev.id == parentData.shipping_address_id);
+            
+                return (
+                    <div key={index} className="flex flex-col gap-6 mb-10">
+                        <p className="subtitle2">
+                            Order #{parentData.id} | Placed on {parentData.order_date.split("T")[0]}
+                        </p>
 
-                    {userOrderItem.slice()
-                        .filter((prev) => prev.id == data.id)
-                        .map((data, index) => 
-                            <OrderCard key={index} item={data} image={productImage.find(prev => prev.id == data.product_id)?.imageUrl}/>
-                        )
-                    }
-                </div>
-            )}
+                        {userOrderItem.slice()
+                            .filter(prev => prev.id == parentData.id)
+                            .map((data, index) => 
+                                <OrderCard 
+                                    key={index} 
+                                    item={data}
+                                    date={formatDate(parentData.order_date)}
+                                    address={`${addressInfo.address_line1} ${addressInfo.address_line2}, ${addressInfo.city} ${addressInfo.region} ${addressInfo.postal_code}`}
+                                    image={productImage.find(prev => prev.id == data.product_id)?.imageUrl}
+                                />
+                            )
+                        }
+                    </div>
+                )})
+            }
         </>
     )
 });

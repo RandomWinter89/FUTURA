@@ -37,21 +37,21 @@ export const fetch_productReviews = createAsyncThunk(
 
 export const deleteReview = createAsyncThunk(
     'users/deleteReview',
-    async ({id, review_id}) => {
-        const response = await axios.delete(`${VITE_FUTURA_API}/users/${id}/review/${review_id}`);
+    async ({uid, review_id}) => {
+        const response = await axios.delete(`${VITE_FUTURA_API}/users/${uid}/review/${review_id}`);
         return response.data;
     }
 );
 
 export const updateReview = createAsyncThunk(
     'users/updateReview',
-    async ({id, review_id, rating_value, comment}) => {
+    async ({uid, review_id, rating_value, comment}) => {
         const body = {
             rating_value: rating_value,
             comment: comment
         };
 
-        const response = await axios.put(`${VITE_FUTURA_API}/users/${id}/review/${review_id}`, body);
+        const response = await axios.put(`${VITE_FUTURA_API}/users/${uid}/review/${review_id}`, body);
         return response.data;
     }
 );
@@ -108,6 +108,7 @@ const reviewsSlice = createSlice({
 
             // UPDATE REVIEW
             .addCase(updateReview.fulfilled, (state, action) => {
+                console.log("action: ", action.payload.data);
                 const data = action.payload.data;
                 const index = state.ownReviews.findIndex(review => review.id === data.id);
                 if (index !== -1) {

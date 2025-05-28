@@ -47,6 +47,7 @@ const UpdateOrderPanel = ({data, onCall_Update, onCallCancel}) => {
 }
 
 const OrderCard = memo(({data, onCallUpdateMode}) => {
+
     return (
         < >
             <div 

@@ -11,15 +11,10 @@ import { addCart_item, updateItem_quantity } from "../../features/cartsSlice";
 import { AuthContext } from "../../Context/AuthProvider";
 import { toggleWishlist, updateWishlistToggle } from "../../features/wishlistSlice";
 
-import { ToastOverlay } from "../../components/ui";
+
+import { IconFramer, IconHeart } from "../../components/icon";
+import { ToastOverlay, InputForm } from "../../components/ui";
 import { Grid } from "../../components/shop";
-
-
-import framer from "../../assets/svg/Frame.svg";
-import dash from "../../assets/svg/dash.svg";
-import plus from "../../assets/svg/plus.svg";
-
-import { IconHeart } from "../../components/icon";
 
 
 import { ReviewContainer } from "../../components/shop";
@@ -129,7 +124,7 @@ const ProductPage  = () => {
     //ACTION
 
     const onAddCart = () => {
-        if (selectedColor == null || selectedColor.trim().length == 0 || selectedSize.trim().length == 0) 
+        if (selectedColor == null || selectedColor.trim().length == 0) 
             return;
 
         if (!carts.some((data) => data.product_id == id && data.product_variation_id == selectedVariation)){
@@ -202,12 +197,12 @@ const ProductPage  = () => {
                     <span onClick={() => navigate("/Shop/Homepage")} className="text-gray-500 cursor-pointer">
                         Home
                     </span>
-                    <img src={framer} className="flex-1 aspect-square"/>
+                    <IconFramer />
 
                     <span onClick={() => navigate("/Shop/Category")} className="text-gray-500 cursor-pointer">
                         Category
                     </span>
-                    <img src={framer} className="flex-1 aspect-square"/>
+                    <IconFramer />
 
                     <p>{product.name}</p>
                 </div>
@@ -268,28 +263,12 @@ const ProductPage  = () => {
                                 </select>
                             }
 
-                            <div className="w-fit flex border border-black">
-                                <button onClick={decrementQuantity} className="px-5 py-4 hover:bg-slate-200">
-                                    <img src={dash} />
-                                </button>
-                                <input 
-                                    type="number" 
-                                    value={quantity}
-                                    onChange={(e) => {
-                                        if (e.target.value >= 100)
-                                            return setQuantity(99)
-
-                                        if (e.target.value <= 0)
-                                            return setQuantity(1)
-
-                                        setQuantity(e.target.value);
-                                    }}
-                                    className="border-none text-center w-16"
-                                />
-                                <button onClick={incrementQuantity} className="px-5 py-4">
-                                    <img src={plus} />
-                                </button>
-                            </div>
+                            <InputForm.Number 
+                                onDecrement={decrementQuantity}
+                                onIncrement={incrementQuantity}
+                                quantity={quantity}
+                                setQuantity={({value}) => setQuantity(value)}
+                            />
                         </div>
                             
                         {/* R3 - ACTION BUTTON */}
