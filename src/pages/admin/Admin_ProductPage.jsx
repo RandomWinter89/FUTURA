@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { memo, useEffect, useMemo, useState } from "react";
+import { Category } from "../../database/category";
 
 import { 
     create_ProdVariation,
@@ -31,6 +32,10 @@ const EditProductForm = memo(({item, onCallUpdate}) => {
         onCallUpdate({id: item.sku, name, price, description, imageUrl});
     }
 
+    const catName = useMemo(() => {
+        return Category.find(prev => prev.id == item.category_id).category_name
+    }, [item]);
+
     return (
         <div className="flex flex-col gap-2">
             <h3>Product Detail</h3>
@@ -40,7 +45,8 @@ const EditProductForm = memo(({item, onCallUpdate}) => {
 
                 {/* Display Image */}
                 <form onSubmit={ModifiedProductDetail} className="flex-1 flex flex-col gap-6">
-                    
+                    <label>{catName}</label>
+
                     <label className="flex flex-col gap-2">
                         Image Update
                         <input 
