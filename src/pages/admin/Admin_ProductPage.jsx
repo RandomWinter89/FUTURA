@@ -311,7 +311,7 @@ const Admin_ProductPage = () => {
         if (name.trim().length == 0 || price <= 0 || description.trim().length == 0)
             return console.error("Invalid input for updating product");
 
-        dispatch(updateProduct({id, name, price, description}));
+        dispatch(updateProduct({id, name, description, base_price: price}));
         if (imageUrl != null)
             dispatch(updateProduct_Image({prodID: id, newFile: imageUrl}));
     }
