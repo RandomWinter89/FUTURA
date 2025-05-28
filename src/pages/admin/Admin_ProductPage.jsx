@@ -312,6 +312,7 @@ const Admin_ProductPage = () => {
             return console.error("Invalid input for updating product");
 
         dispatch(updateProduct({id, name, description, base_price: price}));
+        
         if (imageUrl != null)
             dispatch(updateProduct_Image({prodID: sku, newFile: imageUrl}));
     }
@@ -330,8 +331,8 @@ const Admin_ProductPage = () => {
                         ?   < >
                                 <EditProductForm 
                                     item={products.find(prev => prev.id == selectedProduct)}
-                                    onCallUpdate={({id, name, price, description, imageUrl}) => 
-                                        onUpdateProduct({id, name, price, description, imageUrl})
+                                    onCallUpdate={({id, sku, name, price, description, imageUrl}) => 
+                                        onUpdateProduct({id, sku, name, price, description, imageUrl})
                                     }
                                 />
                                 <hr className="hidden max-lg:inline-block" />
