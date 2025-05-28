@@ -1,6 +1,7 @@
 ## FUTURA App (E-Commerce on Fashion and Tech) - Frontend
 
 ### Coding Format
+
 - JS: React.js v19 / Vite v6.3.1
 - CSS: TailwindCSS v3.4.17 / Tailwind Merger v3.2.0
 
@@ -9,7 +10,9 @@
 [![TailwindCSS](https://img.shields.io/badge/CSS%20Style-TailwindCSS-blue.svg?style=flat)](https://github.com/tailwindlabs/tailwindcss)
 
 ## Requirement:
+
 Before downloading the source code, you must at least have a fundamental knowledge of the following:
+
 1. [React Framework](https://react.dev/learn)
 2. [React Router](https://reactrouter.com/6.30.1/start/tutorial)
 3. [Redux Framework + Persist](https://redux.js.org/tutorials/fundamentals/part-1-overview)
@@ -22,19 +25,20 @@ Before downloading the source code, you must at least have a fundamental knowled
 10. [Environment Variables / Secrets](https://vite.dev/guide/env-and-mode)
 
 ## Features
+
 1. **Authentication Sign-up and Login** via Email/Password
 2. **CRUD (Admin / User)**: Admin side handles in create product, product's variation and client order status. As for client side (user), they can interact with product as they prefer. Whether to add, remove or modified quantity in their cart or save to favorite.
 3. **Payment Gateway - Stripe** (Development Mode) . Futura is a mock app for educational purpose, it will remain in development mode. Therefore, no actual transactions will be made.
 
-
 ## Installation Guidance
-+ Clone/Download the source code as zip file.
-+ Ensure npm or node package is installed in your system before next step.
-+ Open the source code with desired IDE (VS, Rider, etc.)
-+ Open terminal to run `npm i` / `npm install` so the IDE can install required packages/plugin specified in **package.json**
-+ Create a `.env` file at the base directory while ensure you written the following key/value pairs filled:
 
-```
++ In the github, you can either **clone/download** the source code as zip version.
++ Ensure **npm** or **node package** is installed before proceeding, otherwise you aren't able to run the project
++ Edit the source code based on your prefer **IDE Editor** (Visual Code, Rider Editor)
++ Run `npm install` in terminal, the system will automatically install required package. You can manually installed based on **package.json** if prefer.
++ Create a `.env` file at the base directory, ensure you filled them correctly:
+
+```sql
 # Backend API without "/" (example: https://something:9999)
 VITE_FUTURA_API = INSERT_VALUE_HERE
 
@@ -48,27 +52,26 @@ VITE_FIREBASE_APP_ID = INSERT_VALUE_HERE
 
 # Stripe Secret (Grab from Stripe Console)
 VITE_STRIPE_PUBLIC_KEY= INSERT_VALUE_HERE
+
 ```
 
 ## Deploy Guidance
-- [Development] Run the command in terminal `npm run dev` so it generate a local host browser. (Full Experience required backend activate);
-- [Vercel] Upload on GitHub and import directly there.
+
++ **Local Development** - Run `node index` to generate a local host backend. (Full Experience required frontend activate);
++ **Publish Deployment** - Upload it to GitHub, then navigate to Vercel and select from there.
 
 ## Built-in Dummy:
-1. Admin - zzz@gmail.com, 123456
+
+1. Admin
+   + Email: zzz@gmail.com | Password: 123456
 2. Users
-    + kenshi@gmail.com, 123456
-    + family@gmail.com, 123456
+   + Email: kenshi@gmail.com | Password: 123456
+   + Email: family@gmail.com | Password: 123456
 
-## Active Deployment
-1. [Vercel](https://futura-lac.vercel.app/)
+#### Active Deployment - [Vercel](https://futura-lac.vercel.app/)
 
-## Important Notes:
-1. This project was created as part of the Sigma School Bootcamp's Module (#4) - the capstone project
+#### Important - This project was created as part of the Sigma School Bootcamp's Module (#4) - the capstone project
 
 ## License
+
 MIT © [David Tang / Project Futura](https://github.com/RandomWinter89)
-
-```sh
-
-```
