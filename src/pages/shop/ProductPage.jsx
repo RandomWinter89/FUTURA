@@ -124,6 +124,9 @@ const ProductPage  = () => {
     //ACTION
 
     const onAddCart = () => {
+        if (!currentUser)
+            return navigate("/Auth/Login");
+
         if (selectedColor == null || selectedColor.trim().length == 0) 
             return;
 
@@ -170,6 +173,9 @@ const ProductPage  = () => {
     }
 
     const onAddComment = ({review, rating}) => {
+        if (!currentUser)
+            return navigate("/Auth/Login");
+        
         if (!productReviews.find(rev => rev.created_by_userid == currentUser.uid)) { 
             dispatch(createReview({
                 uid: currentUser.uid, 
@@ -293,6 +299,7 @@ const ProductPage  = () => {
             </section>
 
             <ReviewContainer 
+                authUser={currentUser}
                 avgRating={product.average_rating}
                 maxNumReview={product.number_of_reviews}
                 reviewStatus={productReviewStatus}
