@@ -38,7 +38,7 @@ const LoginPage = () => {
             const feedback = await signInWithEmailAndPassword(auth, email, password);
             dispatch(readCurrentUserProfile(feedback.user.uid));
         } catch (error) {
-            setError("Invalid: ", error.message);
+            setError("Invalid: password or email");
             console.error("Error in Login: ", error);
         }
     }

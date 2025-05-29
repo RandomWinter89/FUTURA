@@ -49,12 +49,13 @@ const RegisterPage = () => {
                     <p>Please re-register or create your detail</p>
                 </div>
 
-                <form onSubmit={onSubmit_PersonalInfo} className="flex flex-col gap-6">
+                <form onSubmit={onSubmit_PersonalInfo} className="flex flex-col gap-3 w-[30rem] max-md:w-full">
                     <div className="flex flex-col gap-2">
                         <label>Username</label>
                         <input 
                             type="text" 
                             onChange={(e) => setUsername(e.target.value)}
+                            placeholder="Name"
                             className="min-h-14 px-4 py-2 border-2 border-black rounded-lg"
                         />
                     </div>
