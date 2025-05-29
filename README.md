@@ -2,16 +2,16 @@
 
 ### Coding Format
 
-- JS: React.js v19 / Vite v6.3.1
-- CSS: TailwindCSS v3.4.17 / Tailwind Merger v3.2.0
+- Framework: React.js v19 / Vite v6.3.1
+- Styling: TailwindCSS v3.4.17 / Tailwind Merger v3.2.0
 
-[![React](https://img.shields.io/badge/Coding%20Style-React-brightgreen.svg?style=flat)](https://github.com/facebook/react)
+[![React](https://img.shields.io/badge/Framework-React-brightgreen.svg?style=flat)](https://github.com/facebook/react)
 [![ES-JS](https://img.shields.io/badge/Coding%20Style-Javascript%20ES%202025-brightgreen.svg?style=flat)](https://github.com/standard/standard)
 [![TailwindCSS](https://img.shields.io/badge/CSS%20Style-TailwindCSS-blue.svg?style=flat)](https://github.com/tailwindlabs/tailwindcss)
 
-## Requirement:
+## Resource
 
-Before downloading the source code, you must at least have a fundamental knowledge of the following:
+Here're the resource toolkit applied in the source code, which require you at least a basic understand on their usage:
 
 1. [React Framework](https://react.dev/learn)
 2. [React Router](https://reactrouter.com/6.30.1/start/tutorial)
@@ -27,8 +27,11 @@ Before downloading the source code, you must at least have a fundamental knowled
 ## Features
 
 1. **Authentication Sign-up and Login** via Email/Password
-2. **CRUD (Admin / User)**: Admin side handles in create product, product's variation and client order status. As for client side (user), they can interact with product as they prefer. Whether to add, remove or modified quantity in their cart or save to favorite.
-3. **Payment Gateway - Stripe** (Development Mode) . Futura is a mock app for educational purpose, it will remain in development mode. Therefore, no actual transactions will be made.
+2. **CRUD (Admin / User)**:
+   + Admin can create product, variation, or modified client's order status
+   + User can add or remove product from their wishlist/carts. Modified address, review, and their detail is another option.
+
+3. **Payment Gateway - Stripe** (Development Mode) . Currently Futura is a mock app for Sigma's educational purpose, therefore it will remain as development mode. **Caution**: no actual payment is made, you can follow stripe document for fake card to experience the user flow.
 
 ## Installation Guidance
 
@@ -64,6 +67,7 @@ VITE_STRIPE_PUBLIC_KEY= INSERT_VALUE_HERE
 
 1. Admin
    + Email: zzz@gmail.com | Password: 123456
+
 2. Users
    + Email: kenshi@gmail.com | Password: 123456
    + Email: family@gmail.com | Password: 123456
@@ -72,6 +76,4 @@ VITE_STRIPE_PUBLIC_KEY= INSERT_VALUE_HERE
 
 #### Important - This project was created as part of the Sigma School Bootcamp's Module (#4) - the capstone project
 
-## License
-
-MIT © [David Tang / Project Futura](https://github.com/RandomWinter89)
+#### License: MIT © [David Tang / Project Futura](https://github.com/RandomWinter89)
